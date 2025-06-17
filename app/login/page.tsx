@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,13 +12,38 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await signIn("credentials", { redirect: false, email, password });
 
-    if (res?.ok) {
-      router.push("/dashboard");
-    } else {
-      alert("Błędne dane logowania");
-    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user, "UUUUUUUUUUUUUUUU");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage, "EEEEEEEEEEEEEEEEEEEEEE");
+      });
+
+    // if (res?.ok) {
+    //   router.push("/dashboard");
+    // } else {
+    //   alert("Błędne dane logowania");
+    // }
+  };
+
+  const handleregister = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user, "UUUUUUUUUUUUUUUUREEEEEEEEEEEEEEEEEEEGGGGGGGGGGGGGG");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage, "RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRREEEEEEEEE");
+      });
   };
 
   return (
