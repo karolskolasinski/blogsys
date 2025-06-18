@@ -3,7 +3,6 @@ import { adminAuth } from "@/lib/firebase-admin";
 
 export async function PATCH(req: NextRequest) {
   const body = await req.json();
-
   const { uid, email, password, displayName, role } = body;
 
   if (!uid) {
@@ -12,11 +11,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     // Zaktualizuj dane użytkownika
-    await adminAuth.updateUser(uid, {
-      email,
-      password,
-      displayName,
-    });
+    await adminAuth.updateUser(uid, { email, password, displayName });
 
     // Zaktualizuj custom claims, jeśli podano
     if (role) {

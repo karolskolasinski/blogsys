@@ -52,11 +52,6 @@ export default function Footer() {
                 biuro@site
               </a>
             </div>
-
-            <div>
-              <Image src="qr.svg" alt="qr" width="0" height="0" className="w-22" />
-              <small>site</small>
-            </div>
           </div>
 
           <div className="flex-1 flex flex-col gap-4">

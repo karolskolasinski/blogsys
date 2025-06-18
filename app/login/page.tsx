@@ -1,70 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getIdTokenResult, onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { FirebaseError } from "@firebase/app";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const router = useRouter();
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const user = auth.currentUser;
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        getIdTokenResult(user).then((token) => {
-          console.log(token.claims.role); // "editor" lub "admin"
-        });
+        router.push("/dashboard");
+      } else {
+        setIsLoading(false);
       }
-    } else {
-      // User is signed out
-      // ...
-    }
-  });
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user, "UUUUUUUUUUUUUUUU");
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage, "EEEEEEEEEEEEEEEEEEEEEE");
-      });
-
-    // if (res?.ok) {
-    //   router.push("/dashboard");
-    // } else {
-    //   alert("Błędne dane logowania");
-    // }
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const code = err instanceof FirebaseError ? err.code : "nieznany błąd";
+      setError(`Wystąpił błąd logowania (${code}).`);
+    }
   };
 
-  const updateUser = async () => {
-    const res = await fetch("/api/admin/update-user", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        uid: "k7OTjah976OqCbwahms2yQJqIYg2",
-        email: "karolskolasinski@gmail.com",
-        displayName: "New Name",
-        role: "editor",
-      }),
-    });
-
-    const data = await res.json();
-    console.log(data);
-  };
+  if (isLoading) {
+    return <main className="flex-1" />;
+  }
 
   return (
     <>
-      <button onClick={updateUser} className="text-3xl font-bold text-center mt-10">UPDATE</button>
-
       <form
         onSubmit={handleSubmit}
         className="flex flex-col w-96 mx-auto mt-44 gap-4 flex-1"
@@ -76,7 +54,10 @@ export default function LoginPage() {
             name="email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setError("");
+              setEmail(e.target.value);
+            }}
             required={true}
           />
         </div>
@@ -88,7 +69,10 @@ export default function LoginPage() {
             name="password"
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setError("");
+              setPassword(e.target.value);
+            }}
             required={true}
           />
         </div>
@@ -96,6 +80,8 @@ export default function LoginPage() {
         <button type="submit" className="button mt-4">
           Zaloguj się
         </button>
+
+        {error && <p className="text-red-500">{error}</p>}
       </form>
     </>
   );

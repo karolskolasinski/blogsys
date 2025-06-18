@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   title: "site",
   description: "desc",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/logo.svg", /*todo: favicon*/
   },
   authors: [{
     name: "Karol Skolasiński",

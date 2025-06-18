@@ -29,6 +29,24 @@ async function Users() {
     };
   });
 
+  // const updateUser = async () => {
+  //   const res = await fetch("/api/admin/update-user", {
+  //     method: "PATCH",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       uid: "k7OTjah976OqCbwahms2yQJqIYg2",
+  //       email: "karolskolasinski@gmail.com",
+  //       displayName: "New Name",
+  //       role: "admin",
+  //     }),
+  //   });
+  //
+  //   const data = await res.json();
+  //   console.log(data);
+  //
+  //   await auth.currentUser?.getIdToken(true);
+  // };
+
   return (
     <section className="flex-1 w-full max-w-7xl mx-auto py-4 px-2">
       <div className="text-gray-500 uppercase font-semibold mx-5 my-3">
