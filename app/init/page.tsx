@@ -32,11 +32,9 @@ export default function InitAdminPage() {
         setStatus("error");
         setMessage(data.error || "Wystąpił nieznany błąd.");
       }
-    } catch (error) {
+    } catch (err) {
       setStatus("error");
-      setMessage(
-        error instanceof Error ? error.message : "Wystąpił nieznany błąd.",
-      );
+      setMessage(err instanceof Error ? err.message : "Wystąpił nieznany błąd.");
     }
   };
 
