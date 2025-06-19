@@ -29,7 +29,15 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      const token = await user.user.getIdToken();
+
+      await fetch("/api/auth/session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
       router.push("/dashboard");
     } catch (err: unknown) {
       const code = err instanceof FirebaseError ? err.code : "nieznany błąd";
@@ -43,10 +51,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col w-96 mx-auto mt-44 gap-4 flex-1"
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col w-96 mx-auto mt-44 gap-4 flex-1">
         <div>
           <label className="block text-sm text-gray-600">Login</label>
           <input

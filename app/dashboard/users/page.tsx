@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { db } from "@/lib/db";
 
 export type User = {
   id?: string;
@@ -18,16 +18,16 @@ export type User = {
 };
 
 async function Users() {
-  const docRef = collection(db, "users");
-  const docSnap = await getDocs(docRef);
-  const users: User[] = docSnap.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-      updatedAt: data.updatedAt ? data.updatedAt.toDate() : null,
-    };
-  });
+  // const docRef = collection(db, "users");
+  // const docSnap = await getDocs(docRef);
+  // const users: User[] = docSnap.docs.map((doc) => {
+  //   const data = doc.data();
+  //   return {
+  //     id: doc.id,
+  //     ...data,
+  //     updatedAt: data.updatedAt ? data.updatedAt.toDate() : null,
+  //   };
+  // });
 
   // const updateUser = async () => {
   //   const res = await fetch("/api/admin/update-user", {
@@ -54,7 +54,7 @@ async function Users() {
       </div>
 
       <div className="grid lg:grid-cols-2 gap-5">
-        {users.map((user) => (
+        {[].map((user) => (
           <div
             key={user.id}
             className="bg-white p-5 rounded-3xl flex flex-col gap-3 border border-transparent hover:border"
