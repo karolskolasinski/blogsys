@@ -1,6 +1,6 @@
 import LogoutButton from "@/components/LogoutButton";
 
-export default async function Dashboard() {
+function Dashboard() {
   return (
     <section className="flex-1 w-full max-w-7xl mx-auto py-4 px-2">
       <div className="text-gray-500 uppercase font-semibold mx-5 my-3">
@@ -13,3 +13,5 @@ export default async function Dashboard() {
     </section>
   );
 }
+
+export default Dashboard;

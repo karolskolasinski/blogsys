@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { adminAuth } from "@/lib/firebase-admin";
+import { db } from "@/lib/firebase-admin";
+import bcrypt from "bcryptjs";
+import { User } from "@/types/common";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -8,7 +10,7 @@ export async function POST(req: NextRequest) {
   const secretKey = process.env.INIT_ADMIN_SECRET_KEY;
 
   if (!secretKey) {
-    return NextResponse.json({ error: "Missing server key configuration." }, { status: 500 });
+    return NextResponse.json({ error: "Missing server key configuration" }, { status: 500 });
   }
 
   if (key !== secretKey) {
@@ -20,10 +22,17 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const user = await adminAuth.createUser({ email, password });
-    await adminAuth.setCustomUserClaims(user.uid, { role: "admin" });
+    const usersRef = db.collection("users");
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user: User = {
+      email,
+      password: hashedPassword,
+      name: "Admin",
+      role: "admin",
+    };
+    const querySnapshot = await usersRef.add(user);
 
-    return NextResponse.json({ success: true, uid: user.uid });
+    return NextResponse.json({ success: true, uid: querySnapshot.id });
   } catch (error: any) {
     if (error.code === "auth/email-already-exists") {
       return NextResponse.json({ error: "Użytkownik już istnieje" }, { status: 409 });

@@ -1,51 +1,11 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "@/lib/db";
-
-export type User = {
-  id?: string;
-  name?: string;
-  email?: string;
-  fullName?: string;
-  model?: string;
-  registration?: string;
-  location?: string;
-  lat?: number;
-  lng?: number;
-  password?: string;
-  role?: string;
-  updatedAt?: Date | null;
-  isOpen?: boolean;
-};
+import { auth } from "@/auth/auth-config";
+import { NextResponse } from "next/server";
 
 async function Users() {
-  // const docRef = collection(db, "users");
-  // const docSnap = await getDocs(docRef);
-  // const users: User[] = docSnap.docs.map((doc) => {
-  //   const data = doc.data();
-  //   return {
-  //     id: doc.id,
-  //     ...data,
-  //     updatedAt: data.updatedAt ? data.updatedAt.toDate() : null,
-  //   };
-  // });
-
-  // const updateUser = async () => {
-  //   const res = await fetch("/api/admin/update-user", {
-  //     method: "PATCH",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       uid: "k7OTjah976OqCbwahms2yQJqIYg2",
-  //       email: "karolskolasinski@gmail.com",
-  //       displayName: "New Name",
-  //       role: "admin",
-  //     }),
-  //   });
-  //
-  //   const data = await res.json();
-  //   console.log(data);
-  //
-  //   await auth.currentUser?.getIdToken(true);
-  // };
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: "Brak autoryzacji" }, { status: 401 });
+  }
 
   return (
     <section className="flex-1 w-full max-w-7xl mx-auto py-4 px-2">

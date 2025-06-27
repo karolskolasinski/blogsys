@@ -18,7 +18,7 @@ export default function InitAdminPage() {
     setMessage("");
 
     try {
-      const res = await fetch("/api/init", {
+      const res = await fetch("/api/init", {  // todo: server action instead of fetch
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, key }),
