@@ -1,27 +1,23 @@
 import { db } from "@/lib/db";
 import { User } from "@/types/common";
 import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 
 export async function getUserByEmail(email: string) {
-  try {
-    const usersRef = db.collection("users");
-    const querySnapshot = await usersRef.where("email", "==", email).get();
+  const usersRef = db.collection("users");
+  const querySnapshot = await usersRef.where("email", "==", email).get();
 
-    if (querySnapshot.empty) {
-      return null;
-    }
-
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
-
-    return {
-      ...userData as User,
-      id: userDoc.id,
-    };
-  } catch (err) {
-    console.error("Error getting user: ", err);
+  if (querySnapshot.empty) {
     return null;
   }
+
+  const userDoc = querySnapshot.docs[0];
+  const userData = userDoc.data();
+
+  return {
+    ...userData as User,
+    id: userDoc.id,
+  };
 }
 
 export async function init(formData: FormData) {
@@ -31,7 +27,7 @@ export async function init(formData: FormData) {
   const secretKey = process.env.INIT_ADMIN_SECRET_KEY;
 
   if (!secretKey) {
-    throw new Error("Missing server key configuration");
+    throw new Error("Server configuration error");
   }
 
   if (key !== secretKey) {
@@ -43,28 +39,26 @@ export async function init(formData: FormData) {
   }
 
   if (typeof email !== "string" || typeof password !== "string") {
-    throw new Error("Invalid email or password");
+    throw new Error("Invalid input types");
   }
 
-  try {
-    const usersRef = db.collection("users");
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user: User = {
-      email,
-      password: hashedPassword,
-      name: "Admin",
-      role: "admin",
-    };
-    const querySnapshot = await usersRef.add(user);
+  const usersRef = db.collection("users");
+  const [userSnapshot, hashedPassword] = await Promise.all([
+    usersRef.where("email", "==", email).get(),
+    bcrypt.hash(password.trim(), 10),
+  ]);
 
-    return { uid: querySnapshot.id };
-  } catch (err: any) {
-    console.error("Error creating user: ", err);
-
-    if (err.code === "auth/email-already-exists") {
-      throw new Error("Użytkownik z takiem adresem email już istnieje");
-    }
-
-    throw new Error("Wystąpił błąd");
+  if (!userSnapshot.empty) {
+    throw new Error("User with this email already exists");
   }
+
+  const user: User = {
+    email: email.toLowerCase().trim(),
+    password: hashedPassword,
+    name: "Admin",
+    role: "admin",
+  };
+
+  await usersRef.add(user);
+  redirect("/login?initialized=true")
 }

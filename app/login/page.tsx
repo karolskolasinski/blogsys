@@ -1,14 +1,16 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
+import { ServerComponentProps } from "@/types/common";
 
-export default async function LoginPage() {
+export default async function LoginPage(props: ServerComponentProps) {
   const session = await auth();
   if (session) {
     return redirect("/users");
   }
+  const initialized = (await props.searchParams).initialized;
 
   return (
-    <main>
+    <main className="flex-1">
       <form
         action={async (formData) => {
           "use server";
@@ -35,6 +37,12 @@ export default async function LoginPage() {
             required
           />
         </div>
+
+        {initialized === "true" && (
+          <div className="text-green-600 text-sm">
+            Konto administratora zostało utworzone. Możesz się zalogować.
+          </div>
+        )}
 
         <button type="submit" className="button mt-4">
           Zaloguj się

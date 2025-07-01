@@ -1,6 +1,6 @@
 import { init } from "@/actions/users";
 
-export default function InitAdminPage() {
+export default async function InitAdminPage() {
   return (
     <main className="flex-1">
       <section className="mx-auto max-w-7xl px-4">
@@ -46,20 +46,6 @@ export default function InitAdminPage() {
           <button type="submit" className="button mt-4">
             Stwórz konto administratora
           </button>
-
-          {/*{status === "success" && (*/}
-          {/*  <div className="mt-4 text-green-600">*/}
-          {/*    Konto administratora zostało utworzone.*/}
-          {/*    <button*/}
-          {/*      className="block mt-2 text-blue-600 underline"*/}
-          {/*      onClick={() => router.push("/login")}*/}
-          {/*    >*/}
-          {/*      Przejdź do logowania*/}
-          {/*    </button>*/}
-          {/*  </div>*/}
-          {/*)}*/}
-
-          {/*{status === "error" && <div className="mt-4 text-red-600">Błąd: {message}</div>}*/}
         </form>
       </section>
     </main>

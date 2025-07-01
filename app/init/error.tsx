@@ -8,7 +8,7 @@ type ErrorProps = {
 };
 
 export default function Error({ error }: ErrorProps) {
-  useEffect(() => console.error(error), [error]);
+  useEffect(() => console.error(error, "<<<<<<<<<<<<<<<<<"), [error]);
 
   return (
     <section className="flex items-center flex-1 h-full w-full max-w-7xl mx-auto py-4 px-2">
