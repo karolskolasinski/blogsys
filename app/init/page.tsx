@@ -1,4 +1,5 @@
 import { init } from "@/actions/users";
+import Link from "next/link";
 
 export default async function InitAdminPage() {
   return (
@@ -53,6 +54,21 @@ export default async function InitAdminPage() {
             <button type="submit" className="button mt-4">
               Stwórz konto administratora
             </button>
+          </div>
+
+          <hr className="my-4 border-gray-300" />
+
+          <div className="text-center text-sm flex flex-col gap-4 text-gray-700">
+            <div>
+              Masz już konto?{" "}
+              <Link href="/login" className="text-center mt-4 hover:text-black">
+                Zaloguj się!
+              </Link>
+            </div>
+
+            <Link href="/" className="text-center text-sm hover:text-black">
+              Wróć na stronę główną
+            </Link>
           </div>
         </form>
       </section>

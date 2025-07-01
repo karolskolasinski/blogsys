@@ -1,7 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 
-export default function Header() {
+export default async function Header() {
+  const headersList = await headers();
+  const currentPath = headersList.get("x-path") ?? "";
+
   return (
     <header className="z-10 sticky top-0 bg-slate-50 md:bg-slate-50/70 md:backdrop-blur-xs">
       <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
