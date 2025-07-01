@@ -11,7 +11,7 @@ import {
   where,
 } from "firebase/firestore";
 import bcrypt from "bcryptjs";
-import { authOptions } from "@/auth/auth-config";
+// import { authOptions } from "@/auth/auth-config";
 import { getServerSession } from "next-auth";
 
 export async function POST(req: NextRequest) {
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         ...data,
         password: await bcrypt.hash(body.password, 12),
         updatedAt: serverTimestamp(),
-        isOpen: false
+        isOpen: false,
       });
     }
 

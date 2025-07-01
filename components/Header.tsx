@@ -24,6 +24,9 @@ export default function Header() {
           <Link href="/services" className="hover:text-primary-500 duration-100 ease-in-out">
             Usługi
           </Link>
+          <Link href="/users" className="hover:text-primary-500 duration-100 ease-in-out">
+            Users
+          </Link>
           <Link href="/login" className="hover:text-primary-500 duration-100 ease-in-out">
             Login
           </Link>

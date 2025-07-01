@@ -1,9 +1,9 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { getUserByEmail } from "@/actions/users";
 import assert from "node:assert";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
+import { getUserByEmail } from "@/actions/users";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [

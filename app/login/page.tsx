@@ -1,4 +1,4 @@
-import { auth, signIn } from "@/auth/auth-config";
+import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
@@ -39,8 +39,6 @@ export default async function LoginPage() {
         <button type="submit" className="button mt-4">
           Zaloguj się
         </button>
-
-        {/*{error && <p className="text-red-500">{error}</p>}*/}
       </form>
     </main>
   );

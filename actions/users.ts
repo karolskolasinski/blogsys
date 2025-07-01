@@ -1,4 +1,4 @@
-import { db } from "@/lib/firebase-admin";
+import { db } from "@/lib/db";
 import { User } from "@/types/common";
 
 export async function getUserByEmail(email: string) {

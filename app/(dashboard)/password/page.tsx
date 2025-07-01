@@ -1,6 +1,6 @@
 // import { collection, getCountFromServer } from "firebase/firestore";
 // import { db } from "@/lib/firebase";
-import { authOptions } from "@/auth/auth-config";
+// import { authOptions } from "@/auth/auth-config";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 

@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth/auth-config";
+// import { authOptions } from "@/auth/auth-config";
 import { NextRequest, NextResponse } from "next/server";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";

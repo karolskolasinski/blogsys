@@ -1,10 +1,10 @@
-import { auth } from "@/auth/auth-config";
-import { NextResponse } from "next/server";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 async function Users() {
   const session = await auth();
   if (!session) {
-    return NextResponse.json({ error: "Brak autoryzacji" }, { status: 401 });
+    return redirect("/login");
   }
 
   return (

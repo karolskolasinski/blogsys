@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import InstagramIcon from "../public/instagram.svg";
-import FacebookIcon from "../public/facebook.svg";
-import YoutubeIcon from "../public/youtube.svg";
-import TikTokIcon from "../public/tiktok.svg";
+import InstagramIcon from "@/public/instagram.svg";
+import FacebookIcon from "@/public/facebook.svg";
+import YoutubeIcon from "@/public/youtube.svg";
+import TikTokIcon from "@/public/tiktok.svg";
 
 export default function Footer() {
   return (
