@@ -10,38 +10,34 @@ export default async function InitAdminPage() {
             "use server";
             await init(formData);
           }}
-          className="flex-1 flex flex-col w-full lg:w-5/12 gap-4 mx-auto"
+          className="flex-1 w-full lg:w-5/12 mx-auto"
         >
-          <h1 className="text-3xl font-bold mb-4 mt-16 text-center">
+          <h1 className="text-3xl font-bold mb-8 mt-16 text-center">
             Tworzenie konta startowego
           </h1>
 
-          <div>
+          <div className="h-64">
             <label className="block text-sm text-gray-600">Email</label>
             <input
-              className="w-full h-10 p-2 mt-2 border border-gray-300 rounded-md"
+              className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="email"
               name="email"
               maxLength={255}
               required
             />
-          </div>
 
-          <div>
             <label className="block text-sm text-gray-600">Hasło</label>
             <input
-              className="w-full h-10 p-2 mt-2 border border-gray-300 rounded-md"
+              className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="password"
               name="password"
               maxLength={255}
               required
             />
-          </div>
 
-          <div>
             <label className="block text-sm text-gray-600">Klucz autoryzacyjny</label>
             <input
-              className="w-full h-10 p-2 mt-2 border border-gray-300 rounded-md"
+              className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="password"
               name="key"
               maxLength={255}
@@ -56,7 +52,7 @@ export default async function InitAdminPage() {
             </button>
           </div>
 
-          <hr className="my-4 border-gray-300" />
+          <hr className="my-6 border-gray-300" />
 
           <div className="text-center text-sm flex flex-col gap-4 text-gray-700">
             <div>
