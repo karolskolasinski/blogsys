@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
 import { db } from "@/lib/db";
 import { User } from "@/types/common";
-import _ from "lodash";
 
 export default async function Users() {
   const session = await auth();
@@ -11,9 +10,10 @@ export default async function Users() {
     return redirect("/login");
   }
 
-  const snapshot = await db.collection("users").get();
+  const fields = ["name", "email", "role", "createdAt"];
+  const snapshot = await db.collection("users").select(...fields).get();
   const users: User[] = snapshot.docs.map((doc) => ({
-    ..._.omit(doc.data(), "password") as User,
+    ...doc.data() as User,
     id: doc.id,
   }));
 

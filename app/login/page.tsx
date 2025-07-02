@@ -6,7 +6,7 @@ import FormFooter from "@/components/FormFooter";
 export default async function LoginPage(props: ServerComponentProps) {
   const session = await auth();
   if (session) {
-    return redirect("/users");
+    return redirect("/posts");
   }
   const initialized = (await props.searchParams).initialized;
 
