@@ -1,22 +1,22 @@
 import { init } from "@/actions/users";
-import Link from "next/link";
+import FormFooter from "@/components/FormFooter";
 
 export default async function InitAdminPage() {
   return (
     <main className="flex-1">
-      <section className="mx-auto max-w-7xl px-4">
+      <section className="mx-auto max-w-5xl px-4">
         <form
           action={async (formData) => {
             "use server";
             await init(formData);
           }}
-          className="flex-1 w-full lg:w-5/12 mx-auto"
+          className="flex-1 w-full max-w-96 mx-auto"
         >
           <h1 className="text-3xl font-bold mb-8 mt-16 text-center">
             Tworzenie konta startowego
           </h1>
 
-          <div className="h-64">
+          <div className="h-72">
             <label className="block text-sm text-gray-600">Email</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
@@ -47,25 +47,12 @@ export default async function InitAdminPage() {
           </div>
 
           <div className="flex justify-center">
-            <button type="submit" className="button mt-4">
+            <button type="submit" className="button">
               Stwórz konto administratora
             </button>
           </div>
 
-          <hr className="my-6 border-gray-300" />
-
-          <div className="text-center text-sm flex flex-col gap-4 text-gray-700">
-            <div>
-              Masz już konto?{" "}
-              <Link href="/login" className="text-center mt-4 hover:text-black">
-                Zaloguj się!
-              </Link>
-            </div>
-
-            <Link href="/" className="text-center text-sm hover:text-black">
-              Wróć na stronę główną
-            </Link>
-          </div>
+          <FormFooter />
         </form>
       </section>
     </main>

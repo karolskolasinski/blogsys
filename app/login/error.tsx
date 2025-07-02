@@ -1,20 +1,37 @@
 "use client";
 
 import { useEffect } from "react";
+import FormFooter from "@/components/FormFooter";
 
 type ErrorProps = {
   error: Error & { digest?: string };
   reset: () => void;
 };
 
-export default function Error({ error }: ErrorProps) {
+export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => console.error(error), [error]);
 
   return (
-    <section className="flex items-center flex-1 h-full w-full max-w-7xl mx-auto py-4 px-2">
-      <div className="text-red-500">
-        <strong>Błąd:</strong> <span>{error.name}</span>
-      </div>
-    </section>
+    <main className="flex-1">
+      <section className="mx-auto max-w-5xl px-4">
+        <div className="flex-1 w-full max-w-96 mx-auto">
+          <h1 className="text-3xl font-bold mb-8 mt-16 text-center">
+            Błąd logowania
+          </h1>
+
+          <div className="h-44 flex justify-center items-center text-red-500">
+            {error.message}
+          </div>
+
+          <div className="flex justify-center">
+            <button onClick={() => reset()} className="button">
+              Spróbuj ponownie
+            </button>
+          </div>
+
+          <FormFooter showLoginLink={false} />
+        </div>
+      </section>
+    </main>
   );
 }
