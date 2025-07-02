@@ -22,15 +22,22 @@ export default async function Users() {
       <DashboardMenu />
 
       <section className="p-4 flex-1">
-        <h1 className="text-2xl font-bold">Użytkownicy</h1>
+        <div className="flex items-center gap-4">
+          <h1 className="text-2xl font-bold">Użytkownicy</h1>
+
+          <button className="button !bg-transparent !p-1 !py-1.5 !h-fit !font-normal">
+            Dodaj użytkownika
+          </button>
+        </div>
 
         <div className="pt-10 overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="border-b border-b-gray-500 font-semibold">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase">Imię</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase">Rola</th>
+                <th className="px-6 py-3 text-left text-xs uppercase">Imię</th>
+                <th className="px-6 py-3 text-left text-xs uppercase">Email</th>
+                <th className="px-6 py-3 text-left text-xs uppercase">Rola</th>
+                <th className="px-6 py-3 text-left text-xs uppercase">Data utworzenia</th>
               </tr>
             </thead>
 
@@ -38,7 +45,7 @@ export default async function Users() {
               {users.map((user) => {
                 const adminClass = user.role === "admin" ? "text-red-600" : "";
                 return (
-                  <tr key={user.id} className="group">
+                  <tr key={user.id} className="group odd:bg-gray-100">
                     <td className="px-6 py-4 whitespace-nowrap align-top">
                       {user.name}
                       <div className="mt-1 flex gap-2 opacity-0 group-hover:opacity-100">
@@ -51,6 +58,7 @@ export default async function Users() {
                     <td className={`px-6 py-4 whitespace-nowrap align-top ${adminClass}`}>
                       {user.role}
                     </td>
+                    <td className="px-6 py-4 whitespace-nowrap align-top">{user.createdAt}</td>
                   </tr>
                 );
               })}
