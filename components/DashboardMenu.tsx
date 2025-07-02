@@ -6,7 +6,7 @@ import PostsIcon from "@/public/icons/article.svg";
 
 export default function DashboardMenu() {
   return (
-    <aside className="bg-stone-900 text-gray-50 w-48 flex flex-col p-2 text-sm">
+    <aside className="bg-stone-900 text-gray-50 w-48 flex flex-col p-2">
       <MenuItem href="/dashboard" label="Strona główna" Icon={HomeIcon} />
       <MenuItem href="/users" label="Użytkownicy" Icon={UsersIcon} />
       <MenuItem href="/posts" label="Posty" Icon={PostsIcon} />

@@ -12,10 +12,9 @@ export async function getUserByEmail(email: string) {
   }
 
   const userDoc = querySnapshot.docs[0];
-  const userData = userDoc.data();
 
   return {
-    ...userData as User,
+    ...userDoc.data() as User,
     id: userDoc.id,
   };
 }
@@ -60,5 +59,5 @@ export async function init(formData: FormData) {
   };
 
   await usersRef.add(user);
-  redirect("/login?initialized=true")
+  redirect("/login?initialized=true");
 }
