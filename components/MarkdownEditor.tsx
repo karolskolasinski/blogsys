@@ -22,7 +22,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   const { content, tags } = props.post;
   const [value, setValue] = useState(content ?? "");
   const [tagInput, setTagInput] = useState("");
-  const [tagsArr, setTagsArr] = useState<string[]>(tags);
+  const [tagsArr, setTagsArr] = useState<string[]>([]);
 
   const addTag = () => {
     const tag = tagInput.trim();
@@ -48,15 +48,20 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Nowy wpis</h1>
+      <div className="flex gap-4 justify-between items-center mb-4">
+        <input
+          type="text"
+          className="flex-1 border text-2xl font-bold rounded px-2"
+          value={props.post.title ?? "Nowy wpis"}
+          placeholder="Tytuł wpisu"
+        />
         <button onClick={savePost} className="button w-fit">Zapisz</button>
       </div>
 
       <div className="mb-4">
         <label className="block mb-1">Tagi:</label>
         <div className="flex flex-wrap gap-2 mb-2">
-          {tags.map((tag) => (
+          {tagsArr.map((tag) => (
             <span key={tag} className="px-2 py-1 bg-gray-200 rounded-full flex items-center">
               {tag}
               <button
