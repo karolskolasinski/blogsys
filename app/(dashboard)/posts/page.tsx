@@ -49,9 +49,9 @@ export default async function Posts() {
               {posts.map((post) => (
                 <tr key={post.id} className="group odd:bg-gray-100">
                   <td className="px-6 py-4 whitespace-nowrap align-top">
-                    {post.name}
+                    {post.title}
                     <div className="mt-1 flex gap-2 opacity-0 group-hover:opacity-100">
-                      <button className="text-primary-600">Edytuj</button>
+                      <Link href={`/posts/${post.id}`} className="text-primary-600">Edytuj</Link>
                       <span className="text-gray-400">|</span>
                       <button className="text-red-600">Usuń</button>
                     </div>

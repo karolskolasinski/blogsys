@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -9,33 +10,87 @@ import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-markdown";
 import "prismjs/themes/prism-okaidia.min.css";
+import { savePost } from "@/actions/posts";
+import { redirect } from "next/navigation";
+import { Post } from "@/types/common";
 
-export default function MarkdownEditor() {
-  const [value, setValue] = useState("");
+type MarkdownEditorProps = {
+  post?: Post;
+};
+
+export default function MarkdownEditor(props: MarkdownEditorProps) {
+  const [value, setValue] = useState(props.post?.content ?? "");
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+
+  const addTag = () => {
+    const tag = tagInput.trim();
+    if (tag && !tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
+    setTagInput("");
+  };
+
+  const removeTag = (toRemove: string) => {
+    setTags(tags.filter((tag) => tag !== toRemove));
+  };
 
   const savePost = async () => {
-    console.log(value);
+    if (!value || !tags) {
+      return;
+    }
+    await savePost(value, tags);
     setValue("");
+    setTags([]);
+    redirect("/posts");
   };
 
   return (
-    <div className="h-full flex flex-col ">
+    <div className="h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Nowy wpis</h1>
-        <button onClick={savePost} className="button w-fit">
-          Zapisz
-        </button>
+        <button onClick={savePost} className="button w-fit">Zapisz</button>
+      </div>
+
+      <div className="mb-4">
+        <label className="block mb-1">Tagi:</label>
+        <div className="flex flex-wrap gap-2 mb-2">
+          {tags.map((tag) => (
+            <span key={tag} className="px-2 py-1 bg-gray-200 rounded-full flex items-center">
+              {tag}
+              <button
+                onClick={() =>
+                  removeTag(tag)}
+                className="ml-1"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+        <input
+          value={tagInput}
+          onChange={(e) => setTagInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              addTag();
+            }
+          }}
+          className="border p-2 rounded w-full"
+          placeholder="Wpisz tag i naciśnij Enter"
+        />
       </div>
 
       <div className="h-full flex gap-4 overflow-hidden">
         <div className="flex-1 h-full rounded-lg overflow-auto">
           <Editor
             value={value}
-            onValueChange={(code) => setValue(code)}
+            onValueChange={setValue}
             highlight={(code) => highlight(code, languages.markdown, "markdown")}
             padding={16}
             style={{
-              fontFamily: '"Fira Code", "Fira Mono", "Consolas", monospace',
+              fontFamily: '"Fira Code", monospace',
               backgroundColor: "#1f2937",
               color: "#e5e7eb",
               minHeight: "100%",
@@ -59,11 +114,7 @@ export default function MarkdownEditor() {
                 const match = /language-(\w+)/.exec(className || "");
                 return match
                   ? (
-                    <SyntaxHighlighter
-                      PreTag="div"
-                      language={match[1]}
-                      style={tomorrow}
-                    >
+                    <SyntaxHighlighter PreTag="div" language={match[1]} style={tomorrow}>
                       {String(children).replace(/\n$/, "")}
                     </SyntaxHighlighter>
                   )
