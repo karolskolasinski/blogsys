@@ -1,5 +1,20 @@
 @import "tailwindcss";
 
+@layer base {
+    #preview * {
+        all: revert;
+        @apply leading-relaxed;
+    }
+
+    #preview a {
+        @apply no-underline text-[#0070ff] hover:underline;
+    }
+
+    #preview code {
+        @apply px-2 py-1 m-0 text-[85%] whitespace-break-spaces bg-gray-100 rounded-md;
+    }
+}
+
 @theme {
     --breakpoint-xs: 30rem;
     --color-primary-50: var(--color-cyan-50);
