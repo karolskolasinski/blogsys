@@ -27,26 +27,27 @@ export default function MarkdownEditor() {
         </button>
       </div>
 
-      <div className="flex-1 flex gap-4">
-        <Editor
-          value={value}
-          onValueChange={(code) => setValue(code)}
-          highlight={(code) => highlight(code, languages.markdown, "markdown")}
-          padding={16}
-          style={{
-            fontFamily: '"Fira code", "Fira Mono", monospace',
-            fontSize: 14,
-            backgroundColor: "#2d2d2d",
-            color: "#ccc",
-            flex: 1,
-            border: "1px solid #444",
-            borderRadius: "4px",
-          }}
-          textareaClassName="editor__textarea"
-          preClassName="editor__pre"
-        />
+      <div className="h-full flex gap-4 overflow-hidden">
+        <div className="flex-1 h-full rounded-lg overflow-auto">
+          <Editor
+            value={value}
+            onValueChange={(code) => setValue(code)}
+            highlight={(code) => highlight(code, languages.markdown, "markdown")}
+            padding={16}
+            style={{
+              fontFamily: '"Fira Code", "Fira Mono", "Consolas", monospace',
+              backgroundColor: "#1f2937",
+              color: "#e5e7eb",
+              minHeight: "100%",
+              border: "none",
+              lineHeight: "1.5",
+            }}
+            textareaClassName="outline-none resize-none"
+            preClassName="overflow-auto"
+          />
+        </div>
 
-        <div className="flex-1 p-4 border rounded">
+        <div className="hidden lg:block flex-1 p-4 border rounded-lg overflow-auto" id="preview">
           <Markdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
