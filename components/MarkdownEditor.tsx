@@ -47,7 +47,10 @@ export default function MarkdownEditor() {
           />
         </div>
 
-        <div className="hidden lg:block flex-1 p-4 border rounded-lg overflow-auto" id="preview">
+        <div
+          className="hidden lg:block flex-1 p-4 border border-gray-500 rounded-lg overflow-auto"
+          id="preview"
+        >
           <Markdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
