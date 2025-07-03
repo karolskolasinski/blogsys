@@ -4,6 +4,7 @@ import DashboardMenu from "@/components/DashboardMenu";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
+import ErrorMessage from "@/components/ErrorMessage";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -15,13 +16,10 @@ export default async function Posts(props: ServerComponentProps) {
   try {
     const params = await props.params;
     const post = await getPost(params.id as string);
-
     content = <MarkdownEditor post={post} />;
   } catch (err) {
     console.error(err);
-    const message = err instanceof Error ? err.message : "Błąd odczytu";
-
-    content = <p className="text-red-500">{message}</p>;
+    content = <ErrorMessage err={err} />;
   }
 
   return (

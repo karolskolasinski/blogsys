@@ -15,24 +15,25 @@ import { redirect } from "next/navigation";
 import { Post } from "@/types/common";
 
 type MarkdownEditorProps = {
-  post?: Post;
+  post: Post;
 };
 
 export default function MarkdownEditor(props: MarkdownEditorProps) {
-  const [value, setValue] = useState(props.post?.content ?? "");
+  const { content, tags } = props.post;
+  const [value, setValue] = useState(content ?? "");
   const [tagInput, setTagInput] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [tagsArr, setTagsArr] = useState<string[]>(tags);
 
   const addTag = () => {
     const tag = tagInput.trim();
     if (tag && !tags.includes(tag)) {
-      setTags([...tags, tag]);
+      setTagsArr([...tags, tag]);
     }
     setTagInput("");
   };
 
   const removeTag = (toRemove: string) => {
-    setTags(tags.filter((tag) => tag !== toRemove));
+    setTagsArr(tags.filter((tag) => tag !== toRemove));
   };
 
   const savePost = async () => {
@@ -41,7 +42,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
     }
     await savePost(value, tags);
     setValue("");
-    setTags([]);
+    setTagsArr([]);
     redirect("/posts");
   };
 
