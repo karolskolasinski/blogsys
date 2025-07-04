@@ -5,12 +5,14 @@ import Link from "next/link";
 import { getPosts } from "@/actions/posts";
 import ErrorMessage from "@/components/ErrorMessage";
 import PostsTable from "@/components/PostsTable";
+import { ServerComponentProps } from "@/types/common";
 
-export default async function Posts() {
+export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
   if (!session) {
     return redirect("/login");
   }
+  const params = await props.searchParams; // todo: flash message
 
   let content;
   try {

@@ -46,6 +46,7 @@ export async function getPost(id: string) {
 
 export async function deletePost(id: string) {
   await db.collection("posts").doc(id).delete();
+  redirect("/posts?deleted=true");
 }
 
 export async function savePost(formData: FormData) {
@@ -72,5 +73,5 @@ export async function savePost(formData: FormData) {
     await db.collection("posts").doc(id).update(data);
   }
 
-  redirect("/posts?saved=true");
+  redirect("/posts?published=true");
 }
