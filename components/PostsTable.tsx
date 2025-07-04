@@ -9,7 +9,7 @@ export default function PostsTable(props: PostsTableProps) {
   const { posts } = props;
 
   return (
-    <table className="min-w-full divide-y divide-gray-200">
+    <table className="table-auto min-w-full divide-y divide-gray-200">
       <thead className="border-b border-b-gray-500 font-semibold">
         <tr>
           <th className="px-6 py-3 text-left text-xs uppercase">Tytuł</th>
@@ -31,8 +31,8 @@ export default function PostsTable(props: PostsTableProps) {
               </div>
             </td>
             <td className="px-6 py-4 whitespace-nowrap align-top">{post.authorId}</td>
-            <td className="px-6 py-4 whitespace-nowrap align-top">{post.createdAt}</td>
-            <td className="px-6 py-4 whitespace-nowrap align-top">{post.updatedAt}</td>
+            <td className="px-6 py-4 whitespace-nowrap align-top">{post.createdAt.toLocaleString()}</td>
+            <td className="px-6 py-4 whitespace-nowrap align-top">{post.updatedAt.toLocaleString()}</td>
           </tr>
         ))}
       </tbody>

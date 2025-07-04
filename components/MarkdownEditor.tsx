@@ -40,20 +40,25 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
       action={async (formData) => await savePost(formData)}
       className="h-full flex flex-col"
     >
-      <input type="hidden" defaultValue={post.id} />
-      <input type="hidden" defaultValue={post.createdAt} />
+      <input type="hidden" name="id" defaultValue={post.id} />
+
       <div className="flex gap-4 justify-between items-center mb-4">
         <input
-          type="text"
+          name="title"
           className="flex-1 border border-gray-500 text-2xl font-bold rounded px-2"
           defaultValue={post.title}
           placeholder="Tytuł wpisu"
           maxLength={100}
-          name="title"
           required
         />
         <button type="submit" className="button w-fit">Opublikuj</button>
       </div>
+
+      <input name="createdAt" type="hidden" value={post.createdAt.toISOString()} />
+      <div>Data utworzenia: {post.createdAt.toLocaleString()}</div>
+
+      <input name="updatedAt" type="hidden" value={post.updatedAt.toISOString()} />
+      <div>Data edycji: {post.updatedAt.toLocaleString()}</div>
 
       <div className="mb-4 flex gap-4">
         <input
@@ -65,20 +70,14 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           placeholder="Wpisz tag i naciśnij Enter"
         />
 
-        <div className="flex-1 flex gap-2 mb-2">
+        <div className="flex gap-2 mb-2">
           {tags.map((tag) => (
             <div
               key={tag}
               className="px-2 py-1 bg-gray-100 rounded-xl flex items-center hover:bg-gray-200"
             >
-              <input
-                name="tags[]"
-                className="outline-0 text-center"
-                defaultValue={tag}
-                size={tag.length}
-                readOnly
-                tabIndex={-1}
-              />
+              <input type="hidden" name="tags[]" value={tag} />
+              <div className="mr-2">{tag}</div>
               <XIcon
                 className="w-4 h-4 cursor-pointer hover:fill-red-500"
                 onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}

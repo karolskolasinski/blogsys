@@ -3,23 +3,20 @@
 import { db } from "@/lib/db";
 import { Post } from "@/types/common";
 import { redirect } from "next/navigation";
-
-// export async function savePost(content: string, tags: string[]) {
-//   const docRef = await db.collection("posts").add({
-//     content,
-//     tags,
-//   });
-//
-//   return docRef.id;
-// }
+import { Timestamp } from "firebase-admin/firestore";
 
 export async function getPosts() {
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
   const snapshot = await db.collection("posts").select(...fields).get();
-  const posts: Post[] = snapshot.docs.map((doc) => ({
-    ...doc.data() as Post,
-    id: doc.id,
-  }));
+  const posts: Post[] = snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      ...data,
+      id: doc.id,
+      createdAt: data.createdAt.toDate(),
+      updatedAt: data.updatedAt.toDate(),
+    } as Post;
+  });
 
   return posts;
 }
@@ -38,35 +35,42 @@ export async function getPost(id: string) {
     };
   }
 
+  const data = doc.data();
   return {
-    ...doc.data() as Post,
+    ...data,
     id: doc.id,
-  };
+    createdAt: data?.createdAt.toDate(),
+    updatedAt: data?.updatedAt.toDate(),
+  } as Post;
 }
 
 export async function deletePost(id: string) {
   await db.collection("posts").doc(id).delete();
 }
 
-export async function updatePost(id: string, content: string, tags: string[]) {
-  await db.collection("posts").doc(id).update({
+export async function savePost(formData: FormData) {
+  const id = formData.get("id") as string;
+  const title = (formData.get("title") as string).trim();
+  const content = (formData.get("content") as string).trim();
+  const tags = formData.getAll("tags[]").map((t) => (t as string).trim()).filter(Boolean);
+
+  const createdAt = id === "new"
+    ? Timestamp.now()
+    : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
+
+  const data = {
+    title,
     content,
     tags,
-  });
-}
+    createdAt,
+    updatedAt: Timestamp.now(),
+  };
 
-export async function savePost(formData: FormData) {
-  const content = formData.get("content") as string;
-  const tags = formData.get("tags") as string;
-
-  console.log(formData, "<M<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+  if (id === "new") {
+    await db.collection("posts").add(data);
+  } else {
+    await db.collection("posts").doc(id).update(data);
+  }
 
   redirect("/posts?saved=true");
-
-  // const docRef = await db.collection("posts").add({
-  //   content,
-  //   tags: tags.split(","),
-  // });
-  //
-  // return docRef.id;
 }

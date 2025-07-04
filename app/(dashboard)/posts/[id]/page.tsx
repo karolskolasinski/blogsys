@@ -18,7 +18,6 @@ export default async function Posts(props: ServerComponentProps) {
     const post = await getPost(params.id as string);
     content = <MarkdownEditor post={post} />;
   } catch (err) {
-    console.error(err);
     content = <ErrorMessage err={err} />;
   }
 
