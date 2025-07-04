@@ -11,86 +11,87 @@ import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-markdown";
 import "prismjs/themes/prism-okaidia.min.css";
 import { savePost } from "@/actions/posts";
-import { redirect } from "next/navigation";
 import { Post } from "@/types/common";
+import XIcon from "@/public/icons/x.svg";
 
 type MarkdownEditorProps = {
   post: Post;
 };
 
 export default function MarkdownEditor(props: MarkdownEditorProps) {
-  const { content, tags } = props.post;
-  const [value, setValue] = useState(content ?? "");
+  const post = props.post;
+  const [value, setValue] = useState(post.content);
+  const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [tagsArr, setTagsArr] = useState<string[]>([]);
 
-  const addTag = () => {
-    const tag = tagInput.trim();
-    if (tag && !tags.includes(tag)) {
-      setTagsArr([...tags, tag]);
+  function addTag(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const tag = tagInput.trim();
+      if (tag && !tags.includes(tag)) {
+        setTags((prev) => [...prev, tag]);
+      }
+      setTagInput("");
     }
-    setTagInput("");
-  };
-
-  const removeTag = (toRemove: string) => {
-    setTagsArr(tags.filter((tag) => tag !== toRemove));
-  };
-
-  const savePost = async () => {
-    if (!value || !tags) {
-      return;
-    }
-    await savePost(value, tags);
-    setValue("");
-    setTagsArr([]);
-    redirect("/posts");
-  };
+  }
 
   return (
-    <div className="h-full flex flex-col">
+    <form
+      action={async (formData) => await savePost(formData)}
+      className="h-full flex flex-col"
+    >
+      <input type="hidden" defaultValue={post.id} />
+      <input type="hidden" defaultValue={post.createdAt} />
       <div className="flex gap-4 justify-between items-center mb-4">
         <input
           type="text"
-          className="flex-1 border text-2xl font-bold rounded px-2"
-          value={props.post.title ?? "Nowy wpis"}
+          className="flex-1 border border-gray-500 text-2xl font-bold rounded px-2"
+          defaultValue={post.title}
           placeholder="Tytuł wpisu"
+          maxLength={100}
+          name="title"
+          required
         />
-        <button onClick={savePost} className="button w-fit">Zapisz</button>
+        <button type="submit" className="button w-fit">Opublikuj</button>
       </div>
 
-      <div className="mb-4">
-        <label className="block mb-1">Tagi:</label>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {tagsArr.map((tag) => (
-            <span key={tag} className="px-2 py-1 bg-gray-200 rounded-full flex items-center">
-              {tag}
-              <button
-                onClick={() =>
-                  removeTag(tag)}
-                className="ml-1"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-        </div>
+      <div className="mb-4 flex gap-4">
         <input
           value={tagInput}
           onChange={(e) => setTagInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              addTag();
-            }
-          }}
-          className="border p-2 rounded w-full"
+          onKeyDown={(e) => addTag(e)}
+          maxLength={20}
+          className="flex-1 border p-2 rounded w-full"
           placeholder="Wpisz tag i naciśnij Enter"
         />
+
+        <div className="flex-1 flex gap-2 mb-2">
+          {tags.map((tag) => (
+            <div
+              key={tag}
+              className="px-2 py-1 bg-gray-100 rounded-xl flex items-center hover:bg-gray-200"
+            >
+              <input
+                name="tags[]"
+                className="outline-0 text-center"
+                defaultValue={tag}
+                size={tag.length}
+                readOnly
+                tabIndex={-1}
+              />
+              <XIcon
+                className="w-4 h-4 cursor-pointer hover:fill-red-500"
+                onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="h-full flex gap-4 overflow-hidden">
         <div className="flex-1 h-full rounded-lg overflow-auto">
           <Editor
+            name="content"
             value={value}
             onValueChange={setValue}
             highlight={(code) => highlight(code, languages.markdown, "markdown")}
@@ -132,6 +133,6 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           </Markdown>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
