@@ -12,6 +12,7 @@ export type Post = {
   content: string;
   tags: string[];
   authorId: string;
+  authorName?: string;
   createdAt: Date;
   updatedAt: Date;
 };

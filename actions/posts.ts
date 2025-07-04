@@ -4,11 +4,13 @@ import { db } from "@/lib/db";
 import { Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
+import { auth } from "@/auth";
 
 export async function getPosts() {
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
   const snapshot = await db.collection("posts").select(...fields).get();
-  const posts: Post[] = snapshot.docs.map((doc) => {
+
+  const posts = snapshot.docs.map((doc) => {
     const data = doc.data();
     return {
       ...data,
@@ -18,7 +20,18 @@ export async function getPosts() {
     } as Post;
   });
 
-  return posts;
+  const authorIds = [...new Set(posts.map((post) => post.authorId).filter((id) => !!id))];
+  const authors = await Promise.all(authorIds.map((id) => db.collection("users").doc(id).get()));
+  const authorMap = new Map(
+    authors
+      .filter((doc) => doc.exists)
+      .map((doc) => [doc.id, doc.data()?.name || ""]),
+  );
+
+  return posts.map((post) => ({
+    ...post,
+    authorName: authorMap.get(post.authorId) || "",
+  }));
 }
 
 export async function getPost(id: string) {
@@ -50,6 +63,7 @@ export async function deletePost(id: string) {
 }
 
 export async function savePost(formData: FormData) {
+  const session = await auth();
   const id = formData.get("id") as string;
   const title = (formData.get("title") as string).trim();
   const content = (formData.get("content") as string).trim();
@@ -63,6 +77,7 @@ export async function savePost(formData: FormData) {
     title,
     content,
     tags,
+    authorId: session?.user?.id,
     createdAt,
     updatedAt: Timestamp.now(),
   };

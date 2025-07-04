@@ -39,7 +39,7 @@ export default function PostsTable(props: PostsTableProps) {
               </div>
             </td>
 
-            <td className="px-6 py-4">{post.authorId}</td>
+            <td className="px-6 py-4">{post.authorName}</td>
             <td className="px-6 py-4">{post.createdAt.toLocaleString()}</td>
             <td className="px-6 py-4">{post.updatedAt.toLocaleString()}</td>
           </tr>
