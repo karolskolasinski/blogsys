@@ -1,3 +1,3 @@
-# blog-system
+# blogsys
 
 ## Ustawienia bazy danych
