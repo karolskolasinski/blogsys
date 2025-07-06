@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import { Open_Sans, Work_Sans } from "next/font/google";
+import { Open_Sans, Plus_Jakarta_Sans, Work_Sans } from "next/font/google";
 
 const calSans = localFont({
   src: "../public/fonts/CalSans-Regular.woff2",
