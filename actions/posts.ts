@@ -7,8 +7,15 @@ import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 
 export async function getPosts() {
+  const session = await auth();
+  const role = session?.user?.role;
+  const userId = session?.user?.id;
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
-  const snapshot = await db.collection("posts").select(...fields).get();
+  let query = db.collection("posts").select(...fields);
+  if (role !== "admin") {
+    query = query.where("authorId", "==", userId);
+  }
+  const snapshot = await query.get();
 
   const posts = snapshot.docs.map((doc) => {
     const data = doc.data();

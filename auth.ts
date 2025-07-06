@@ -58,6 +58,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         user: { ...session.user, ...userData },
       };
     },
-    redirect: async () => "/users",
+    redirect: async () => "/posts",
   },
 });
