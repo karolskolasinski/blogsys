@@ -7,7 +7,7 @@ import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 
 export async function getPosts() {
-  const session = await auth();
+  const session = await auth(); // todo: move to save Post (if author)
   const role = session?.user?.role;
   const userId = session?.user?.id;
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
@@ -65,6 +65,11 @@ export async function getPost(id: string) {
 }
 
 export async function deletePost(id: string) {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (role !== "admin") {
+    throw new Error("Unauthorized");
+  }
   await db.collection("posts").doc(id).delete();
   redirect("/posts?deleted=true");
 }

@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import { db } from "@/lib/db";
-import { User } from "@/types/common";
+import { deleteUser, getUsers } from "@/actions/users";
+import Link from "next/link";
 
 export default async function Users() {
   const session = await auth();
@@ -10,12 +10,7 @@ export default async function Users() {
     return redirect("/login");
   }
 
-  const fields = ["name", "email", "role", "createdAt"];
-  const snapshot = await db.collection("users").select(...fields).get();
-  const users: User[] = snapshot.docs.map((doc) => ({
-    ...doc.data() as User,
-    id: doc.id,
-  }));
+  const users = await getUsers();
 
   return (
     <main className="flex-1 flex w-full text-sm">
@@ -25,19 +20,22 @@ export default async function Users() {
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold">Użytkownicy</h1>
 
-          <button className="button !bg-transparent !p-1 !py-1.5 !h-fit !font-normal">
-            Dodaj użytkownika
-          </button>
+          <Link
+            href="/users/new"
+            className="button !bg-transparent !p-1 !py-1.5 !h-fit !font-normal"
+          >
+            Dodaj wpis
+          </Link>
         </div>
 
         <div className="pt-10 overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+          <table className="table-auto min-w-full divide-y divide-gray-200">
             <thead className="border-b border-b-gray-500 font-semibold">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs uppercase">Imię</th>
-                <th className="px-6 py-3 text-left text-xs uppercase">Email</th>
-                <th className="px-6 py-3 text-left text-xs uppercase">Rola</th>
-                <th className="px-6 py-3 text-left text-xs uppercase">Data utworzenia</th>
+              <tr className="text-left text-xs uppercase">
+                <th className="px-6 py-3">Tytuł</th>
+                <th className="px-6 py-3">Autor</th>
+                <th className="px-6 py-3">Data utworzenia</th>
+                <th className="px-6 py-3">Data aktualizacji</th>
               </tr>
             </thead>
 
@@ -45,20 +43,26 @@ export default async function Users() {
               {users.map((user) => {
                 const adminClass = user.role === "admin" ? "text-red-600" : "";
                 return (
-                  <tr key={user.id} className="group odd:bg-gray-100">
-                    <td className="px-6 py-4 whitespace-nowrap align-top">
+                  <tr key={user.id} className="group odd:bg-gray-100 align-top">
+                    <td className="px-6 py-4">
                       {user.name}
                       <div className="mt-1 flex gap-2 opacity-0 group-hover:opacity-100">
-                        <button className="text-primary-600">Edytuj</button>
+                        <Link href={`/users/${user.id}`} className="text-primary-600">Edytuj</Link>
                         <span className="text-gray-400">|</span>
-                        <button className="text-red-600">Usuń</button>
+                        <form
+                          action={async () => {
+                            "use server";
+                            await deleteUser(user.id!);
+                          }}
+                        >
+                          <button className="text-red-600 cursor-pointer">Usuń</button>
+                        </form>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap align-top">{user.email}</td>
-                    <td className={`px-6 py-4 whitespace-nowrap align-top ${adminClass}`}>
-                      {user.role}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap align-top">{user.createdAt}</td>
+
+                    <td className="px-6 py-4">{user.email}</td>
+                    <td className={`px-6 py-4 ${adminClass}`}>{user.role}</td>
+                    <td className="px-6 py-4">{user.createdAt?.toLocaleString()}</td>
                   </tr>
                 );
               })}

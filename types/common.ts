@@ -4,6 +4,7 @@ export type User = {
   email: string;
   password?: string;
   role: "admin" | "user";
+  createdAt: Date;
 };
 
 export type Post = {

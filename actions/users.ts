@@ -2,22 +2,8 @@ import { db } from "@/lib/db";
 import { User } from "@/types/common";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
-
-export async function getUserByEmail(email: string) {
-  const usersRef = db.collection("users");
-  const querySnapshot = await usersRef.where("email", "==", email).get();
-
-  if (querySnapshot.empty) {
-    return null;
-  }
-
-  const userDoc = querySnapshot.docs[0];
-
-  return {
-    ...userDoc.data() as User,
-    id: userDoc.id,
-  };
-}
+import { auth } from "@/auth";
+import { Timestamp } from "firebase-admin/firestore";
 
 export async function init(formData: FormData) {
   const email = formData.get("email");
@@ -51,13 +37,76 @@ export async function init(formData: FormData) {
     throw new Error("User with this email already exists");
   }
 
-  const user: User = {
+  const user = {
     email: email.toLowerCase().trim(),
     password: hashedPassword,
     name: "Admin",
     role: "admin",
+    createdAt: Timestamp.now(),
   };
 
   await usersRef.add(user);
   redirect("/login?initialized=true");
+}
+
+export async function getUsers() {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  const fields = ["name", "email", "role", "createdAt"];
+  const snapshot = await db.collection("users").select(...fields).get();
+  const users: User[] = snapshot.docs.map((doc) => ({
+    ...doc.data() as User,
+    id: doc.id,
+  }));
+
+  return users;
+}
+
+export async function getUserByEmail(email: string) {
+  const usersRef = db.collection("users");
+  const querySnapshot = await usersRef.where("email", "==", email).get();
+
+  if (querySnapshot.empty) {
+    return null;
+  }
+
+  const userDoc = querySnapshot.docs[0];
+
+  return {
+    ...userDoc.data() as User,
+    id: userDoc.id,
+  };
+}
+
+export async function getUserById(id: string) {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  const userDoc = await db.collection("users").doc(id).get();
+  if (!userDoc.exists) {
+    return null;
+  }
+
+  return {
+    ...userDoc.data() as User,
+    id: userDoc.id,
+  };
+}
+
+export async function deleteUser(id: string) {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (role !== "admin") {
+    throw new Error("Unauthorized");
+  }
+
+  await db.collection("users").doc(id).delete();
+  redirect("/users?deleted=true");
 }
