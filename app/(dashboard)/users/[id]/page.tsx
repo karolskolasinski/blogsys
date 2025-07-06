@@ -14,7 +14,7 @@ export default async function Posts(props: ServerComponentProps) {
   const user = await getUserById(params.id as string);
 
   return (
-    <main className="flex w-full text-sm h-screen">
+    <main className="flex w-full h-screen">
       <DashboardMenu active="/users" />
 
       <section className="p-4 flex-1 flex flex-col">

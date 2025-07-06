@@ -27,14 +27,11 @@
     --color-primary-700: var(--color-cyan-700);
     --color-primary-800: var(--color-cyan-800);
     --color-primary-900: var(--color-cyan-900);
+    --font-sans: var(--font-plus-jakarta-sans);
 }
 
 .font-cal-sans {
     @apply font-[family-name:var(--font-cal-sans)]
-}
-
-.font-work-sans {
-    @apply font-[family-name:var(--font-work-sans)]
 }
 
 .button {

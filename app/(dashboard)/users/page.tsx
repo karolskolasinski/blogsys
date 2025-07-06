@@ -13,7 +13,7 @@ export default async function Users() {
   const users = await getUsers();
 
   return (
-    <main className="flex-1 flex w-full text-sm">
+    <main className="flex-1 flex w-full">
       <DashboardMenu active="/users" />
 
       <section className="p-4 flex-1">

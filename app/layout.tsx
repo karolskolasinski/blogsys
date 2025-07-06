@@ -1,21 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import { Open_Sans, Plus_Jakarta_Sans, Work_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 
 const calSans = localFont({
   src: "../public/fonts/CalSans-Regular.woff2",
   variable: "--font-cal-sans",
 });
 
-const workSans = Work_Sans({
+const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-work-sans",
-});
-
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  variable: "--font-open-sans",
+  variable: "--font-plus-jakarta-sans",
 });
 
 export const metadata: Metadata = {
@@ -37,7 +32,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="pl" className={`${calSans.variable} ${workSans.variable} ${openSans.className}`}>
+    <html lang="pl" className={`${calSans.variable} ${plusJakartaSans.variable}`}>
       <body className="antialiased min-h-[100vh] flex flex-col">
         {children}
       </body>
