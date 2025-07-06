@@ -65,11 +65,6 @@ export async function getPost(id: string) {
 }
 
 export async function deletePost(id: string) {
-  const session = await auth();
-  const role = session?.user?.role;
-  if (role !== "admin") {
-    throw new Error("Unauthorized");
-  }
   await db.collection("posts").doc(id).delete();
   redirect("/posts?deleted=true");
 }

@@ -101,12 +101,29 @@ export async function getUserById(id: string) {
 }
 
 export async function deleteUser(id: string) {
+  await db.collection("users").doc(id).delete();
+  redirect("/users?deleted=true");
+}
+
+export async function saveUser(formData: FormData) {
   const session = await auth();
   const role = session?.user?.role;
   if (role !== "admin") {
     throw new Error("Unauthorized");
   }
 
-  await db.collection("users").doc(id).delete();
-  redirect("/users?deleted=true");
+  const id = formData.get("id") as string;
+  const name = (formData.get("name") as string).trim();
+
+  const data = {
+    name,
+  };
+
+  if (id === "new") {
+    await db.collection("users").add(data);
+  } else {
+    await db.collection("users").doc(id).update(data);
+  }
+
+  redirect("/users?published=true");
 }
