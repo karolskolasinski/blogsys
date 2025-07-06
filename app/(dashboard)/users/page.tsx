@@ -19,7 +19,7 @@ export default async function Users() {
 
   return (
     <main className="flex-1 flex w-full text-sm">
-      <DashboardMenu />
+      <DashboardMenu active="/users" />
 
       <section className="p-4 flex-1">
         <div className="flex items-center gap-4">

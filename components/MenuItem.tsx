@@ -1,16 +1,15 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 
 type MenuItemProps = {
   href: string;
   label: string;
   Icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  active: string;
 };
 
-export default async function MenuItem({ href, label, Icon }: MenuItemProps) {
-  const headersList = await headers();
-  const currentPath = headersList.get("x-path") ?? "";
-  const isActive = href === "/" ? currentPath === href : currentPath.startsWith(href);
+export default async function MenuItem(props: MenuItemProps) {
+  const { href, label, Icon, active } = props;
+  const isActive = href === "/" ? active === href : active.startsWith(href);
   const activeClass = isActive
     ? "!border-l-primary-500 text-primary-500 fill-primary-500 hover:!border-l-primary-300 hover:text-primary-300 group-hover:!fill-primary-300"
     : "hover:border-l-primary-500 hover:text-primary-500 group-hover:fill-primary-500";

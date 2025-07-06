@@ -23,7 +23,7 @@ export default async function Posts(props: ServerComponentProps) {
 
   return (
     <main className="flex w-full text-sm h-screen">
-      <DashboardMenu />
+      <DashboardMenu active="/posts" />
 
       <section className="p-4 flex-1 flex flex-col">
         {content}
