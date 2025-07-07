@@ -2,7 +2,7 @@ import MenuItem from "@/components/MenuItem";
 import HomeIcon from "@/public/icons/home.svg";
 import UsersIcon from "@/public/icons/users.svg";
 import SettingsIcon from "@/public/icons/settings.svg";
-import PostsIcon from "@/public/icons/article.svg";
+import PostsIcon from "@/public/icons/post.svg";
 import LogoutIcon from "@/public/icons/logout.svg";
 
 type DashboardMenuProps = {
@@ -20,7 +20,7 @@ export default function DashboardMenu(props: DashboardMenuProps) {
       <hr className="border-gray-200 my-6" />
 
       <MenuItem href="/" label="Strona główna" Icon={HomeIcon} active={props.active} />
-      <MenuItem href="/posts" label="Posty" Icon={PostsIcon} active={props.active} />
+      <MenuItem href="/posts" label="Wpisy" Icon={PostsIcon} active={props.active} />
       <MenuItem
         href="/users"
         label="Użytkownicy"
@@ -37,11 +37,7 @@ export default function DashboardMenu(props: DashboardMenuProps) {
       <div className="flex-1 flex items-end">
         <div className="w-full flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6">
           <div className="flex gap-2 items-center">
-            <img
-              src="https://placehold.co/50x50"
-              alt="avatar"
-              className="w-12 h-12 rounded-full"
-            />
+            <img src="https://placehold.co/50x50" alt="avatar" className="w-12 h-12 rounded-full" />
 
             <div>
               <strong>Jan Kowalski</strong>

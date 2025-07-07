@@ -6,6 +6,7 @@ import { getPosts } from "@/actions/posts";
 import ErrorMessage from "@/components/ErrorMessage";
 import PostsTable from "@/components/PostsTable";
 import { ServerComponentProps } from "@/types/common";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -28,8 +29,10 @@ export default async function Posts(props: ServerComponentProps) {
       <DashboardMenu active="/posts" />
 
       <section className="p-4 flex-1">
+        <Breadcrumb items={[{ label: "Wpisy", href: "/posts" }]} />
+
         <div className="flex items-center gap-4">
-          <h1 className="text-2xl font-bold">Wpisy</h1>
+          <h1 className="text-3xl font-black">Wpisy</h1>
 
           <Link
             href="/posts/new"
