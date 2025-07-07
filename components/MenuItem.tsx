@@ -7,7 +7,7 @@ type MenuItemProps = {
   active: string;
 };
 
-export default async function MenuItem(props: MenuItemProps) {
+export default function MenuItem(props: MenuItemProps) {
   const { href, label, Icon, active } = props;
   const isActive = href === "/" ? active === href : active.startsWith(href);
   const activeClass = isActive ? "bg-gray-100" : "";
