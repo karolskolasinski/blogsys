@@ -8,7 +8,7 @@ type BreadcrumbProps = {
 
 export default function Breadcrumb({ items }: BreadcrumbProps) {
   return (
-    <nav className="flex gap-2 items-center pt-2 pb-8 font-semibold">
+    <nav className="flex gap-2 items-center px-4 py-8 font-semibold">
       <Link href="/">
         <HomeIcon className="w-5 h-5 hover:fill-gray-700" />
       </Link>
