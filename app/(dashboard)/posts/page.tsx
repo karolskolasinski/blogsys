@@ -7,7 +7,7 @@ import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
 import EditIcon from "@/public/icons/edit.svg";
-import DeleteIcon from "@/public/icons/delete.svg";
+import DeleteButton from "@/components/DeleteButton";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -70,10 +70,7 @@ export default async function Posts(props: ServerComponentProps) {
                             await deletePost(post.id!);
                           }}
                         >
-                          <button className="flex gap-1 items-center text-red-600 hover:text-red-500 cursor-pointer">
-                            <DeleteIcon className="w-4 h-4 fill-current" />
-                            Usuń
-                          </button>
+                          <DeleteButton label="Czy na pewno chcesz usunąć ten wpis?" />
                         </form>
                       </div>
                     </td>
