@@ -32,7 +32,7 @@ export default function DashboardMenu(props: DashboardMenuProps) {
         active={props.active}
       />
 
-      <div className="flex-1 flex items-end">
+      <div className="w-64 fixed bottom-8">
         <div className="w-full flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6">
           <div className="flex gap-2 items-center">
             <img src="https://placehold.co/50x50" alt="avatar" className="w-12 h-12 rounded-full" />

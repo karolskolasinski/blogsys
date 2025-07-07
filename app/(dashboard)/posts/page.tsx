@@ -30,7 +30,7 @@ export default async function Posts(props: ServerComponentProps) {
 
             <Link
               href="/posts/new"
-              className="button !rounded-full md:!rounded-md !p-2 !h-fit"
+              className="button !rounded-full md:!rounded-md"
             >
               <AddIcon className="w-5 h-5 fill-white" />
               <span className="hidden md:inline">Dodaj wpis</span>

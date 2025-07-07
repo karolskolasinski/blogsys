@@ -40,16 +40,16 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   return (
     <form
       action={async (formData) => await savePost(formData)}
-      className="h-full pt-8 flex flex-col"
+      className="h-full pt-8 flex flex-col border-t border-transparent"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
 
       <div className="px-4 flex gap-4 justify-between items-center">
-        <h1 className="text-3xl font-black mb-2">
+        <h1 className="text-3xl font-black">
           {title.length > 0 ? title : "Nowy Post"}
         </h1>
 
-        <button type="submit" className="button w-fit">
+        <button type="submit" className="button">
           <PublishIcon className="w-5 h-5 fill-white" />
           Opublikuj
         </button>
@@ -82,8 +82,8 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
         </div>
       </div>
 
-      <div className="flex-1 p-4 mt-4 pt-8 flex gap-4 bg-slate-50 border border-gray-200">
-        <div className="w-full h-full flex flex-col gap-4">
+      <div className="flex-1 p-4 mt-4 pt-8 flex gap-4 bg-slate-50 border-t border-gray-200">
+        <div className="flex-1 h-full flex flex-col gap-4">
           <input
             name="title"
             className="w-full bg-white p-4 border border-gray-300 rounded-2xl shadow"
@@ -116,16 +116,14 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
               color: "#e5e7eb",
               lineHeight: "1.5",
               borderRadius: "1rem",
-              height: "100%",
               overflow: "auto",
+              flex: "1",
             }}
-            textareaClassName="h-full"
-            preClassName="h-full"
           />
         </div>
 
         <div
-          className="hidden w-full lg:block p-4 border border-gray-300 rounded-2xl overflow-auto bg-white shadow"
+          className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-2xl shadow"
           id="preview"
         >
           <Markdown
