@@ -53,7 +53,7 @@ export default async function Posts(props: ServerComponentProps) {
                   <tr key={post.id} className="group align-top">
                     <td className="px-6 py-4">
                       {post.title}
-                      <div className="mt-2 flex gap-2 opacity-0 group-hover:opacity-100 text-sm">
+                      <div className="mt-2 flex gap-2 xl:opacity-0 group-hover:opacity-100 text-sm">
                         <Link
                           href={`/posts/${post.id}`}
                           className="flex gap-1 items-center text-sky-600 hover:text-sky-500 duration-100"
@@ -79,8 +79,8 @@ export default async function Posts(props: ServerComponentProps) {
                     </td>
 
                     <td className="px-6 py-4">{post.authorName}</td>
-                    <td className="px-6 py-4">{post.createdAt.toLocaleString()}</td>
-                    <td className="px-6 py-4">{post.updatedAt.toLocaleString()}</td>
+                    <td className="px-6 py-4">{post.createdAt?.toLocaleString()}</td>
+                    <td className="px-6 py-4">{post.updatedAt?.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
