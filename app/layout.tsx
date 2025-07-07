@@ -33,7 +33,7 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pl" className={`${calSans.variable} ${plusJakartaSans.variable}`}>
-      <body className="antialiased min-h-[100vh] flex flex-col">
+      <body className="antialiased min-h-screen flex flex-col">
         {children}
       </body>
     </html>

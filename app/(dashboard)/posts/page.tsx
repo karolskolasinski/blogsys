@@ -37,7 +37,7 @@ export default async function Posts(props: ServerComponentProps) {
             </Link>
           </div>
 
-          <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200">
+          <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
             <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
               <thead className="border-b border-b-gray-300 font-semibold">
                 <tr className="text-left text-xs uppercase">
