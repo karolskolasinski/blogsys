@@ -19,45 +19,42 @@ type MarkdownEditorProps = {
   post: Post;
 };
 
-export default function MarkdownEditor(props: MarkdownEditorProps) {
-  const post = props.post;
+export default function MarkdownEditor({ post }: MarkdownEditorProps) {
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [title, setTitle] = useState(post.title);
-  const [tagInputVisible, setTagInputVisible] = useState(true);
+  const [tytul, setTytul] = useState(post.title);
 
-  function addTag() {
-    if (tags.length === 3) {
-      setTagInput("");
-      setTagInputVisible(false);
-      return;
-    }
-    const tag = tagInput.trim();
-    if (tag && !tags.includes(tag)) {
-      setTags((prev) => [...prev, tag]);
+  function dodajTag() {
+    if (tags.length >= 3) return;
+    const nowyTag = tagInput.trim();
+    if (nowyTag && !tags.includes(nowyTag)) {
+      setTags((prev) => [...prev, nowyTag]);
     }
     setTagInput("");
   }
 
-  function handleAddTag(e: React.KeyboardEvent<HTMLInputElement>) {
+  function obsluzEnter(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      addTag();
+      dodajTag();
     }
+  }
+
+  function usunTag(tagDoUsuniecia: string) {
+    setTags((prev) => prev.filter((t) => t !== tagDoUsuniecia));
   }
 
   return (
     <form
       action={async (formData) => await savePost(formData)}
-      className="h-full pt-8 flex flex-col border-t border-transparent"
+      className="h-full pt-8 flex flex-col gap-2 border-t border-transparent"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
 
       <div className="px-4 flex gap-4 justify-between items-center">
         <h1 className="text-3xl font-black flex gap-4 items-center">
-          {title.length > 0 ? title : "Nowy Post"}
-
+          {tytul || "Nowy Post"}
           <div className="flex gap-2 font-normal text-sm">
             {tags.map((tag) => (
               <div
@@ -65,10 +62,10 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
                 className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
               >
                 <input type="hidden" name="tags[]" value={tag} />
-                <div className="mr-2">{tag}</div>
+                <span className="mr-2">{tag}</span>
                 <XIcon
                   className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
-                  onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
+                  onClick={() => usunTag(tag)}
                 />
               </div>
             ))}
@@ -89,36 +86,40 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
         <div>Ostatnio edytowany: {post.updatedAt?.toLocaleString()}</div>
       </div>
 
-      <div className="flex-1 p-4 mt-4 pt-8 flex gap-4 bg-slate-50 border-t border-gray-200">
+      <div className="flex-1 p-4 pt-8 flex gap-8 bg-slate-50 border-t border-gray-200">
         <div className="flex-1 h-full flex flex-col gap-4">
           <input
             name="title"
             className="w-full bg-white p-2 border border-gray-300 rounded-xl shadow"
             defaultValue={post.title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => setTytul(e.target.value)}
             placeholder="Wpisz tytuł"
             maxLength={100}
             required
           />
 
-          {tagInputVisible
+          {tags.length < 3
             ? (
               <div className="flex gap-2">
                 <input
                   name="tag"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={(e) => handleAddTag(e)}
+                  onKeyDown={obsluzEnter}
                   maxLength={20}
                   className="flex-1 bg-white p-2 border border-gray-300 rounded-xl shadow"
                   placeholder="Wpisz tag"
                 />
-                <button type="button" onClick={addTag} className="button">
+                <button type="button" onClick={dodajTag} className="button">
                   Dodaj
                 </button>
               </div>
             )
-            : <div>Maksymalna ilość tagów to 3</div>}
+            : (
+              <div className="p-2 border border-transparent">
+                Wykorzystano już wszystkie tagi (max. 3)
+              </div>
+            )}
 
           <Editor
             name="content"
