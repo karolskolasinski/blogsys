@@ -13,7 +13,7 @@ import "prismjs/themes/prism-okaidia.min.css";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
-import PublishIcon from "@/public/icons/publish.svg";
+import SendIcon from "@/public/icons/send.svg";
 
 type MarkdownEditorProps = {
   post: Post;
@@ -25,15 +25,25 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
   const [title, setTitle] = useState(post.title);
+  const [tagInputVisible, setTagInputVisible] = useState(true);
 
-  function addTag(e: React.KeyboardEvent<HTMLInputElement>) {
+  function addTag() {
+    if (tags.length === 3) {
+      setTagInput("");
+      setTagInputVisible(false);
+      return;
+    }
+    const tag = tagInput.trim();
+    if (tag && !tags.includes(tag)) {
+      setTags((prev) => [...prev, tag]);
+    }
+    setTagInput("");
+  }
+
+  function handleAddTag(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      const tag = tagInput.trim();
-      if (tag && !tags.includes(tag)) {
-        setTags((prev) => [...prev, tag]);
-      }
-      setTagInput("");
+      addTag();
     }
   }
 
@@ -45,12 +55,28 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
       <input type="hidden" name="id" defaultValue={post.id} />
 
       <div className="px-4 flex gap-4 justify-between items-center">
-        <h1 className="text-3xl font-black">
+        <h1 className="text-3xl font-black flex gap-4 items-center">
           {title.length > 0 ? title : "Nowy Post"}
+
+          <div className="flex gap-2 font-normal text-sm">
+            {tags.map((tag) => (
+              <div
+                key={tag}
+                className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
+              >
+                <input type="hidden" name="tags[]" value={tag} />
+                <div className="mr-2">{tag}</div>
+                <XIcon
+                  className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
+                  onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
+                />
+              </div>
+            ))}
+          </div>
         </h1>
 
         <button type="submit" className="button">
-          <PublishIcon className="w-5 h-5 fill-white" />
+          <SendIcon className="w-5 h-5 fill-white" />
           Opublikuj
         </button>
       </div>
@@ -61,32 +87,13 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
         <span className="text-gray-300 font-black">•</span>
         <input name="updatedAt" type="hidden" value={post.updatedAt?.toISOString()} />
         <div>Ostatnio edytowany: {post.updatedAt?.toLocaleString()}</div>
-        {tags.length > 0 && <span className="text-gray-300 font-black">•</span>}
-
-        <div className="flex gap-4">
-          <div className="flex gap-2">
-            {tags.map((tag) => (
-              <div
-                key={tag}
-                className="px-2 py-1 bg-gray-100 rounded-xl flex items-center hover:bg-gray-200"
-              >
-                <input type="hidden" name="tags[]" value={tag} />
-                <div className="mr-2">{tag}</div>
-                <XIcon
-                  className="w-4 h-4 cursor-pointer hover:fill-red-500"
-                  onClick={() => setTags((prev) => prev.filter((t) => t !== tag))}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
 
       <div className="flex-1 p-4 mt-4 pt-8 flex gap-4 bg-slate-50 border-t border-gray-200">
         <div className="flex-1 h-full flex flex-col gap-4">
           <input
             name="title"
-            className="w-full bg-white p-4 border border-gray-300 rounded-2xl shadow"
+            className="w-full bg-white p-2 border border-gray-300 rounded-xl shadow"
             defaultValue={post.title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Wpisz tytuł"
@@ -94,15 +101,24 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
             required
           />
 
-          <input
-            name="tag"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={(e) => addTag(e)}
-            maxLength={20}
-            className="w-full bg-white p-4 border border-gray-300 rounded-2xl shadow"
-            placeholder="Wpisz tag i naciśnij Enter"
-          />
+          {tagInputVisible
+            ? (
+              <div className="flex gap-2">
+                <input
+                  name="tag"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={(e) => handleAddTag(e)}
+                  maxLength={20}
+                  className="flex-1 bg-white p-2 border border-gray-300 rounded-xl shadow"
+                  placeholder="Wpisz tag"
+                />
+                <button type="button" onClick={addTag} className="button">
+                  Dodaj
+                </button>
+              </div>
+            )
+            : <div>Maksymalna ilość tagów to 3</div>}
 
           <Editor
             name="content"
