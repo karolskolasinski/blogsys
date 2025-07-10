@@ -28,7 +28,7 @@ export default async function Users() {
             <h1 className="text-3xl font-black">Użytkownicy</h1>
 
             <Link
-              href="/posts/new"
+              href="/users/new"
               className="button !rounded-full md:!rounded-md"
             >
               <AddIcon className="w-5 h-5 fill-white" />

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
 import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
+import Breadcrumb from "@/components/Breadcrumb";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -17,7 +18,14 @@ export default async function Posts(props: ServerComponentProps) {
     <main className="flex w-full h-screen">
       <DashboardMenu active="/users" />
 
-      <section className="p-4 flex-1 flex flex-col">
+      <section className="flex-1 h-full flex flex-col">
+        <Breadcrumb
+          items={[
+            { label: "Użytkownicy", href: "/users" },
+            { label: "title", href: `/posts/${user?.id}` },
+          ]}
+        />
+
         <form
           action={async (formData) => {
             "use server";
@@ -25,7 +33,7 @@ export default async function Posts(props: ServerComponentProps) {
           }}
           className="h-full flex flex-col"
         >
-          <input type="hidden" name="id" defaultValue={user.id} />
+          <input type="hidden" name="id" defaultValue={user?.id} />
 
           <div className="flex flex-col gap-2">
             <label htmlFor="name">Imię</label>

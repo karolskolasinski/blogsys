@@ -100,8 +100,9 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
 
           {tags.length < 3
             ? (
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
                 <input
+                  list="tag"
                   name="tag"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
@@ -110,6 +111,14 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
                   className="flex-1 bg-white p-2 border border-gray-300 rounded-xl shadow"
                   placeholder="Wpisz tag"
                 />
+                <datalist id="tag">
+                  <option value="Warszawa" />
+                  <option value="Kraków" />
+                  <option value="Gdańsk" />
+                  <option value="Wrocław" />
+                  <option value="Poznań" />
+                </datalist>
+
                 <button type="button" onClick={addTag} className="button">
                   Dodaj
                 </button>

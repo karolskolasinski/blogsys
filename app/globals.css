@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 @layer base {
+    input::-webkit-calendar-picker-indicator {
+        font: initial;
+    }
+
     #preview * {
         all: revert;
         @apply leading-relaxed;
