@@ -23,26 +23,26 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [tytul, setTytul] = useState(post.title);
+  const [title, setTitle] = useState(post.title);
 
-  function dodajTag() {
+  function addTag() {
     if (tags.length >= 3) return;
-    const nowyTag = tagInput.trim();
-    if (nowyTag && !tags.includes(nowyTag)) {
-      setTags((prev) => [...prev, nowyTag]);
+    const newTag = tagInput.trim();
+    if (newTag && !tags.includes(newTag)) {
+      setTags((prev) => [...prev, newTag]);
     }
     setTagInput("");
   }
 
-  function obsluzEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleEnter(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.preventDefault();
-      dodajTag();
+      addTag();
     }
   }
 
-  function usunTag(tagDoUsuniecia: string) {
-    setTags((prev) => prev.filter((t) => t !== tagDoUsuniecia));
+  function removeTag(toRemove: string) {
+    setTags((prev) => prev.filter((t) => t !== toRemove));
   }
 
   return (
@@ -54,7 +54,7 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
 
       <div className="px-4 flex gap-4 justify-between items-center">
         <h1 className="text-3xl font-black flex gap-4 items-center">
-          {tytul || "Nowy Post"}
+          {title || "Nowy Post"}
           <div className="flex gap-2 font-normal text-sm">
             {tags.map((tag) => (
               <div
@@ -65,7 +65,7 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
                 <span className="mr-2">{tag}</span>
                 <XIcon
                   className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
-                  onClick={() => usunTag(tag)}
+                  onClick={() => removeTag(tag)}
                 />
               </div>
             ))}
@@ -92,7 +92,7 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
             name="title"
             className="w-full bg-white p-2 border border-gray-300 rounded-xl shadow"
             defaultValue={post.title}
-            onChange={(e) => setTytul(e.target.value)}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder="Wpisz tytuł"
             maxLength={100}
             required
@@ -105,12 +105,12 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
                   name="tag"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={obsluzEnter}
+                  onKeyDown={handleEnter}
                   maxLength={20}
                   className="flex-1 bg-white p-2 border border-gray-300 rounded-xl shadow"
                   placeholder="Wpisz tag"
                 />
-                <button type="button" onClick={dodajTag} className="button">
+                <button type="button" onClick={addTag} className="button">
                   Dodaj
                 </button>
               </div>
