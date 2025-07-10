@@ -26,7 +26,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [title, setTitle] = useState(post.title);
+  const [coverName, setCoverName] = useState<string>("");
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -59,7 +59,6 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           name="title"
           className="w-full text-3xl font-black rounded focus:bg-white"
           defaultValue={post.title}
-          onChange={(e) => setTitle(e.target.value)}
           placeholder="Wpisz tytuł"
           maxLength={100}
           required
@@ -129,9 +128,20 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
             )}
 
           <div className="flex gap-2 items-center">
-            <label htmlFor="cover" className="button">
-              Dodaj okładkę
-              <input id="cover" name="cover" type="file" className="hidden" />
+            <label htmlFor="cover" className="button flex-1 whitespace-nowrap overflow-hidden">
+              {coverName || "Dodaj okładkę"}
+              <input
+                id="cover"
+                name="cover"
+                type="file"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setCoverName(file.name);
+                  }
+                }}
+              />
             </label>
             <button className="button flex-1 whitespace-nowrap">Dodaj media</button>
             <div title="O markdown">
