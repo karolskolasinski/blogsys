@@ -97,3 +97,13 @@ export async function savePost(formData: FormData) {
 
   redirect("/posts?published=true");
 }
+
+export async function getGlobalTags() {
+  const snapshot = await db.collection("posts").select("tags").get();
+  const tags = snapshot.docs.reduce((acc, doc) => {
+    const data = doc.data();
+    return [...acc, ...data.tags];
+  }, [] as string[]);
+
+  return [...new Set(tags)].sort();
+}

@@ -14,12 +14,15 @@ import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
+import InfoIcon from "@/public/icons/info.svg";
 
 type MarkdownEditorProps = {
   post: Post;
+  globalTags: string[];
 };
 
-export default function MarkdownEditor({ post }: MarkdownEditorProps) {
+export default function MarkdownEditor(props: MarkdownEditorProps) {
+  const { post, globalTags } = props;
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
@@ -48,29 +51,19 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
   return (
     <form
       action={async (formData) => await savePost(formData)}
-      className="h-full pt-8 flex flex-col gap-2 border-t border-transparent"
+      className="h-full p-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
-
-      <div className="px-4 flex gap-4 justify-between items-center">
-        <h1 className="text-3xl font-black flex gap-4 items-center">
-          {title || "Nowy Post"}
-          <div className="flex gap-2 font-normal text-sm">
-            {tags.map((tag) => (
-              <div
-                key={tag}
-                className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
-              >
-                <input type="hidden" name="tags[]" value={tag} />
-                <span className="mr-2">{tag}</span>
-                <XIcon
-                  className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
-                  onClick={() => removeTag(tag)}
-                />
-              </div>
-            ))}
-          </div>
-        </h1>
+      <div className="flex justify-between items-center gap-4">
+        <input
+          name="title"
+          className="w-full text-3xl font-black rounded focus:bg-white"
+          defaultValue={post.title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Wpisz tytuł"
+          maxLength={100}
+          required
+        />
 
         <button type="submit" className="button">
           <SendIcon className="w-5 h-5 fill-white" />
@@ -78,26 +71,35 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
         </button>
       </div>
 
-      <div className="px-4 flex items-center gap-2 text-sm text-gray-700">
+      <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
         <input name="createdAt" type="hidden" value={post.createdAt?.toISOString()} />
-        <div>Data utworzenia: {post.createdAt?.toLocaleString()}</div>
+        <div className="h-8 flex items-center">
+          Data utworzenia: {post.createdAt?.toLocaleString()}
+        </div>
         <span className="text-gray-300 font-black">•</span>
         <input name="updatedAt" type="hidden" value={post.updatedAt?.toISOString()} />
-        <div>Ostatnio edytowany: {post.updatedAt?.toLocaleString()}</div>
+        <div className="h-8 flex items-center">
+          Ostatnio edytowany: {post.updatedAt?.toLocaleString()}
+        </div>
+
+        {tags.length > 0 && <span className="text-gray-300 font-black">•</span>}
+        {tags.map((tag) => (
+          <div
+            key={tag}
+            className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
+          >
+            <input type="hidden" name="tags[]" value={tag} />
+            <span className="mr-2">{tag}</span>
+            <XIcon
+              className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
+              onClick={() => removeTag(tag)}
+            />
+          </div>
+        ))}
       </div>
 
-      <div className="flex-1 p-4 pt-8 flex gap-8 bg-slate-50 border-t border-gray-200">
+      <div className="flex-1 flex gap-8 pt-4">
         <div className="flex-1 h-full flex flex-col gap-4">
-          <input
-            name="title"
-            className="w-full bg-white p-2 border border-gray-300 rounded-xl shadow"
-            defaultValue={post.title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Wpisz tytuł"
-            maxLength={100}
-            required
-          />
-
           {tags.length < 3
             ? (
               <div className="flex items-center gap-2">
@@ -108,15 +110,11 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleEnter}
                   maxLength={20}
-                  className="flex-1 bg-white p-2 border border-gray-300 rounded-xl shadow"
+                  className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
                   placeholder="Wpisz tag"
                 />
                 <datalist id="tag">
-                  <option value="Warszawa" />
-                  <option value="Kraków" />
-                  <option value="Gdańsk" />
-                  <option value="Wrocław" />
-                  <option value="Poznań" />
+                  {globalTags.map((tag) => <option key={tag} value={tag} />)}
                 </datalist>
 
                 <button type="button" onClick={addTag} className="button">
@@ -129,6 +127,17 @@ export default function MarkdownEditor({ post }: MarkdownEditorProps) {
                 Wykorzystano już wszystkie tagi (max. 3)
               </div>
             )}
+
+          <div className="flex gap-2 items-center">
+            <label htmlFor="cover" className="button">
+              Dodaj okładkę
+              <input id="cover" name="cover" type="file" className="hidden" />
+            </label>
+            <button className="button flex-1 whitespace-nowrap">Dodaj media</button>
+            <div title="O markdown">
+              <InfoIcon className="w-7 h-7 fill-black z-50 cursor-pointer" />
+            </div>
+          </div>
 
           <Editor
             name="content"

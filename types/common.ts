@@ -10,6 +10,7 @@ export type User = {
 export type Post = {
   id?: string;
   title: string;
+  cover: string;
   content: string;
   tags: string[];
   authorId: string;
