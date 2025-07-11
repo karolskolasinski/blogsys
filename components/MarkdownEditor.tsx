@@ -86,46 +86,43 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           <div
             key={tag}
             className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
+            title="Możesz dodać maksymalnie 3 tagi"
           >
             <input type="hidden" name="tags[]" value={tag} />
             <span className="mr-2">{tag}</span>
-            <XIcon
-              className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
-              onClick={() => removeTag(tag)}
-            />
+            <div title="Usuń">
+              <XIcon
+                className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
+                onClick={() => removeTag(tag)}
+              />
+            </div>
           </div>
         ))}
       </div>
 
       <div className="flex-1 flex gap-8 pt-4">
         <div className="flex-1 h-full flex flex-col gap-4">
-          {tags.length < 3
-            ? (
-              <div className="flex items-center gap-2">
-                <input
-                  list="tag"
-                  name="tag"
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleEnter}
-                  maxLength={20}
-                  className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
-                  placeholder="Wpisz tag"
-                />
-                <datalist id="tag">
-                  {globalTags.map((tag) => <option key={tag} value={tag} />)}
-                </datalist>
+          {tags.length < 3 && (
+            <div className="flex items-center gap-2">
+              <input
+                list="tag"
+                name="tag"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleEnter}
+                maxLength={20}
+                className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
+                placeholder="Wpisz tag"
+              />
+              <datalist id="tag">
+                {globalTags.map((tag) => <option key={tag} value={tag} />)}
+              </datalist>
 
-                <button type="button" onClick={addTag} className="button">
-                  Dodaj
-                </button>
-              </div>
-            )
-            : (
-              <div className="p-2 border border-transparent">
-                Wykorzystano już wszystkie tagi (max. 3)
-              </div>
-            )}
+              <button type="button" onClick={addTag} className="button">
+                Dodaj
+              </button>
+            </div>
+          )}
 
           <div className="flex gap-2 items-center">
             <label htmlFor="cover" className="button flex-1 whitespace-nowrap overflow-hidden">
