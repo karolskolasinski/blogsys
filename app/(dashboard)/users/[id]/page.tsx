@@ -4,8 +4,9 @@ import DashboardMenu from "@/components/DashboardMenu";
 import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/Breadcrumb";
+import SaveIcon from "@/public/icons/save.svg";
 
-export default async function Posts(props: ServerComponentProps) {
+export default async function Users(props: ServerComponentProps) {
   const session = await auth();
   if (!session) {
     redirect("/login");
@@ -32,26 +33,53 @@ export default async function Posts(props: ServerComponentProps) {
             "use server";
             await saveUser(formData);
           }}
-          className="h-full flex flex-col"
+          className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
         >
           <input type="hidden" name="id" defaultValue={user?.id} />
 
-          <div className="flex flex-col gap-2">
-            <label htmlFor="name">Imię</label>
+          <div className="flex justify-between items-center gap-4">
             <input
-              className="input"
-              type="text"
               name="name"
-              id="name"
+              className="w-full text-3xl font-black rounded focus:bg-white"
               defaultValue={user.name}
+              placeholder="Wpisz nazwę"
+              maxLength={100}
               required
             />
+
+            <button type="submit" className="button">
+              <SaveIcon className="w-5 h-5 fill-white" />
+              Zapisz
+            </button>
           </div>
 
-          <button type="submit" className="button w-fit">Opublikuj</button>
+          <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
+            <input name="createdAt" type="hidden" value={user.createdAt?.toISOString()} />
+            <div className="h-8 flex items-center">
+              Data utworzenia: {user.createdAt?.toLocaleString()}
+            </div>
+          </div>
 
-          <input name="createdAt" type="hidden" value={user.createdAt?.toISOString()} />
-          <div>Data utworzenia: {user.createdAt?.toLocaleString()}</div>
+          <div className="flex items-center gap-2 text-gray-700">
+            <input
+              name="email"
+              type="email"
+              defaultValue={user.email}
+              maxLength={20}
+              className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
+              placeholder="Wpisz email"
+            />
+
+            <select
+              name="role"
+              defaultValue={user.role}
+              className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
+            >
+              <option disabled>Wybierz rolę</option>
+              <option value="user">Użytkownik</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
         </form>
       </section>
     </main>
