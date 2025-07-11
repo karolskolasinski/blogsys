@@ -26,7 +26,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [coverName, setCoverName] = useState<string>("");
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -46,6 +46,28 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
 
   function removeTag(toRemove: string) {
     setTags((prev) => prev.filter((t) => t !== toRemove));
+  }
+
+  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    if (file.size > 1024 * 1024) {
+      alert("Plik jest za duży! Maksymalny rozmiar to 1MB.");
+      e.target.value = "";
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      alert("Wybierz plik obrazu!");
+      e.target.value = "";
+      return;
+    }
+
+    const url = URL.createObjectURL(file);
+    setCoverPreview(url);
   }
 
   return (
@@ -125,19 +147,22 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           )}
 
           <div className="flex gap-2 items-center">
-            <label htmlFor="cover" className="button flex-1 whitespace-nowrap overflow-hidden">
-              {coverName || "Dodaj okładkę"}
+            <label
+              htmlFor="cover"
+              className="button flex-1 whitespace-nowrap overflow-hidden text-shadow-md bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: coverPreview ? `url(${coverPreview})` : undefined,
+                borderColor: "transparent",
+              }}
+            >
+              {coverPreview ? "Zmień okładkę" : "Dodaj okładkę"}
               <input
                 id="cover"
                 name="cover"
                 type="file"
+                accept="image/jpeg, image/png, image/gif, image/webp"
                 className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    setCoverName(file.name);
-                  }
-                }}
+                onChange={handleCoverChange}
               />
             </label>
             <button className="button flex-1 whitespace-nowrap">Dodaj media</button>
