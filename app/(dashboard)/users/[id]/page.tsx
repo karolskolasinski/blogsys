@@ -13,6 +13,7 @@ export default async function Posts(props: ServerComponentProps) {
 
   const params = await props.params;
   const user = await getUserById(params.id as string);
+  const title = user?.name ? "Edycja użytkownika" : "Dodaj użytkownika";
 
   return (
     <main className="flex w-full h-screen">
@@ -22,7 +23,7 @@ export default async function Posts(props: ServerComponentProps) {
         <Breadcrumb
           items={[
             { label: "Użytkownicy", href: "/users" },
-            { label: "title", href: `/posts/${user?.id}` },
+            { label: title, href: `/posts/${user?.id}` },
           ]}
         />
 

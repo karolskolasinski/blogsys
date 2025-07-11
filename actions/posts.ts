@@ -22,8 +22,8 @@ export async function getPosts() {
     return {
       ...data,
       id: doc.id,
-      createdAt: data.createdAt.toDate(),
-      updatedAt: data.updatedAt.toDate(),
+      createdAt: data.createdAt?.toDate(),
+      updatedAt: data.updatedAt?.toDate(),
     } as Post;
   });
 
@@ -60,8 +60,8 @@ export async function getPost(id: string) {
   return {
     ...data,
     id: doc.id,
-    createdAt: data?.createdAt.toDate(),
-    updatedAt: data?.updatedAt.toDate(),
+    createdAt: data?.createdAt?.toDate(),
+    updatedAt: data?.updatedAt?.toDate(),
     cover: data?.cover || "",
   } as Post;
 }
