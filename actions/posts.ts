@@ -82,14 +82,13 @@ export async function savePost(formData: FormData) {
     ? Timestamp.now()
     : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
 
-  const data = {
+  const data: Record<string, string | string[] | Timestamp> = {
     title,
     content,
     tags,
-    authorId: session?.user?.id,
+    authorId: session?.user?.id ?? "",
     createdAt,
     updatedAt: Timestamp.now(),
-    cover: "",
   };
 
   const file = formData.get("cover") as File;
