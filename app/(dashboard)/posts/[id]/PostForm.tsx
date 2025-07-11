@@ -14,14 +14,14 @@ import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
-import InfoIcon from "@/public/icons/info.svg";
+import AboutMarkdown from "./AboutMarkdown";
 
-type MarkdownEditorProps = {
+type PostFormProps = {
   post: Post;
   globalTags: string[];
 };
 
-export default function MarkdownEditor(props: MarkdownEditorProps) {
+export default function PostForm(props: PostFormProps) {
   const { post, globalTags } = props;
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
@@ -165,10 +165,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
                 onChange={handleCoverChange}
               />
             </label>
-            <button className="button flex-1 whitespace-nowrap">Dodaj media</button>
-            <div title="O markdown">
-              <InfoIcon className="w-7 h-7 fill-black z-50 cursor-pointer" />
-            </div>
+            <AboutMarkdown />
           </div>
 
           <Editor

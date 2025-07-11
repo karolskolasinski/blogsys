@@ -52,6 +52,7 @@ export async function getPost(id: string) {
       authorId: "",
       createdAt: new Date(),
       updatedAt: new Date(),
+      cover: "",
     };
   }
 
@@ -61,6 +62,7 @@ export async function getPost(id: string) {
     id: doc.id,
     createdAt: data?.createdAt.toDate(),
     updatedAt: data?.updatedAt.toDate(),
+    cover: data?.cover || "",
   } as Post;
 }
 

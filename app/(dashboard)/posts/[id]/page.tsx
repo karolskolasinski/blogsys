@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import MarkdownEditor from "@/components/MarkdownEditor";
 import { getGlobalTags, getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
+import PostForm from "./PostForm";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -30,7 +30,7 @@ export default async function Posts(props: ServerComponentProps) {
           ]}
         />
 
-        <MarkdownEditor post={post} globalTags={globalTags} />
+        <PostForm post={post} globalTags={globalTags} />
       </section>
     </main>
   );
