@@ -89,7 +89,15 @@ export async function savePost(formData: FormData) {
     authorId: session?.user?.id,
     createdAt,
     updatedAt: Timestamp.now(),
+    cover: "",
   };
+
+  const file = formData.get("cover") as File;
+  if (file && file.size > 0) {
+    const buf = await file.arrayBuffer();
+    const b64 = Buffer.from(buf).toString("base64");
+    data.cover = `data:${file.type};base64,${b64}`;
+  }
 
   if (id === "new") {
     await db.collection("posts").add(data);

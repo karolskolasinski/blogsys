@@ -26,7 +26,9 @@ export default function PostForm(props: PostFormProps) {
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    post.cover && post.cover !== "" ? post.cover : null,
+  );
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -73,7 +75,7 @@ export default function PostForm(props: PostFormProps) {
   return (
     <form
       action={async (formData) => await savePost(formData)}
-      className="h-full p-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
+      className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
       <div className="flex justify-between items-center gap-4">
@@ -122,7 +124,7 @@ export default function PostForm(props: PostFormProps) {
         ))}
       </div>
 
-      <div className="flex-1 flex gap-8 pt-4">
+      <div className="flex-1 flex gap-8 py-4">
         <div className="flex-1 h-full flex flex-col gap-4">
           {tags.length < 3 && (
             <div className="flex items-center gap-2">

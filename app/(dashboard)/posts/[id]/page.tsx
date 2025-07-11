@@ -15,7 +15,7 @@ export default async function Posts(props: ServerComponentProps) {
   const params = await props.params;
   const id = params.id as string;
   const post = await getPost(id);
-  const title = post.title || "Nowy wpis";
+  const title = post.title ? "Edycja wpisu" : "Nowy wpis";
   const globalTags = await getGlobalTags();
 
   return (
