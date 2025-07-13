@@ -65,9 +65,10 @@ export default async function Users(props: ServerComponentProps) {
               name="email"
               type="email"
               defaultValue={user?.email}
-              maxLength={20}
+              maxLength={50}
               className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
               placeholder="Wpisz email"
+              required
             />
 
             <select
@@ -75,7 +76,6 @@ export default async function Users(props: ServerComponentProps) {
               defaultValue={user?.role}
               className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
             >
-              <option disabled>Wybierz rolę</option>
               <option value="user">Użytkownik</option>
               <option value="admin">Administrator</option>
             </select>

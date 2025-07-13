@@ -8,6 +8,7 @@ import _ from "lodash";
 import { firestore } from "firebase-admin";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
+import WithFieldValue = firestore.WithFieldValue;
 
 export async function init(formData: FormData) {
   const email = formData.get("email");
@@ -31,16 +32,7 @@ export async function init(formData: FormData) {
     throw new Error("Invalid input types");
   }
 
-  const usersRef = db.collection("users");
-  const [userSnapshot, hashedPassword] = await Promise.all([
-    usersRef.where("email", "==", email).get(),
-    bcrypt.hash(password.trim(), 10),
-  ]);
-
-  if (!userSnapshot.empty) {
-    throw new Error("User with this email already exists");
-  }
-
+  const hashedPassword = await bcrypt.hash(password.trim(), 10);
   const user = {
     email: email.toLowerCase().trim(),
     password: hashedPassword,
@@ -49,21 +41,8 @@ export async function init(formData: FormData) {
     createdAt: Timestamp.now(),
   };
 
-  await usersRef.add(user);
+  await save(user);
   redirect("/login?initialized=true");
-}
-
-function userDocToUser(snapshot: DocumentSnapshot<DocumentData, DocumentData>) {
-  if (!snapshot.exists) {
-    return null;
-  }
-
-  const data = _.omit(snapshot.data(), ["password"]);
-  return {
-    ...data,
-    id: snapshot.id,
-    createdAt: data?.createdAt?.toDate(),
-  } as User;
 }
 
 export async function getUsers() {
@@ -74,21 +53,35 @@ export async function getUsers() {
   }
 
   const fields = ["name", "email", "role", "createdAt"];
-  const snapshot = await db.collection("users").select(...fields).get();
-  return snapshot.docs.map((doc) => userDocToUser(doc));
+  const docSnap = await db.collection("users").select(...fields).get();
+  return docSnap.docs.map((doc) => userDocToUser(doc));
 }
 
 export async function getUserByEmail(email: string) {
-  const snapshot = await db.collection("users").where("email", "==", email).get();
-  return userDocToUser(snapshot.docs[0]);
+  const docSnap = await db.collection("users").where("email", "==", email).get();
+  return userDocToUser(docSnap.docs[0]);
 }
 
 export async function getUserById(id: string) {
-  const snapshot = await db.collection("users").doc(id).get();
-  return userDocToUser(snapshot);
+  const docSnap = await db.collection("users").doc(id).get();
+  return userDocToUser(docSnap);
+}
+
+function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>) {
+  if (!docSnap.exists) {
+    return null;
+  }
+
+  const data = _.omit(docSnap.data(), ["password"]);
+  return {
+    ...data,
+    id: docSnap.id,
+    createdAt: data?.createdAt?.toDate(),
+  } as User;
 }
 
 export async function deleteUser(id: string) {
+  // todo: prevent deleting yourself
   await db.collection("users").doc(id).delete();
   redirect("/users?deleted=true");
 }
@@ -100,18 +93,26 @@ export async function saveUser(formData: FormData) {
     throw new Error("Unauthorized");
   }
 
-  const id = formData.get("id") as string;
-  const name = (formData.get("name") as string).trim();
-
-  const data = {
-    name,
-  };
-
-  if (id === "new") {
-    await db.collection("users").add(data);
-  } else {
-    await db.collection("users").doc(id).update(data);
-  }
+  const rawData = Object.fromEntries(formData.entries());
+  await save({
+    ...rawData,
+    createdAt: Timestamp.now(),
+  });
 
   redirect("/users?published=true");
+}
+
+async function save(user: WithFieldValue<DocumentData>) {
+  const docRef = db.collection("users");
+
+  if (user.id) {
+    await docRef.doc(user.id).update(user);
+  } else {
+    const docSnap = await docRef.where("email", "==", user.email).get();
+    if (!docSnap.empty) {
+      throw new Error("User with this email already exists");
+    }
+    delete user.id;
+    await docRef.add(user);
+  }
 }

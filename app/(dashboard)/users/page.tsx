@@ -49,6 +49,9 @@ export default async function Users() {
 
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map((user) => {
+                  if (!user) {
+                    return null;
+                  }
                   const adminClass = user.role === "admin" ? "text-red-600" : "";
 
                   return (

@@ -15,9 +15,9 @@ export async function getPosts() {
   if (role !== "admin") {
     query = query.where("authorId", "==", userId);
   }
-  const snapshot = await query.get();
+  const docSnap = await query.get();
 
-  const posts = snapshot.docs.map((doc) => {
+  const posts = docSnap.docs.map((doc) => {
     const data = doc.data();
     return {
       ...data,
@@ -108,8 +108,8 @@ export async function savePost(formData: FormData) {
 }
 
 export async function getGlobalTags() {
-  const snapshot = await db.collection("posts").select("tags").get();
-  const tags = snapshot.docs.reduce((acc, doc) => {
+  const docSnap = await db.collection("posts").select("tags").get();
+  const tags = docSnap.docs.reduce((acc, doc) => {
     const data = doc.data();
     return [...acc, ...data.tags];
   }, [] as string[]);
