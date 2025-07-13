@@ -2,7 +2,7 @@
 
 @layer base {
     input::-webkit-calendar-picker-indicator {
-        font: initial;
+        line-height: 1;
     }
 
     #preview * {

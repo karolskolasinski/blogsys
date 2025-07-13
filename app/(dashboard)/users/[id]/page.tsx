@@ -41,7 +41,7 @@ export default async function Users(props: ServerComponentProps) {
             <input
               name="name"
               className="w-full text-3xl font-black rounded focus:bg-white"
-              defaultValue={user.name}
+              defaultValue={user?.name}
               placeholder="Wpisz nazwę"
               maxLength={100}
               required
@@ -54,9 +54,9 @@ export default async function Users(props: ServerComponentProps) {
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
-            <input name="createdAt" type="hidden" value={user.createdAt?.toISOString()} />
+            <input name="createdAt" type="hidden" value={user?.createdAt?.toISOString()} />
             <div className="h-8 flex items-center">
-              Data utworzenia: {user.createdAt?.toLocaleString()}
+              Data utworzenia: {user?.createdAt?.toLocaleString()}
             </div>
           </div>
 
@@ -64,7 +64,7 @@ export default async function Users(props: ServerComponentProps) {
             <input
               name="email"
               type="email"
-              defaultValue={user.email}
+              defaultValue={user?.email}
               maxLength={20}
               className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
               placeholder="Wpisz email"
@@ -72,7 +72,7 @@ export default async function Users(props: ServerComponentProps) {
 
             <select
               name="role"
-              defaultValue={user.role}
+              defaultValue={user?.role}
               className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
             >
               <option disabled>Wybierz rolę</option>

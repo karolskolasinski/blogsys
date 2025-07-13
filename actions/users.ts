@@ -4,6 +4,10 @@ import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Timestamp } from "firebase-admin/firestore";
+import _ from "lodash";
+import { firestore } from "firebase-admin";
+import DocumentSnapshot = firestore.DocumentSnapshot;
+import DocumentData = firestore.DocumentData;
 
 export async function init(formData: FormData) {
   const email = formData.get("email");
@@ -49,6 +53,19 @@ export async function init(formData: FormData) {
   redirect("/login?initialized=true");
 }
 
+function userDocToUser(snapshot: DocumentSnapshot<DocumentData, DocumentData>) {
+  if (!snapshot.exists) {
+    return null;
+  }
+
+  const data = _.omit(snapshot.data(), ["password"]);
+  return {
+    ...data,
+    id: snapshot.id,
+    createdAt: data?.createdAt?.toDate(),
+  } as User;
+}
+
 export async function getUsers() {
   const session = await auth();
   const role = session?.user?.role;
@@ -58,53 +75,17 @@ export async function getUsers() {
 
   const fields = ["name", "email", "role", "createdAt"];
   const snapshot = await db.collection("users").select(...fields).get();
-  const users: User[] = snapshot.docs.map((doc) => ({
-    ...doc.data() as User,
-    id: doc.id,
-  }));
-
-  return users;
+  return snapshot.docs.map((doc) => userDocToUser(doc));
 }
 
 export async function getUserByEmail(email: string) {
-  const usersRef = db.collection("users");
-  const querySnapshot = await usersRef.where("email", "==", email).get();
-
-  if (querySnapshot.empty) {
-    return null;
-  }
-
-  const userDoc = querySnapshot.docs[0];
-
-  return {
-    ...userDoc.data() as User,
-    id: userDoc.id,
-  };
+  const snapshot = await db.collection("users").where("email", "==", email).get();
+  return userDocToUser(snapshot.docs[0]);
 }
 
 export async function getUserById(id: string) {
-  const session = await auth();
-  const role = session?.user?.role;
-  if (role !== "admin") {
-    throw new Error("Unauthorized");
-  }
-
-  const userDoc = await db.collection("users").doc(id).get();
-  if (!userDoc.exists) {
-    return {
-      id,
-      name: "",
-      email: "",
-      role: "",
-      createdAt: new Date(),
-    };
-  }
-
-  return {
-    ...userDoc.data(),
-    id: userDoc.id,
-    createdAt: userDoc.data()?.createdAt?.toDate(),
-  } as User;
+  const snapshot = await db.collection("users").doc(id).get();
+  return userDocToUser(snapshot);
 }
 
 export async function deleteUser(id: string) {
