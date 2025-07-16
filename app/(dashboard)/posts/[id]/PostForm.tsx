@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -14,6 +14,7 @@ import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
+import SpinnerIcon from "@/public/icons/spinner.svg";
 import AboutMarkdown from "./AboutMarkdown";
 
 type PostFormProps = {
@@ -23,12 +24,17 @@ type PostFormProps = {
 
 export default function PostForm(props: PostFormProps) {
   const { post, globalTags } = props;
+  const [isPending, startTransition] = useTransition();
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
-  const [coverPreview, setCoverPreview] = useState<string | null>(
-    post.cover && post.cover !== "" ? post.cover : null,
-  );
+  const [coverPreview, setCoverPreview] = useState<string | null>(post.cover || null);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => await savePost(formData));
+  }
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -74,7 +80,7 @@ export default function PostForm(props: PostFormProps) {
 
   return (
     <form
-      action={async (formData) => await savePost(formData)}
+      onSubmit={handleSubmit}
       className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
@@ -87,10 +93,13 @@ export default function PostForm(props: PostFormProps) {
           maxLength={100}
           required
         />
-
-        <button type="submit" className="button">
-          <SendIcon className="w-5 h-5 fill-white" />
-          Opublikuj
+        <button type="submit" disabled={isPending} className="button flex items-center gap-2">
+          {isPending
+            ? <SpinnerIcon className="w-5 h-5 fill-white animate-spin" />
+            : <SendIcon className="w-5 h-5 fill-white" />}
+          <span>
+            Opublikuj
+          </span>
         </button>
       </div>
 

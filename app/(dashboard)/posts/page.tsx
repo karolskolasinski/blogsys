@@ -1,12 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import Link from "next/link";
 import { getPosts } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
 import PostsTable from "./PostsTable";
+import Button from "@/components/Button";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -36,16 +36,17 @@ export default async function Posts(props: ServerComponentProps) {
           <div className="flex gap-4 items-center justify-between">
             <h1 className="text-3xl font-black">Wpisy</h1>
 
-            <Link
-              href="/posts/new"
-              className="button !rounded-full md:!rounded-md"
-            >
-              <AddIcon className="w-5 h-5 fill-white" />
-              <span className="hidden md:inline">Dodaj wpis</span>
-            </Link>
+            <Button
+              href="posts/new"
+              type="button"
+              label="Dodaj wpis"
+              icon={<AddIcon className="w-5 h-5 fill-white" />}
+            />
           </div>
 
-          {errMsg ? <div>{errMsg}</div> : <PostsTable posts={posts ?? []} />}
+          {errMsg
+            ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
+            : <PostsTable posts={posts ?? []} />}
         </div>
       </section>
     </main>
