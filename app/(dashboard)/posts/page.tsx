@@ -1,12 +1,13 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import { getPosts } from "@/actions/posts";
+import { deletePost, getPosts } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
-import PostsTable from "./PostsTable";
 import Button from "@/components/Button";
+import EditIcon from "@/public/icons/edit.svg";
+import DeleteIcon from "@/public/icons/delete.svg";
 
 export default async function Posts(props: ServerComponentProps) {
   const session = await auth();
@@ -46,7 +47,60 @@ export default async function Posts(props: ServerComponentProps) {
 
           {errMsg
             ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
-            : <PostsTable posts={posts ?? []} />}
+            : (
+              <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
+                <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
+                  <thead className="border-b border-b-gray-300 font-semibold">
+                    <tr className="text-left text-xs uppercase">
+                      <th className="px-6 py-3">Tytuł</th>
+                      <th className="px-6 py-3">Autor</th>
+                      <th className="px-6 py-3">Data utworzenia</th>
+                      <th className="px-6 py-3">Data aktualizacji</th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {posts?.map((post) => (
+                      <tr key={post.id} className="group align-top">
+                        <td className="px-6 py-4">
+                          {post.title}
+                          <div className="mt-2 flex gap-2 xl:opacity-0 group-hover:opacity-100 text-sm">
+                            <Button
+                              href={`/posts/${post.id}`}
+                              type="link"
+                              label="Edytuj"
+                              icon={<EditIcon className="w-4 h-4 fill-current" />}
+                              colorClass="text-sky-600 hover:text-sky-500"
+                            />
+
+                            <span className="text-gray-400">|</span>
+
+                            <form
+                              action={async () => {
+                                "use server";
+                                await deletePost(post.id!);
+                              }}
+                            >
+                              <Button
+                                href=""
+                                type="delete"
+                                label="Usuń"
+                                icon={<DeleteIcon className="w-4 h-4 fill-current" />}
+                                colorClass="text-red-600 hover:text-red-500"
+                              />
+                            </form>
+                          </div>
+                        </td>
+
+                        <td className="px-6 py-4">{post.authorName}</td>
+                        <td className="px-6 py-4">{post.createdAt?.toLocaleString()}</td>
+                        <td className="px-6 py-4">{post.updatedAt?.toLocaleString()}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
         </div>
       </section>
     </main>
