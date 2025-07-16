@@ -75,7 +75,7 @@ export default function PostForm(props: PostFormProps) {
   return (
     <form
       action={async (formData) => await savePost(formData)}
-      className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
+      className="px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
       <div className="flex justify-between items-center gap-4">
@@ -173,6 +173,7 @@ export default function PostForm(props: PostFormProps) {
           </div>
 
           <Editor
+            placeholder="Wpisz treść"
             name="content"
             value={value}
             onValueChange={setValue}
