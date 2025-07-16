@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -14,9 +14,8 @@ import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
-import SpinnerIcon from "@/public/icons/spinner.svg";
+import PhotoIcon from "@/public/icons/photo.svg";
 import AboutMarkdown from "./AboutMarkdown";
-import EditIcon from "@/public/icons/edit.svg";
 import Button from "@/components/Button";
 
 type PostFormProps = {
@@ -26,17 +25,10 @@ type PostFormProps = {
 
 export default function PostForm(props: PostFormProps) {
   const { post, globalTags } = props;
-  const [isPending, startTransition] = useTransition();
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(post.cover || null);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    startTransition(async () => await savePost(formData));
-  }
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -82,7 +74,7 @@ export default function PostForm(props: PostFormProps) {
 
   return (
     <form
-      onSubmit={handleSubmit}
+      action={async (formData) => await savePost(formData)}
       className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />
@@ -166,6 +158,7 @@ export default function PostForm(props: PostFormProps) {
                 borderColor: "transparent",
               }}
             >
+              <PhotoIcon className="w-5 h-5 fill-white" />
               {coverPreview ? "Zmień okładkę" : "Dodaj okładkę"}
               <input
                 id="cover"
