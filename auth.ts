@@ -18,7 +18,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         try {
           const user = await getUserByEmail(credentials.email);
-          if (!user) {
+          if (!user || !user.password) {
             return null;
           }
 

@@ -4,12 +4,16 @@ import UsersIcon from "@/public/icons/users.svg";
 import SettingsIcon from "@/public/icons/settings.svg";
 import PostsIcon from "@/public/icons/post.svg";
 import LogoutIcon from "@/public/icons/logout.svg";
+import { User } from "@/types/common";
 
 type DashboardMenuProps = {
   active: string;
+  user: User;
 };
 
-export default function DashboardMenu(props: DashboardMenuProps) {
+export default async function DashboardMenu(props: DashboardMenuProps) {
+  const user = props.user;
+
   return (
     <aside className="w-72 flex flex-col gap-2 px-4 py-8 border-r border-gray-200">
       <div className="flex gap-1 items-center pb-8">
@@ -38,8 +42,8 @@ export default function DashboardMenu(props: DashboardMenuProps) {
             <img src="https://placehold.co/50x50" alt="avatar" className="w-12 h-12 rounded-full" />
 
             <div>
-              <strong>Jan Kowalski</strong>
-              <div className="text-gray-500">Administrator</div>
+              <strong>{user?.name}</strong>
+              <div className="text-gray-500">{user?.role}</div>
             </div>
           </div>
 

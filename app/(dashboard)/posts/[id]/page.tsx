@@ -20,7 +20,7 @@ export default async function Posts(props: ServerComponentProps) {
 
   return (
     <main className="flex w-full h-screen">
-      <DashboardMenu active="/posts" />
+      <DashboardMenu active="/posts" user={session.user} />
 
       <section className="flex-1 h-full flex flex-col">
         <Breadcrumb

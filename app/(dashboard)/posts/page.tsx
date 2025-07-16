@@ -14,12 +14,21 @@ export default async function Posts(props: ServerComponentProps) {
   if (!session) {
     return redirect("/login");
   }
+
   const params = await props.searchParams; // todo: flash message
-  const posts = await getPosts();
+
+  let posts;
+  let error;
+  try {
+    posts = await getPosts();
+  } catch (err) {
+    console.log(err);
+    error = err;
+  }
 
   return (
     <main className="flex-1 flex w-full">
-      <DashboardMenu active="/posts" />
+      <DashboardMenu active="/posts" user={session.user} />
 
       <section className="flex-1 flex flex-col">
         <Breadcrumb items={[{ label: "Wpisy", href: "/posts" }]} />
@@ -37,6 +46,8 @@ export default async function Posts(props: ServerComponentProps) {
             </Link>
           </div>
 
+          {!!error && <div>{error?.message}</div>}
+
           <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
             <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
               <thead className="border-b border-b-gray-300 font-semibold">
@@ -49,7 +60,7 @@ export default async function Posts(props: ServerComponentProps) {
               </thead>
 
               <tbody className="bg-white divide-y divide-gray-200">
-                {posts.map((post) => (
+                {posts?.map((post) => (
                   <tr key={post.id} className="group align-top">
                     <td className="px-6 py-4">
                       {post.title}

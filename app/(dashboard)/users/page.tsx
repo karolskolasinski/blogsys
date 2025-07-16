@@ -18,7 +18,7 @@ export default async function Users() {
 
   return (
     <main className="flex-1 flex w-full">
-      <DashboardMenu active="/users" />
+      <DashboardMenu active="/users" user={session.user} />
 
       <section className="flex-1 flex flex-col">
         <Breadcrumb items={[{ label: "Użytkownicy", href: "/users" }]} />
