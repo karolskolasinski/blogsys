@@ -9,7 +9,7 @@ import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-markdown";
-import "prismjs/themes/prism-okaidia.min.css";
+import "prismjs/themes/prism-twilight.min.css";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
@@ -180,13 +180,14 @@ export default function PostForm(props: PostFormProps) {
             padding={16}
             style={{
               fontFamily: '"Fira Code", monospace',
-              backgroundColor: "#1f2937",
-              color: "#e5e7eb",
+              backgroundColor: "white",
               lineHeight: "1.5",
+              border: "1px solid #d1d5dc",
               borderRadius: "1rem",
               overflow: "auto",
               flex: "1",
             }}
+            textareaClassName="!border !border-transparent !rounded-2xl"
           />
         </div>
 
