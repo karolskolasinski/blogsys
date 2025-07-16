@@ -11,7 +11,7 @@ export async function getPosts() {
   const role = session?.user?.role;
   const userId = session?.user?.id;
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
-  let query = db.collection("posts").select(...fields);
+  let query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
   if (role !== "admin") {
     query = query.where("authorId", "==", userId);
   }

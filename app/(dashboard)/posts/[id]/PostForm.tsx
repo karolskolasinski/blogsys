@@ -16,6 +16,8 @@ import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import SpinnerIcon from "@/public/icons/spinner.svg";
 import AboutMarkdown from "./AboutMarkdown";
+import EditIcon from "@/public/icons/edit.svg";
+import Button from "@/components/Button";
 
 type PostFormProps = {
   post: Post;
@@ -93,14 +95,12 @@ export default function PostForm(props: PostFormProps) {
           maxLength={100}
           required
         />
-        <button type="submit" disabled={isPending} className="button flex items-center gap-2">
-          {isPending
-            ? <SpinnerIcon className="w-5 h-5 fill-white animate-spin" />
-            : <SendIcon className="w-5 h-5 fill-white" />}
-          <span>
-            Opublikuj
-          </span>
-        </button>
+        <Button
+          href=""
+          role="button"
+          label="Opublikuj"
+          icon={<SendIcon className="w-5 h-5 fill-white" />}
+        />
       </div>
 
       <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
