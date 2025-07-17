@@ -4,7 +4,7 @@ import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"; // todo: move to separated component
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
@@ -15,9 +15,14 @@ import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
-import EditIcon from "@/public/icons/edit.svg";
 import AboutMarkdown from "./AboutMarkdown";
 import Button from "@/components/Button";
+
+import dynamic from "next/dynamic";
+const SyntaxHighlighter = dynamic(
+  () => import("react-syntax-highlighter").then((mod) => mod.Prism),
+  { ssr: false },
+);
 
 type PostFormProps = {
   post: Post;
