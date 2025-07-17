@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import { getGlobalTags, getPost } from "@/actions/posts";
+import { getAllAuthors, getAllTags, getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
 import PostForm from "./PostForm";
@@ -16,7 +16,8 @@ export default async function Posts(props: ServerComponentProps) {
   const id = params.id as string;
   const post = await getPost(id);
   const title = post.title ? "Edycja wpisu" : "Nowy wpis";
-  const globalTags = await getGlobalTags();
+  const allTags = await getAllTags();
+  const allAuthors = await getAllAuthors();
 
   return (
     <main className="flex w-full h-screen">
@@ -30,7 +31,7 @@ export default async function Posts(props: ServerComponentProps) {
           ]}
         />
 
-        <PostForm post={post} globalTags={globalTags} />
+        <PostForm post={post} allTags={allTags} allAuthors={allAuthors} user={session.user} />
       </section>
     </main>
   );

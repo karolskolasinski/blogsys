@@ -44,6 +44,7 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
             <div>
               <strong>{user?.name}</strong>
               <div className="text-gray-500">{user?.role}</div>
+              <div className="text-[10px] text-gray-500">{user?.id}</div>
             </div>
           </div>
 

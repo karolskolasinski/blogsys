@@ -41,6 +41,14 @@ export async function getPosts() {
   }));
 }
 
+export async function getAllAuthors() {
+  const snap = await db.collection("users").select("name").get();
+  return snap.docs.map((doc) => ({
+    id: doc.id,
+    name: doc.data().name,
+  }));
+}
+
 export async function getPost(id: string) {
   const doc = await db.collection("posts").doc(id).get();
   if (!doc.exists) {
@@ -72,8 +80,8 @@ export async function deletePost(id: string) {
 }
 
 export async function savePost(formData: FormData) {
-  const session = await auth();
   const id = formData.get("id") as string;
+  const authorId = formData.get("authorId") as string;
   const title = (formData.get("title") as string).trim();
   const content = (formData.get("content") as string).trim();
   const tags = formData.getAll("tags[]").map((t) => (t as string).trim()).filter(Boolean);
@@ -86,7 +94,7 @@ export async function savePost(formData: FormData) {
     title,
     content,
     tags,
-    authorId: session?.user?.id ?? "",
+    authorId,
     createdAt,
     updatedAt: Timestamp.now(),
   };
@@ -107,7 +115,7 @@ export async function savePost(formData: FormData) {
   redirect("/posts?published=true");
 }
 
-export async function getGlobalTags() {
+export async function getAllTags() {
   const docSnap = await db.collection("posts").select("tags").get();
   const tags = docSnap.docs.reduce((acc, doc) => {
     const data = doc.data();

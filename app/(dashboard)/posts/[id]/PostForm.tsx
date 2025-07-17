@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { savePost } from "@/actions/posts";
-import { Post } from "@/types/common";
+import { Post, User } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
@@ -12,11 +12,13 @@ import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
 
 type PostFormProps = {
   post: Post;
-  globalTags: string[];
+  allTags: string[];
+  allAuthors: { id: string; name: string }[];
+  user: User;
 };
 
 export default function PostForm(props: PostFormProps) {
-  const { post, globalTags } = props;
+  const { post, allTags, user } = props;
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
@@ -63,6 +65,9 @@ export default function PostForm(props: PostFormProps) {
     const url = URL.createObjectURL(file);
     setCoverPreview(url);
   }
+
+  const isValidAuthor = props.allAuthors.some((author) => author.id === post.authorId);
+  const selectedAuthorId = isValidAuthor ? post.authorId : "";
 
   return (
     <form
@@ -133,7 +138,7 @@ export default function PostForm(props: PostFormProps) {
               disabled={tags.length >= 3}
             />
             <datalist id="tag">
-              {globalTags.map((tag) => <option key={tag} value={tag} />)}
+              {allTags.map((tag) => <option key={tag} value={tag} />)}
             </datalist>
 
             <button
@@ -145,6 +150,21 @@ export default function PostForm(props: PostFormProps) {
             >
               Dodaj
             </button>
+
+            <select
+              id="authorId"
+              name="authorId"
+              defaultValue={selectedAuthorId}
+              className="bg-white p-2 border border-gray-300 rounded-lg shadow"
+              title="Autor"
+            >
+              <option disabled>Autor</option>
+              {props.allAuthors.map((author) => (
+                <option key={author.id} value={author.id}>
+                  {author.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex gap-2 items-center">
