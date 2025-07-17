@@ -81,7 +81,7 @@ export default function PostForm(props: PostFormProps) {
       <div className="flex justify-between items-center gap-4">
         <input
           name="title"
-          className="w-full text-3xl font-black bg-white border border-gray-300 rounded shadow"
+          className="w-full text-3xl font-black bg-white border border-gray-300 rounded-lg shadow"
           defaultValue={post.title}
           placeholder="Wpisz tytuł"
           maxLength={100}
@@ -110,7 +110,7 @@ export default function PostForm(props: PostFormProps) {
         {tags.map((tag) => (
           <div
             key={tag}
-            className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-xl flex items-center text-primary-700"
+            className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-lg flex items-center text-primary-700"
             title="Możesz dodać maksymalnie 3 tagi"
           >
             <input type="hidden" name="tags[]" value={tag} />
@@ -126,28 +126,34 @@ export default function PostForm(props: PostFormProps) {
       </div>
 
       <div className="flex-1 flex gap-8 py-4">
-        <div className="flex-1 h-full flex flex-col gap-4">
-          {tags.length < 3 && (
-            <div className="flex items-center gap-2">
-              <input
-                list="tag"
-                name="tag"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleEnter}
-                maxLength={20}
-                className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
-                placeholder="Wpisz tag"
-              />
-              <datalist id="tag">
-                {globalTags.map((tag) => <option key={tag} value={tag} />)}
-              </datalist>
+        <div className="flex-1 h-full flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <input
+              list="tag"
+              name="tag"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleEnter}
+              maxLength={20}
+              className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow disabled:cursor-not-allowed"
+              placeholder={tags.length >= 3 ? "Możesz dodać maksymalnie 3 tagi" : "Wpisz tag"}
+              title="Możesz dodać maksymalnie 3 tagi"
+              disabled={tags.length >= 3}
+            />
+            <datalist id="tag">
+              {globalTags.map((tag) => <option key={tag} value={tag} />)}
+            </datalist>
 
-              <button type="button" onClick={addTag} className="button">
-                Dodaj
-              </button>
-            </div>
-          )}
+            <button
+              type="button"
+              onClick={addTag}
+              className="button disabled:opacity-30 disabled:!translate-0"
+              title="Możesz dodać maksymalnie 3 tagi"
+              disabled={tags.length >= 3}
+            >
+              Dodaj
+            </button>
+          </div>
 
           <div className="flex gap-2 items-center">
             <label
@@ -158,8 +164,10 @@ export default function PostForm(props: PostFormProps) {
                 borderColor: "transparent",
               }}
             >
-              <PhotoIcon className="w-5 h-5 fill-white" />
-              {coverPreview ? "Zmień okładkę" : "Dodaj okładkę"}
+              <div className="flex gap-2 p-1 rounded bg-gray-800">
+                <PhotoIcon className="w-5 h-5 fill-white" />
+                {coverPreview ? "Zmień okładkę" : "Dodaj okładkę"}
+              </div>
               <input
                 id="cover"
                 name="cover"
@@ -184,16 +192,16 @@ export default function PostForm(props: PostFormProps) {
               backgroundColor: "white",
               lineHeight: "1.5",
               border: "1px solid #d1d5dc",
-              borderRadius: "1rem",
+              borderRadius: ".75rem",
               overflow: "auto",
               flex: "1",
             }}
-            textareaClassName="!border !border-transparent !rounded-2xl"
+            textareaClassName="!border !border-transparent !rounded-xl"
           />
         </div>
 
         <div
-          className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-2xl shadow"
+          className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-xl shadow"
           id="preview"
         >
           <Markdown

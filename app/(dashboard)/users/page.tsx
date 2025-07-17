@@ -6,7 +6,8 @@ import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
 import EditIcon from "@/public/icons/edit.svg";
-import DeleteButton from "@/components/DeleteButton";
+import Button from "@/components/Button";
+import DeleteIcon from "@/public/icons/delete.svg";
 
 export default async function Users() {
   const session = await auth();
@@ -14,7 +15,14 @@ export default async function Users() {
     return redirect("/login");
   }
 
-  const users = await getUsers();
+  let users;
+  let errMsg = "";
+  try {
+    users = await getUsers();
+  } catch (err) {
+    console.error(err);
+    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
+  }
 
   return (
     <main className="flex-1 flex w-full">
@@ -36,59 +44,69 @@ export default async function Users() {
             </Link>
           </div>
 
-          <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
-            <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
-              <thead className="border-b border-b-gray-300 font-semibold">
-                <tr className="text-left text-xs uppercase">
-                  <th className="px-6 py-3">Nazwa</th>
-                  <th className="px-6 py-3">Email</th>
-                  <th className="px-6 py-3">Rola</th>
-                  <th className="px-6 py-3">Data utworzenia</th>
-                </tr>
-              </thead>
-
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => {
-                  if (!user) {
-                    return null;
-                  }
-                  const adminClass = user.role === "admin" ? "text-red-600" : "";
-
-                  return (
-                    <tr key={user.id} className="group align-top">
-                      <td className="px-6 py-4">
-                        {user.name}
-                        <div className="mt-2 flex gap-2 xl:opacity-0 group-hover:opacity-100 text-sm">
-                          <Link
-                            href={`/users/${user.id}`}
-                            className="flex gap-1 items-center text-sky-600 hover:text-sky-500 duration-100"
-                          >
-                            <EditIcon className="w-4 h-4 fill-current" />
-                            Edytuj
-                          </Link>
-
-                          <span className="text-gray-400">|</span>
-
-                          <form
-                            action={async () => {
-                              "use server";
-                              await deleteUser(user.id!);
-                            }}
-                          >
-                            <DeleteButton label="Czy na pewno chcesz usunąć tego użytkownika?" />
-                          </form>
-                        </div>
-                      </td>
-
-                      <td className="px-6 py-4">{user.email}</td>
-                      <td className={`px-6 py-4 ${adminClass}`}>{user.role}</td>
-                      <td className="px-6 py-4">{user.createdAt?.toLocaleString()}</td>
+          {errMsg
+            ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
+            : (
+              <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
+                <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
+                  <thead className="border-b border-b-gray-300 font-semibold">
+                    <tr className="text-left text-xs uppercase">
+                      <th className="px-6 py-3">Nazwa</th>
+                      <th className="px-6 py-3">Email</th>
+                      <th className="px-6 py-3">Rola</th>
+                      <th className="px-6 py-3">Data utworzenia</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {users?.map((user) => {
+                      if (!user) {
+                        return null;
+                      }
+                      const adminClass = user.role === "admin" ? "text-red-600" : "";
+
+                      return (
+                        <tr key={user.id} className="align-top">
+                          <td className="px-6 py-4">
+                            {user.name}
+                            <div className="mt-2 flex gap-2 text-sm">
+                              <Button
+                                href={`/users/${user.id}`}
+                                role="link"
+                                label="Edytuj"
+                                icon={<EditIcon className="w-4 h-4 fill-current" />}
+                                colorClass="text-sky-600 hover:text-sky-500"
+                              />
+
+                              <span className="text-gray-400">|</span>
+
+                              <form
+                                action={async () => {
+                                  "use server";
+                                  await deleteUser(user.id!);
+                                }}
+                              >
+                                <Button
+                                  href="delete"
+                                  role="link"
+                                  label="Usuń"
+                                  icon={<DeleteIcon className="w-4 h-4 fill-current" />}
+                                  colorClass="text-red-600 hover:text-red-500"
+                                />
+                              </form>
+                            </div>
+                          </td>
+
+                          <td className="px-6 py-4">{user.email}</td>
+                          <td className={`px-6 py-4 ${adminClass}`}>{user.role}</td>
+                          <td className="px-6 py-4">{user.createdAt?.toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
         </div>
       </section>
     </main>

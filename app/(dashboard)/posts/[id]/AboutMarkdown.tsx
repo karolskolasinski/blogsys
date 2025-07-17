@@ -33,7 +33,11 @@ export default function AboutMarkdown() {
 
   return (
     <>
-      <div onClick={openDialog} title="Podstawy Markdown">
+      <div
+        className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+        onClick={openDialog}
+        title="Podstawy Markdown"
+      >
         <InfoIcon className="w-7 h-7 fill-black cursor-pointer" />
       </div>
 
