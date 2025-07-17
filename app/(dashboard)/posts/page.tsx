@@ -61,10 +61,10 @@ export default async function Posts(props: ServerComponentProps) {
 
                   <tbody className="bg-white divide-y divide-gray-200">
                     {posts?.map((post) => (
-                      <tr key={post.id} className="group align-top">
+                      <tr key={post.id} className="align-top">
                         <td className="px-6 py-4">
                           {post.title}
-                          <div className="mt-2 flex gap-2 xl:opacity-0 group-hover:opacity-100 text-sm">
+                          <div className="mt-2 flex gap-2 text-sm">
                             <Button
                               href={`/posts/${post.id}`}
                               role="link"

@@ -81,7 +81,7 @@ export default function PostForm(props: PostFormProps) {
       <div className="flex justify-between items-center gap-4">
         <input
           name="title"
-          className="w-full text-3xl font-black rounded focus:bg-white"
+          className="w-full text-3xl font-black bg-white border border-gray-300 rounded shadow"
           defaultValue={post.title}
           placeholder="Wpisz tytuł"
           maxLength={100}
