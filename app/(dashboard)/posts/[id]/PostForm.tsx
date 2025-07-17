@@ -1,28 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-// import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"; // todo: move to separated component
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
-import Editor from "react-simple-code-editor";
-import { highlight, languages } from "prismjs";
-import "prismjs/components/prism-markdown";
-import "prismjs/themes/prism-twilight.min.css";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
-import AboutMarkdown from "./AboutMarkdown";
 import Button from "@/components/Button";
-
-import dynamic from "next/dynamic";
-const SyntaxHighlighter = dynamic(
-  () => import("react-syntax-highlighter").then((mod) => mod.Prism),
-  { ssr: false },
-);
+import Preview from "@/components/Preview";
+import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
 
 type PostFormProps = {
   post: Post;
@@ -132,7 +118,7 @@ export default function PostForm(props: PostFormProps) {
       </div>
 
       <div className="flex-1 flex gap-8 py-4">
-        <div className="flex-1 h-full flex flex-col gap-2">
+        <div className="flex-1 h-full flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <input
               list="tag"
@@ -185,52 +171,14 @@ export default function PostForm(props: PostFormProps) {
             </label>
           </div>
 
-          <div className="relative flex flex-1">
-            <Editor
-              placeholder="Wpisz treść"
-              name="content"
-              value={value}
-              onValueChange={setValue}
-              highlight={(code) => highlight(code, languages.markdown, "markdown")}
-              padding={16}
-              style={{
-                fontFamily: '"Fira Code", monospace',
-                backgroundColor: "white",
-                lineHeight: "1.5",
-                border: "1px solid #d1d5dc",
-                borderRadius: ".75rem",
-                overflow: "auto",
-                flex: "1",
-              }}
-              textareaClassName="!border !border-transparent !rounded-xl"
-            />
-
-            <AboutMarkdown />
-          </div>
+          <MarkdownEditor value={value} setValue={setValue} />
         </div>
 
         <div
           className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-xl shadow"
           id="preview"
         >
-          <Markdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              code({ children, className }) {
-                const match = /language-(\w+)/.exec(className || "");
-                return match
-                  ? (
-                    <SyntaxHighlighter PreTag="div" language={match[1]} style={tomorrow}>
-                      {String(children).replace(/\n$/, "")}
-                    </SyntaxHighlighter>
-                  )
-                  : <code className={className}>{children}</code>;
-              },
-            }}
-          >
-            {value}
-          </Markdown>
+          <Preview value={value} />
         </div>
       </div>
     </form>
