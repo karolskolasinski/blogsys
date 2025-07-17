@@ -6,6 +6,7 @@ import { Post, User } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
+import ArrowIcon from "@/public/icons/chevron-right.svg";
 import Button from "@/components/Button";
 import Preview from "@/components/Preview";
 import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
@@ -151,20 +152,27 @@ export default function PostForm(props: PostFormProps) {
               Dodaj
             </button>
 
-            <select
-              id="authorId"
-              name="authorId"
-              defaultValue={selectedAuthorId}
-              className="bg-white p-2 border border-gray-300 rounded-lg shadow"
-              title="Autor"
-            >
-              <option disabled>Autor</option>
-              {props.allAuthors.map((author) => (
-                <option key={author.id} value={author.id}>
-                  {author.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative inline-block">
+              <select
+                id="authorId"
+                name="authorId"
+                defaultValue={selectedAuthorId}
+                className="w-full bg-white p-2 pr-8 border border-gray-300 rounded-lg shadow appearance-none"
+                title="Autor"
+              >
+                <option disabled>Autor</option>
+                {props.allAuthors.map((author) => (
+                  <option key={author.id} value={author.id}>
+                    {author.name}
+                  </option>
+                ))}
+              </select>
+              <ArrowIcon
+                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90"
+                width={16}
+                height={16}
+              />
+            </div>
           </div>
 
           <div className="flex gap-2 items-center">
