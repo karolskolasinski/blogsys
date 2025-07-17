@@ -34,7 +34,7 @@ export default function AboutMarkdown() {
   return (
     <>
       <div
-        className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+        className="absolute top-[6px] right-[6px] hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
         onClick={openDialog}
         title="Podstawy Markdown"
       >

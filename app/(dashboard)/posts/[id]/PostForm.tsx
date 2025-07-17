@@ -15,6 +15,7 @@ import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
+import EditIcon from "@/public/icons/edit.svg";
 import AboutMarkdown from "./AboutMarkdown";
 import Button from "@/components/Button";
 
@@ -81,12 +82,13 @@ export default function PostForm(props: PostFormProps) {
       <div className="flex justify-between items-center gap-4">
         <input
           name="title"
-          className="w-full text-3xl font-black bg-white border border-gray-300 rounded-lg shadow"
+          className="w-full text-3xl font-black focus:bg-white rounded-lg"
           defaultValue={post.title}
           placeholder="Wpisz tytuł"
           maxLength={100}
           required
         />
+
         <Button
           href=""
           role="button"
@@ -101,7 +103,6 @@ export default function PostForm(props: PostFormProps) {
           Data utworzenia: {post.createdAt?.toLocaleString()}
         </div>
         <span className="text-gray-300 font-black">•</span>
-        <input name="updatedAt" type="hidden" value={post.updatedAt?.toISOString()} />
         <div className="h-8 flex items-center">
           Ostatnio edytowany: {post.updatedAt?.toLocaleString()}
         </div>
@@ -177,27 +178,30 @@ export default function PostForm(props: PostFormProps) {
                 onChange={handleCoverChange}
               />
             </label>
-            <AboutMarkdown />
           </div>
 
-          <Editor
-            placeholder="Wpisz treść"
-            name="content"
-            value={value}
-            onValueChange={setValue}
-            highlight={(code) => highlight(code, languages.markdown, "markdown")}
-            padding={16}
-            style={{
-              fontFamily: '"Fira Code", monospace',
-              backgroundColor: "white",
-              lineHeight: "1.5",
-              border: "1px solid #d1d5dc",
-              borderRadius: ".75rem",
-              overflow: "auto",
-              flex: "1",
-            }}
-            textareaClassName="!border !border-transparent !rounded-xl"
-          />
+          <div className="relative flex flex-1">
+            <Editor
+              placeholder="Wpisz treść"
+              name="content"
+              value={value}
+              onValueChange={setValue}
+              highlight={(code) => highlight(code, languages.markdown, "markdown")}
+              padding={16}
+              style={{
+                fontFamily: '"Fira Code", monospace',
+                backgroundColor: "white",
+                lineHeight: "1.5",
+                border: "1px solid #d1d5dc",
+                borderRadius: ".75rem",
+                overflow: "auto",
+                flex: "1",
+              }}
+              textareaClassName="!border !border-transparent !rounded-xl"
+            />
+
+            <AboutMarkdown />
+          </div>
         </div>
 
         <div
