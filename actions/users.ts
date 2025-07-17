@@ -57,9 +57,9 @@ export async function getUsers() {
   return docSnap.docs.map((doc) => userDocToUser(doc));
 }
 
-export async function getUserByEmail(email: string) {
+export async function getUserByEmail(email: string, keepPass?: boolean) {
   const docSnap = await db.collection("users").where("email", "==", email).get();
-  return userDocToUser(docSnap.docs[0]);
+  return userDocToUser(docSnap.docs[0], keepPass);
 }
 
 export async function getUserById(id: string) {
@@ -67,12 +67,12 @@ export async function getUserById(id: string) {
   return userDocToUser(docSnap);
 }
 
-function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>) {
+function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, keepPass?: boolean) {
   if (!docSnap.exists) {
     return null;
   }
 
-  const data = _.omit(docSnap.data(), ["password"]);
+  const data = keepPass ? docSnap.data() : _.omit(docSnap.data(), ["password"]);
   return {
     ...data,
     id: docSnap.id,
