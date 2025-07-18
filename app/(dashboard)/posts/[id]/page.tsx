@@ -14,10 +14,21 @@ export default async function Posts(props: ServerComponentProps) {
 
   const params = await props.params;
   const id = params.id as string;
-  const post = await getPost(id);
-  const title = post.title ? "Edycja wpisu" : "Nowy wpis";
-  const allTags = await getAllTags();
-  const allAuthors = await getAllAuthors();
+  let errMsg = "";
+  let post;
+  let allTags;
+  let allAuthors;
+
+  try {
+    [post, allTags, allAuthors] = await Promise.all([
+      getPost(id),
+      getAllTags(),
+      getAllAuthors(),
+    ]);
+  } catch (err) {
+    console.error(err);
+    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
+  }
 
   return (
     <main className="flex w-full h-screen">
@@ -27,11 +38,13 @@ export default async function Posts(props: ServerComponentProps) {
         <Breadcrumb
           items={[
             { label: "Wpisy", href: "/posts" },
-            { label: title, href: `/posts/${id}` },
+            { label: post?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
           ]}
         />
 
-        <PostForm post={post} allTags={allTags} allAuthors={allAuthors} user={session.user} />
+        {errMsg.length > 0
+          ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
+          : <PostForm post={post!} allTags={allTags!} allAuthors={allAuthors!} />}
       </section>
     </main>
   );

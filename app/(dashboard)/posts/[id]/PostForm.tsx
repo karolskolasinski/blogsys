@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { savePost } from "@/actions/posts";
-import { Post, User } from "@/types/common";
+import { Post } from "@/types/common";
 import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
@@ -15,11 +15,10 @@ type PostFormProps = {
   post: Post;
   allTags: string[];
   allAuthors: { id: string; name: string }[];
-  user: User;
 };
 
 export default function PostForm(props: PostFormProps) {
-  const { post, allTags, user } = props;
+  const { post, allTags } = props;
   const [value, setValue] = useState(post.content);
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");

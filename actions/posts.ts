@@ -117,7 +117,7 @@ export async function savePost(formData: FormData) {
 
 export async function getAllTags() {
   const docSnap = await db.collection("posts").select("tags").get();
-  const tags = docSnap.docs.reduce((acc, doc) => {
+  const tags: string[] = docSnap.docs.reduce((acc, doc) => {
     const data = doc.data();
     return [...acc, ...data.tags];
   }, [] as string[]);

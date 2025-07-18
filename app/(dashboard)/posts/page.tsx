@@ -45,7 +45,7 @@ export default async function Posts(props: ServerComponentProps) {
             />
           </div>
 
-          {errMsg
+          {errMsg.length > 0
             ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
             : (
               <div className="mt-10 overflow-x-auto rounded-xl border border-gray-200 shadow">
