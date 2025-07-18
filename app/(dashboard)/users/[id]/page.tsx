@@ -5,6 +5,7 @@ import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
+import ArrowIcon from "@/public/icons/chevron-right.svg";
 
 export default async function Users(props: ServerComponentProps) {
   const session = await auth();
@@ -15,6 +16,7 @@ export default async function Users(props: ServerComponentProps) {
   const params = await props.params;
   const user = await getUserById(params.id as string);
   const title = user?.name ? "Edycja użytkownika" : "Dodaj użytkownika";
+  const selectedRole = user?.role || "user";
 
   return (
     <main className="flex w-full h-screen">
@@ -40,7 +42,7 @@ export default async function Users(props: ServerComponentProps) {
           <div className="flex justify-between items-center gap-4">
             <input
               name="name"
-              className="w-full text-3xl font-black rounded focus:bg-white"
+              className="w-full text-3xl font-black rounded-lg focus:bg-white"
               defaultValue={user?.name}
               placeholder="Wpisz nazwę"
               maxLength={100}
@@ -66,19 +68,24 @@ export default async function Users(props: ServerComponentProps) {
               type="email"
               defaultValue={user?.email}
               maxLength={50}
-              className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
+              className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
               placeholder="Wpisz email"
               required
             />
 
-            <select
-              name="role"
-              defaultValue={user?.role}
-              className="flex-1 bg-white p-2 border border-gray-300 rounded shadow"
-            >
-              <option value="user">Użytkownik</option>
-              <option value="admin">Administrator</option>
-            </select>
+            <div className="relative inline-block flex-1">
+              <select
+                id="role"
+                name="role"
+                defaultValue={selectedRole}
+                className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow appearance-none"
+              >
+                <option disabled>Rola</option>
+                <option value="user">Użytkownik</option>
+                <option value="admin">Administrator</option>
+              </select>
+              <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
+            </div>
           </div>
         </form>
       </section>

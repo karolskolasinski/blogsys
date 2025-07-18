@@ -151,28 +151,24 @@ export default function PostForm(props: PostFormProps) {
             >
               Dodaj
             </button>
+          </div>
 
-            <div className="relative inline-block">
-              <select
-                id="authorId"
-                name="authorId"
-                defaultValue={selectedAuthorId}
-                className="w-full bg-white p-2 pr-8 border border-gray-300 rounded-lg shadow appearance-none"
-                title="Autor"
-              >
-                <option disabled>Autor</option>
-                {props.allAuthors.map((author) => (
-                  <option key={author.id} value={author.id}>
-                    {author.name}
-                  </option>
-                ))}
-              </select>
-              <ArrowIcon
-                className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90"
-                width={16}
-                height={16}
-              />
-            </div>
+          <div className="relative inline-block">
+            <select
+              id="authorId"
+              name="authorId"
+              defaultValue={selectedAuthorId}
+              className="w-full bg-white p-2 pr-8 border border-gray-300 rounded-lg shadow appearance-none"
+              title="Autor"
+            >
+              <option disabled>Autor</option>
+              {props.allAuthors.map((author) => (
+                <option key={author.id} value={author.id}>
+                  {author.name}
+                </option>
+              ))}
+            </select>
+            <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
           </div>
 
           <div className="flex gap-2 items-center">

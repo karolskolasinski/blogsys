@@ -39,10 +39,10 @@
 }
 
 .button {
-    @apply px-4 inline-flex gap-2 h-10 items-center justify-center rounded-lg text-sm text-white bg-gray-800 focus:bg-gray-700 border hover:border-gray-500 border-black font-bold shadow-[0px_2px_4px_0px_rgba(10,13,18,0.1)] shadow-[0px_-3px_0px_0px_rgba(10,13,18,0.1)_inset] shadow-[0px_0px_0px_2px_rgba(10,13,18,0.25)_inset] duration-150 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-[1px] cursor-pointer;
+    @apply px-4 inline-flex gap-2 h-[42px] items-center justify-center rounded-lg text-sm text-white bg-gray-800 focus:bg-gray-700 border hover:border-gray-500 border-black font-bold shadow-[0px_2px_4px_0px_rgba(10,13,18,0.1)] shadow-[0px_-3px_0px_0px_rgba(10,13,18,0.1)_inset] shadow-[0px_0px_0px_2px_rgba(10,13,18,0.25)_inset] duration-150 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-[1px] cursor-pointer;
 }
 
 .button-outline {
-    @apply px-4 inline-flex gap-2 h-10 items-center justify-center rounded-lg text-sm text-gray-800 bg-gray-100 focus:bg-gray-50 border hover:border-gray-300 border-gray-200 font-bold shadow-[0px_2px_4px_0px_rgba(10,13,18,0.1)] shadow-[0px_-3px_0px_0px_rgba(10,13,18,0.1)_inset] shadow-[0px_0px_0px_2px_rgba(10,13,18,0.25)_inset] duration-150 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-[1px] cursor-pointer;
+    @apply px-4 inline-flex gap-2 h-[42px] items-center justify-center rounded-lg text-sm text-gray-800 bg-gray-100 focus:bg-gray-50 border hover:border-gray-300 border-gray-200 font-bold shadow-[0px_2px_4px_0px_rgba(10,13,18,0.1)] shadow-[0px_-3px_0px_0px_rgba(10,13,18,0.1)_inset] shadow-[0px_0px_0px_2px_rgba(10,13,18,0.25)_inset] duration-150 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-[1px] cursor-pointer;
 }
 

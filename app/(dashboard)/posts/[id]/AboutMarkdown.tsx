@@ -43,7 +43,7 @@ export default function AboutMarkdown() {
 
       <dialog
         ref={dialogRef}
-        className="rounded-2xl p-6 max-w-md w-full fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 outline-0 backdrop:backdrop-brightness-90 backdrop:backdrop-blur-[1px]"
+        className="rounded-xl p-6 max-w-md w-full fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white z-50 outline-0 backdrop:backdrop-brightness-90 backdrop:backdrop-blur-[1px]"
       >
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-black">Podstawy Markdown</h2>

@@ -47,7 +47,7 @@ export default async function Users() {
           {errMsg
             ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
             : (
-              <div className="mt-10 overflow-x-auto rounded-2xl border border-gray-200 shadow">
+              <div className="mt-10 overflow-x-auto rounded-xl border border-gray-200 shadow">
                 <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
                   <thead className="border-b border-b-gray-300 font-semibold">
                     <tr className="text-left text-xs uppercase">
@@ -98,7 +98,9 @@ export default async function Users() {
                           </td>
 
                           <td className="px-6 py-4">{user.email}</td>
-                          <td className={`px-6 py-4 ${adminClass}`}>{user.role}</td>
+                          <td className={`px-6 py-4 ${adminClass}`}>
+                            {user.role === "admin" ? "Administrator" : "Użytkownik"}
+                          </td>
                           <td className="px-6 py-4">{user.createdAt?.toLocaleString()}</td>
                         </tr>
                       );
