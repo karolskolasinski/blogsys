@@ -35,13 +35,12 @@ export default async function Users() {
           <div className="flex gap-4 items-center justify-between">
             <h1 className="text-3xl font-black">Użytkownicy</h1>
 
-            <Link
+            <Button
               href="/users/new"
-              className="button !rounded-full md:!rounded-md"
-            >
-              <AddIcon className="w-5 h-5 fill-white" />
-              <span className="hidden md:inline">Dodaj nowego</span>
-            </Link>
+              role="button"
+              label="Dodaj nowego"
+              icon={<AddIcon className="w-5 h-5 fill-white" />}
+            />
           </div>
 
           {errMsg.length > 0

@@ -96,6 +96,7 @@ export async function saveUser(formData: FormData) {
   const rawData = Object.fromEntries(formData.entries());
   await save({
     ...rawData,
+    ...(rawData.password && { password: await bcrypt.hash(rawData.password as string, 10) }),
     createdAt: Timestamp.now(),
   });
 

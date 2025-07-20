@@ -6,6 +6,8 @@ import { getUserById, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
 import ArrowIcon from "@/public/icons/chevron-right.svg";
+import Button from "@/components/Button";
+import ResetPass from "./ResetPass";
 
 export default async function Users(props: ServerComponentProps) {
   const session = await auth();
@@ -49,10 +51,12 @@ export default async function Users(props: ServerComponentProps) {
               required
             />
 
-            <button type="submit" className="button">
-              <SaveIcon className="w-5 h-5 fill-white" />
-              Zapisz
-            </button>
+            <Button
+              href=""
+              role="button"
+              label="Zapisz"
+              icon={<SaveIcon className="w-5 h-5 fill-white" />}
+            />
           </div>
 
           <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
@@ -87,6 +91,8 @@ export default async function Users(props: ServerComponentProps) {
               <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
             </div>
           </div>
+
+          <ResetPass />
         </form>
       </section>
     </main>

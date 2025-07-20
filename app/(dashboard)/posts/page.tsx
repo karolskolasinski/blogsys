@@ -38,7 +38,7 @@ export default async function Posts(props: ServerComponentProps) {
             <h1 className="text-3xl font-black">Wpisy</h1>
 
             <Button
-              href="posts/new"
+              href="/posts/new"
               role="button"
               label="Dodaj wpis"
               icon={<AddIcon className="w-5 h-5 fill-white" />}
