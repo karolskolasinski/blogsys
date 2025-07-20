@@ -87,7 +87,7 @@ export async function deleteUser(id: string) {
     throw new Error("You cannot delete yourself");
   }
   await db.collection("users").doc(id).delete();
-  revalidatePath("/users?deleted=true");
+  redirect("/users?deleted=true");
 }
 
 export async function saveUser(formData: FormData) {
@@ -101,17 +101,20 @@ export async function saveUser(formData: FormData) {
   await save({
     ...rawData,
     ...(rawData.password && { password: await bcrypt.hash(rawData.password as string, 10) }),
-    createdAt: Timestamp.now(),
   });
 
-  revalidatePath(rawData.settings ? "/settings?saved=true" : "/users?saved=true");
+  if (rawData.settings) {
+    revalidatePath("/settings?saved=true");
+  } else {
+    redirect("/users?saved=true");
+  }
 }
 
 async function save(user: WithFieldValue<DocumentData>) {
   const docRef = db.collection("users");
 
   if (user.id) {
-    await docRef.doc(user.id).update(user);
+    await docRef.doc(user.id).update({ ...user, createdAt: Timestamp.now() });
   } else {
     const docSnap = await docRef.where("email", "==", user.email).get();
     if (!docSnap.empty) {
