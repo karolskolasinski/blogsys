@@ -21,20 +21,31 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
         <h1 className="text-2xl font-black">blogsys</h1>
       </div>
 
-      <MenuItem href="/" label="Strona główna" Icon={HomeIcon} active={props.active} />
-      <MenuItem href="/posts" label="Wpisy" Icon={PostsIcon} active={props.active} />
+      <MenuItem
+        href="/"
+        label="Strona główna"
+        icon={<HomeIcon className="w-6 h-6 fill-gray-400" />}
+        active={props.active}
+      />
+      <MenuItem
+        href="/posts"
+        label="Wpisy"
+        icon={<PostsIcon className="w-6 h-6 fill-gray-400" />}
+        active={props.active}
+      />
+
       {user.role === "admin" && (
         <MenuItem
           href="/users"
           label="Użytkownicy"
-          Icon={UsersIcon}
+          icon={<UsersIcon className="w-6 h-6 fill-gray-400" />}
           active={props.active}
         />
       )}
       <MenuItem
         href="/settings"
         label="Ustawienia"
-        Icon={SettingsIcon}
+        icon={<SettingsIcon className="w-6 h-6 fill-gray-400" />}
         active={props.active}
       />
 

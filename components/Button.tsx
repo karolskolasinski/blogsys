@@ -17,9 +17,7 @@ export default function Button(props: ButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { pending: formPending } = useFormStatus();
-
   const isLoading = isPending || formPending;
-
   const className = props.role === "button"
     ? "button !rounded-full md:!rounded-lg flex items-center gap-2"
     : `flex gap-1 items-center ${props.colorClass} cursor-pointer`;
@@ -41,11 +39,7 @@ export default function Button(props: ButtonProps) {
   };
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={isLoading}
-      className={className}
-    >
+    <button onClick={handleClick} disabled={isLoading} className={className}>
       {isLoading
         ? <SpinnerIcon className={`${sizeClass} fill-current animate-spin`} />
         : props.icon}
