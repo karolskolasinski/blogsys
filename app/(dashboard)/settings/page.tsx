@@ -1,40 +1,31 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
-import ArrowIcon from "@/public/icons/chevron-right.svg";
 import Button from "@/components/Button";
-import ResetPass from "./ResetPass";
+import ResetPass from "../users/[id]/ResetPass";
 
-export default async function User(props: ServerComponentProps) {
+export default async function Settings() {
   const session = await auth();
   if (!session) {
     redirect("/login");
   }
 
-  const params = await props.params;
-  const user = await getUserById(params.id as string);
-  const title = user?.name ? "Edycja użytkownika" : "Dodaj użytkownika";
-  const selectedRole = user?.role || "user";
+  const user = await getUserById(session?.user?.id ?? "");
 
   return (
     <main className="flex w-full h-screen">
-      <DashboardMenu active="/users" user={session.user} />
+      <DashboardMenu active="/settings" user={session.user} />
 
       <section className="flex-1 h-full flex flex-col">
-        <Breadcrumb
-          items={[
-            { label: "Użytkownicy", href: "/users" },
-            { label: title, href: `/posts/${user?.id}` },
-          ]}
-        />
+        <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
 
         <form
           action={async (formData) => {
             "use server";
+            formData.append("settings", "true");
             await saveUser(formData);
           }}
           className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
@@ -42,14 +33,7 @@ export default async function User(props: ServerComponentProps) {
           <input type="hidden" name="id" defaultValue={user?.id} />
 
           <div className="flex justify-between items-center gap-4">
-            <input
-              name="name"
-              className="w-full text-3xl font-black rounded-lg focus:bg-white"
-              defaultValue={user?.name}
-              placeholder="Wpisz nazwę"
-              maxLength={100}
-              required
-            />
+            <div className="text-3xl font-black">Ustawienia</div>
 
             <Button
               href=""
@@ -62,11 +46,20 @@ export default async function User(props: ServerComponentProps) {
           <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
             <input name="createdAt" type="hidden" value={user?.createdAt?.toISOString()} />
             <div className="h-8 flex items-center">
-              Data utworzenia: {user?.createdAt?.toLocaleString()}
+              Data utworzenia konta: {user?.createdAt?.toLocaleString()}
             </div>
           </div>
 
           <div className="flex items-center gap-2 text-gray-700">
+            <input
+              name="name"
+              className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
+              defaultValue={user?.name}
+              placeholder="Wpisz nazwę"
+              maxLength={100}
+              required
+            />
+
             <input
               name="email"
               type="email"
@@ -76,20 +69,6 @@ export default async function User(props: ServerComponentProps) {
               placeholder="Wpisz email"
               required
             />
-
-            <div className="relative inline-block flex-1">
-              <select
-                id="role"
-                name="role"
-                defaultValue={selectedRole}
-                className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow appearance-none"
-              >
-                <option disabled>Rola</option>
-                <option value="user">Użytkownik</option>
-                <option value="admin">Administrator</option>
-              </select>
-              <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
-            </div>
           </div>
 
           <ResetPass />

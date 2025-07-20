@@ -6,7 +6,7 @@ import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/Breadcrumb";
 import PostForm from "./PostForm";
 
-export default async function Posts(props: ServerComponentProps) {
+export default async function Post(props: ServerComponentProps) {
   const session = await auth();
   if (!session) {
     redirect("/login");

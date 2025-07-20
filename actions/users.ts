@@ -9,6 +9,7 @@ import { firestore } from "firebase-admin";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
+import { revalidatePath } from "next/cache";
 
 export async function init(formData: FormData) {
   const email = formData.get("email");
@@ -81,26 +82,29 @@ function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, ke
 }
 
 export async function deleteUser(id: string) {
-  // todo: prevent deleting yourself
+  const session = await auth();
+  if (session?.user?.id === id) {
+    throw new Error("You cannot delete yourself");
+  }
   await db.collection("users").doc(id).delete();
-  redirect("/users?deleted=true");
+  revalidatePath("/users?deleted=true");
 }
 
 export async function saveUser(formData: FormData) {
   const session = await auth();
-  const role = session?.user?.role;
-  if (role !== "admin") {
+  const rawData = Object.fromEntries(formData.entries());
+
+  if (session?.user?.id !== rawData.id && session?.user?.role !== "admin") {
     throw new Error("Unauthorized");
   }
 
-  const rawData = Object.fromEntries(formData.entries());
   await save({
     ...rawData,
     ...(rawData.password && { password: await bcrypt.hash(rawData.password as string, 10) }),
     createdAt: Timestamp.now(),
   });
 
-  redirect("/users?published=true");
+  revalidatePath(rawData.settings ? "/settings?saved=true" : "/users?saved=true");
 }
 
 async function save(user: WithFieldValue<DocumentData>) {
