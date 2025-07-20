@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
 import { deleteUser, getUsers } from "@/actions/users";
-import Link from "next/link";
 import Breadcrumb from "@/components/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
 import EditIcon from "@/public/icons/edit.svg";
@@ -11,7 +10,7 @@ import DeleteIcon from "@/public/icons/delete.svg";
 
 export default async function Users() {
   const session = await auth();
-  if (!session) {
+  if (!session || session.user.role !== "admin") {
     return redirect("/login");
   }
 

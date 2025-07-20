@@ -23,12 +23,14 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
 
       <MenuItem href="/" label="Strona główna" Icon={HomeIcon} active={props.active} />
       <MenuItem href="/posts" label="Wpisy" Icon={PostsIcon} active={props.active} />
-      <MenuItem
-        href="/users"
-        label="Użytkownicy"
-        Icon={UsersIcon}
-        active={props.active}
-      />
+      {user.role === "admin" && (
+        <MenuItem
+          href="/users"
+          label="Użytkownicy"
+          Icon={UsersIcon}
+          active={props.active}
+        />
+      )}
       <MenuItem
         href="/settings"
         label="Ustawienia"
