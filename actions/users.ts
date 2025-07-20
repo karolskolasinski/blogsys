@@ -124,3 +124,8 @@ async function save(user: WithFieldValue<DocumentData>) {
     await docRef.add(user);
   }
 }
+
+export async function saveAvatar(formData: FormData) {
+  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", formData);
+  revalidatePath("/settings?saved=true");
+}
