@@ -53,7 +53,7 @@ export default async function User(props: ServerComponentProps) {
 
             <Button
               href=""
-              role="button"
+              appearance="button"
               label="Zapisz"
               icon={<SaveIcon className="w-5 h-5 fill-white" />}
             />

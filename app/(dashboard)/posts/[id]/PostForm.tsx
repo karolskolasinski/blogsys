@@ -87,7 +87,7 @@ export default function PostForm(props: PostFormProps) {
 
         <Button
           href=""
-          role="button"
+          appearance="button"
           label="Opublikuj"
           icon={<SendIcon className="w-5 h-5 fill-white" />}
         />

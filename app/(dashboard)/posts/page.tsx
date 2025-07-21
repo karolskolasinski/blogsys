@@ -39,7 +39,7 @@ export default async function Posts(props: ServerComponentProps) {
 
             <Button
               href="/posts/new"
-              role="button"
+              appearance="button"
               label="Dodaj wpis"
               icon={<AddIcon className="w-5 h-5 fill-white" />}
             />
@@ -67,7 +67,7 @@ export default async function Posts(props: ServerComponentProps) {
                           <div className="mt-2 flex gap-2 text-sm">
                             <Button
                               href={`/posts/${post.id}`}
-                              role="link"
+                              appearance="link"
                               label="Edytuj"
                               icon={<EditIcon className="w-4 h-4 fill-current" />}
                               colorClass="text-sky-600 hover:text-sky-500"
@@ -83,7 +83,7 @@ export default async function Posts(props: ServerComponentProps) {
                             >
                               <Button
                                 href="delete"
-                                role="link"
+                                appearance="link"
                                 label="Usuń"
                                 icon={<DeleteIcon className="w-4 h-4 fill-current" />}
                                 colorClass="text-red-600 hover:text-red-500"

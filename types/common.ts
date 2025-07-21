@@ -5,6 +5,7 @@ export type User = {
   password?: string;
   role: "admin" | "user";
   createdAt: Date;
+  avatarId?: string;
 };
 
 export type Post = {

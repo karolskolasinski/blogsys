@@ -5,6 +5,7 @@ import { Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
+import { toBase64 } from "@/lib/utils";
 
 export async function getPosts() {
   const session = await auth(); // todo: move to save Post (if author)
@@ -101,9 +102,11 @@ export async function savePost(formData: FormData) {
 
   const file = formData.get("cover") as File;
   if (file && file.size > 0) {
-    const buf = await file.arrayBuffer();
-    const b64 = Buffer.from(buf).toString("base64");
-    data.cover = `data:${file.type};base64,${b64}`;
+    // const buf = await file.arrayBuffer();
+    // const b64 = Buffer.from(buf).toString("base64");
+    // data.cover = `data:${file.type};base64,${b64}`;
+    // todo: check
+    data.cover = await toBase64(file);
   }
 
   if (id === "new") {

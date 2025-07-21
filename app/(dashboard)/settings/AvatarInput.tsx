@@ -1,12 +1,19 @@
 "use client";
 
 import InfoIcon from "@/public/icons/info.svg";
-import PhotoIcon from "@/public/icons/photo.svg";
+import DeleteIcon from "@/public/icons/delete.svg";
 import { useState } from "react";
+import Avatar from "@/components/Avatar";
+import Button from "@/components/Button";
 
-export default function AvatarInput() {
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
-  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
+type AvatarInputProps = {
+  data: string | null;
+};
+
+export default function AvatarInput(props: AvatarInputProps) {
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(props.data);
+
+  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) {
       return;
@@ -25,7 +32,8 @@ export default function AvatarInput() {
     }
 
     const url = URL.createObjectURL(file);
-    setCoverPreview(url);
+    setAvatarPreview(url);
+    e.target.form?.requestSubmit();
   }
 
   return (
@@ -36,26 +44,31 @@ export default function AvatarInput() {
         Maksymalny rozmiar pliku to 1MB.
       </div>
 
-      <label
-        htmlFor="cover"
-        className="w-36 h-36 flex items-center justify-center bg-gray-200 rounded-full cursor-pointer bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: coverPreview ? `url(${coverPreview})` : undefined,
-          borderColor: "transparent",
-        }}
-        title="Zmień avatar"
-      >
-        {!coverPreview && <PhotoIcon className="w-10 h-10 fill-white" />}
+      <div className="flex gap-4">
+        <Avatar src={avatarPreview} />
 
-        <input
-          id="cover"
-          name="cover"
-          type="file"
-          accept="image/jpeg, image/png, image/gif, image/webp"
-          className="hidden"
-          onChange={handleCoverChange}
-        />
-      </label>
+        <div className="flex flex-col gap-4 justify-center items-center">
+          <label htmlFor="avatar" className="button">
+            Wybierz plik
+            <input
+              id="avatar"
+              name="avatar"
+              type="file"
+              accept="image/jpeg, image/png, image/gif, image/webp"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
+          </label>
+
+          <button
+            type="submit"
+            onClick={() => setAvatarPreview(null)}
+            className="button-outline w-full"
+          >
+            Usuń
+          </button>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/DashboardMenu";
-import { getUserById, saveAvatar, saveUser } from "@/actions/users";
+import { getAvatar, getUserById, saveAvatar, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
 import Button from "@/components/Button";
@@ -14,7 +14,17 @@ export default async function Settings() {
     redirect("/login");
   }
 
-  const user = await getUserById(session?.user?.id ?? "");
+  let user = null;
+  let avatar = null;
+  let errMsg = "";
+  try {
+    const userId = session?.user?.id ?? "";
+    user = await getUserById(userId);
+    avatar = await getAvatar(user?.avatarId ?? "");
+  } catch (err) {
+    console.error(err);
+    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
+  }
 
   return (
     <main className="flex w-full h-screen">
@@ -39,7 +49,7 @@ export default async function Settings() {
 
               <Button
                 href=""
-                role="button"
+                appearance="button"
                 label="Zapisz"
                 icon={<SaveIcon className="w-5 h-5 fill-white" />}
               />
@@ -85,7 +95,7 @@ export default async function Settings() {
           >
             <input type="hidden" name="id" defaultValue={user?.id} />
 
-            <AvatarInput />
+            <AvatarInput data={avatar?.data ?? null} />
           </form>
         </div>
       </section>

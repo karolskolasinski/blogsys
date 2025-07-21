@@ -6,10 +6,11 @@ import { auth } from "@/auth";
 import { Timestamp } from "firebase-admin/firestore";
 import _ from "lodash";
 import { firestore } from "firebase-admin";
+import { revalidatePath } from "next/cache";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
-import { revalidatePath } from "next/cache";
+import { toBase64 } from "@/lib/utils";
 
 export async function init(formData: FormData) {
   const email = formData.get("email");
@@ -40,6 +41,7 @@ export async function init(formData: FormData) {
     name: "Admin",
     role: "admin",
     createdAt: Timestamp.now(),
+    avatarId: "",
   };
 
   await save(user);
@@ -114,7 +116,8 @@ async function save(user: WithFieldValue<DocumentData>) {
   const docRef = db.collection("users");
 
   if (user.id) {
-    await docRef.doc(user.id).update({ ...user, createdAt: Timestamp.now() });
+    const omitted = _.omit(user, ["id"]);
+    await docRef.doc(user.id).update({ ...omitted, createdAt: Timestamp.now() });
   } else {
     const docSnap = await docRef.where("email", "==", user.email).get();
     if (!docSnap.empty) {
@@ -125,7 +128,39 @@ async function save(user: WithFieldValue<DocumentData>) {
   }
 }
 
+export async function getAvatar(avatarId: string) {
+  if (!avatarId) {
+    return null;
+  }
+
+  const docSnap = await db.collection("images").doc(avatarId).get();
+  if (!docSnap.exists) {
+    return null;
+  }
+
+  return docSnap.data() as { data: string };
+}
+
 export async function saveAvatar(formData: FormData) {
-  console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", formData);
-  revalidatePath("/settings?saved=true");
+  const id = formData.get("id") as string;
+  const file = formData.get("avatar") as File;
+  const data = file.size > 0 ? await toBase64(file) : "";
+
+  const userSnap = await db.collection("users").doc(id).get();
+  const existingAvatarId = userSnap.exists && userSnap.data()?.avatarId
+    ? (userSnap.data()!.avatarId as string)
+    : "";
+
+  if (existingAvatarId) {
+    await db.collection("images").doc(existingAvatarId).update({ data });
+  } else {
+    const ref = await db.collection("images").add({ data });
+    await db.collection("users").doc(id).update({ avatarId: ref.id });
+  }
+
+  if (data) {
+    redirect("/settings?saved=true");
+  } else {
+    revalidatePath("/settings");
+  }
 }

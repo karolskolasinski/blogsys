@@ -36,7 +36,7 @@ export default async function Users() {
 
             <Button
               href="/users/new"
-              role="button"
+              appearance="button"
               label="Dodaj nowego"
               icon={<AddIcon className="w-5 h-5 fill-white" />}
             />
@@ -70,7 +70,7 @@ export default async function Users() {
                             <div className="mt-2 flex gap-2 text-sm">
                               <Button
                                 href={`/users/${user.id}`}
-                                role="link"
+                                appearance="link"
                                 label="Edytuj"
                                 icon={<EditIcon className="w-4 h-4 fill-current" />}
                                 colorClass="text-sky-600 hover:text-sky-500"
@@ -86,7 +86,7 @@ export default async function Users() {
                               >
                                 <Button
                                   href="delete"
-                                  role="link"
+                                  appearance="link"
                                   label="Usuń"
                                   icon={<DeleteIcon className="w-4 h-4 fill-current" />}
                                   colorClass="text-red-600 hover:text-red-500"
