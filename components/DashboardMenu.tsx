@@ -5,6 +5,8 @@ import SettingsIcon from "@/public/icons/settings.svg";
 import PostsIcon from "@/public/icons/post.svg";
 import LogoutIcon from "@/public/icons/logout.svg";
 import { User } from "@/types/common";
+import { signOut } from "@/auth";
+import { redirect } from "next/navigation";
 
 type DashboardMenuProps = {
   active: string;
@@ -57,15 +59,24 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
             <div>
               <strong>{user?.name}</strong>
               <div className="text-gray-500">{user?.role}</div>
-              <div className="text-[10px] text-gray-500">{user?.id}</div>
             </div>
           </div>
 
-          <div className="hover:bg-gray-100 rounded-xl p-2" title="Wyloguj">
-            <a href="/logout">
+          <form
+            action={async () => {
+              "use server";
+              await signOut({ redirect: false });
+              redirect("/");
+            }}
+          >
+            <button
+              type="submit"
+              className="hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
+              title="Wyloguj"
+            >
               <LogoutIcon className="w-6 h-6 fill-gray-700" />
-            </a>
-          </div>
+            </button>
+          </form>
         </div>
       </div>
     </aside>
