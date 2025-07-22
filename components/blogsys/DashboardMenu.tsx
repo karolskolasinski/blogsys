@@ -53,13 +53,9 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
 
       <div className="w-64 fixed bottom-8">
         <div className="w-full flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6">
-          <div className="flex gap-2 items-center">
-            <img src="https://placehold.co/50x50" alt="avatar" className="w-12 h-12 rounded-full" />
-
-            <div>
-              <strong>{user?.name}</strong>
-              <div className="text-gray-500">{user?.role}</div>
-            </div>
+          <div className="flex flex-col items-center">
+            <strong>{user?.name}</strong>
+            <div className="text-gray-500">{user?.role}</div>
           </div>
 
           <form

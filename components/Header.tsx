@@ -21,12 +21,6 @@ export default async function Header() {
 
         <nav className="hidden md:flex items-center gap-6">
           <a href="#" className="hover:text-primary-500 duration-100 ease-in-out">Home</a>
-          <Link href="/services" className="hover:text-primary-500 duration-100 ease-in-out">
-            Usługi
-          </Link>
-          <Link href="/users" className="hover:text-primary-500 duration-100 ease-in-out">
-            Users
-          </Link>
           <Link href="/login" className="hover:text-primary-500 duration-100 ease-in-out">
             Login
           </Link>
@@ -51,16 +45,7 @@ export default async function Header() {
 
             <ul className="peer-checked:right-0 fixed top-0 -right-full w-full h-full pt-28 bg-gray-50 duration-[.25s] shadow-2xl p-4 flex flex-col text-xl">
               <li className="border-b border-t border-gray-200 py-4">
-                <a href="#">Home</a>
-              </li>
-              <li className="border-b border-gray-200 py-4">
-                <a href="#">Usługi</a>
-              </li>
-              <li className="border-b border-gray-200 py-4">
-                <a href="#">Zespół</a>
-              </li>
-              <li className="border-b border-gray-200 py-4">
-                <a href="#">Kontakt</a>
+                <Link href="#">Home</Link>
               </li>
             </ul>
           </div>
