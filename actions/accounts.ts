@@ -147,12 +147,16 @@ async function fetchAccounts(): Promise<Array<{ login: string; password: string 
 }
 
 async function activateCouponsForAccount(login: string, password: string): Promise<void> {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
-  await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle2" });
-  // await page.waitForSelector('input[name="input-email"]');
-  // await page.waitForSelector('input[name="Password"]');
 
+  // Set viewport to larger size
+  await page.setViewport({ width: 1366, height: 1279 });
+
+  // Enable console logs from the page
+  page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+
+  await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle2" });
   await page.type('input[name="input-email"]', login);
   await page.type('input[name="Password"]', password);
   await Promise.all([
@@ -160,11 +164,19 @@ async function activateCouponsForAccount(login: string, password: string): Promi
     page.waitForNavigation({ waitUntil: "networkidle2" }),
   ]);
 
+  await delay(500);
   await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle2" });
-  const buttons = await page.$$('[role="button"]');
 
-  buttons[0].click();
-  await delay(300);
+  const buttons = await page.$$('[role="button"]');
+  console.log(`Found ${buttons.length} buttons with role="button"`);
+
+  if (buttons.length > 0) {
+    console.log("Clicking first button...");
+    buttons[0].click();
+    await delay(300);
+  } else {
+    console.log('No buttons found with role="button"');
+  }
 
   // for (const btn of buttons) {
   //   try {
