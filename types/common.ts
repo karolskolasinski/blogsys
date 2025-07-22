@@ -24,6 +24,8 @@ export type Account = {
   id?: string;
   login: string;
   password: string;
+  iv: string;
+  tag: string;
   ownerId: string;
   createdAt: Date;
   updatedAt: Date;

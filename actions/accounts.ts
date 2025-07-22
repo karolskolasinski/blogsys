@@ -5,10 +5,13 @@ import { Account } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
-import { toBase64 } from "@/lib/utils";
+import { createCipheriv, randomBytes } from "crypto";
+
+const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || "", "hex");
+const ALGO = "aes-256-gcm";
 
 export async function getAccounts() {
-  const session = await auth(); // todo: move to save Post (if author)
+  const session = await auth();
   const userId = session?.user?.id;
   const query = db.collection("accounts")
     .where("ownerId", "==", userId)
@@ -52,9 +55,21 @@ export async function getAccount(id: string) {
   } as Account;
 }
 
-export async function deletePost(id: string) {
-  await db.collection("posts").doc(id).delete();
-  redirect("/posts?deleted=true");
+export async function deleteAccount(id: string) {
+  await db.collection("accounts").doc(id).delete();
+  redirect("/accounts?deleted=true");
+}
+
+function encrypt(text: string): { iv: string; data: string; tag: string } {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv(ALGO, ENCRYPTION_KEY, iv);
+  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return {
+    iv: iv.toString("hex"),
+    data: encrypted.toString("hex"),
+    tag: tag.toString("hex"),
+  };
 }
 
 export async function saveAccount(formData: FormData) {
@@ -72,9 +87,13 @@ export async function saveAccount(formData: FormData) {
     ? Timestamp.now()
     : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
 
-  const data: Record<string, string | string[] | Timestamp> = {
+  const encrypted = encrypt(password);
+
+  const data: Record<string, string | Timestamp> = {
     login,
-    password,
+    password: encrypted.data,
+    iv: encrypted.iv,
+    tag: encrypted.tag,
     ownerId,
     createdAt,
     updatedAt: Timestamp.now(),

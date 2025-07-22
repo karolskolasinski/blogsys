@@ -1,11 +1,10 @@
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { deletePost } from "@/actions/posts";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/edit.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
 import AddIcon from "@/public/icons/add.svg";
-import { getAccounts } from "@/actions/accounts";
+import { deleteAccount, getAccounts } from "@/actions/accounts";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 
 export default async function Posts() {
@@ -70,8 +69,7 @@ export default async function Posts() {
                             <form
                               action={async () => {
                                 "use server";
-                                // todo: delete account
-                                await deletePost(account.id!);
+                                await deleteAccount(account.id!);
                               }}
                             >
                               <Button
@@ -85,9 +83,13 @@ export default async function Posts() {
                           </div>
                         </td>
 
-                        <td className="px-6 py-4">{account.password}</td>
-                        <td className="px-6 py-4">{account.createdAt?.toLocaleString()}</td>
-                        <td className="px-6 py-4">{account.updatedAt?.toLocaleString()}</td>
+                        <td className="px-6 py-4 break-all">{account.password}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {account.createdAt?.toLocaleString()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {account.updatedAt?.toLocaleString()}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
