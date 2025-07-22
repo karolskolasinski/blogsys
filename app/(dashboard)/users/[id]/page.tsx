@@ -22,7 +22,7 @@ export default async function User(props: ServerComponentProps) {
 
   return (
     <main className="flex w-full h-screen">
-      <DashboardMenu active="/users" user={session.user} />
+      <DashboardMenu active="/users" />
 
       <section className="flex-1 h-full flex flex-col">
         <Breadcrumb

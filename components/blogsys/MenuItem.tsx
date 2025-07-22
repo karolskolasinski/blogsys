@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import SpinnerIcon from "@/public/icons/spinner.svg";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 
 type MenuItemProps = {
   href: string;
@@ -17,6 +18,10 @@ export default function MenuItem(props: MenuItemProps) {
   const isActive = href === "/" ? active === href : active.startsWith(href);
   const activeClass = isActive ? "bg-gray-100" : "";
   const [isPending, startTransition] = useTransition();
+  const { user } = useUser();
+  if (user.role !== "admin" && href === "/users") {
+    return null;
+  }
 
   return (
     <button

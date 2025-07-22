@@ -4,18 +4,15 @@ import UsersIcon from "@/public/icons/users.svg";
 import SettingsIcon from "@/public/icons/settings.svg";
 import PostsIcon from "@/public/icons/post.svg";
 import LogoutIcon from "@/public/icons/logout.svg";
-import { User } from "@/types/common";
 import { signOut } from "@/auth";
 import { redirect } from "next/navigation";
+import UserInfo from "@/components/blogsys/UserInfo";
 
 type DashboardMenuProps = {
   active: string;
-  user: User;
 };
 
-export default async function DashboardMenu(props: DashboardMenuProps) {
-  const user = props.user;
-
+export default function DashboardMenu(props: DashboardMenuProps) {
   return (
     <aside className="w-72 flex flex-col gap-2 px-4 py-8 border-r border-gray-200">
       <div className="flex gap-1 items-center pb-8">
@@ -29,6 +26,7 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
         icon={<HomeIcon className="w-6 h-6 fill-gray-400" />}
         active={props.active}
       />
+
       <MenuItem
         href="/posts"
         label="Wpisy"
@@ -36,14 +34,13 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
         active={props.active}
       />
 
-      {user.role === "admin" && (
-        <MenuItem
-          href="/users"
-          label="Użytkownicy"
-          icon={<UsersIcon className="w-6 h-6 fill-gray-400" />}
-          active={props.active}
-        />
-      )}
+      <MenuItem
+        href="/users"
+        label="Użytkownicy"
+        icon={<UsersIcon className="w-6 h-6 fill-gray-400" />}
+        active={props.active}
+      />
+
       <MenuItem
         href="/settings"
         label="Ustawienia"
@@ -53,10 +50,7 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
 
       <div className="w-64 fixed bottom-8">
         <div className="w-full flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6">
-          <div className="flex flex-col items-center">
-            <strong>{user?.name}</strong>
-            <div className="text-gray-500">{user?.role}</div>
-          </div>
+          <UserInfo />
 
           <form
             action={async () => {

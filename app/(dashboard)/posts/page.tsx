@@ -1,5 +1,3 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { deletePost, getPosts } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
@@ -10,11 +8,6 @@ import EditIcon from "@/public/icons/edit.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
 
 export default async function Posts(props: ServerComponentProps) {
-  const session = await auth();
-  if (!session) {
-    return redirect("/login");
-  }
-
   const params = await props.searchParams; // todo: flash message
 
   let posts;
@@ -28,7 +21,7 @@ export default async function Posts(props: ServerComponentProps) {
 
   return (
     <main className="flex-1 flex w-full">
-      <DashboardMenu active="/posts" user={session.user} />
+      <DashboardMenu active="/posts" />
 
       <section className="flex-1 flex flex-col">
         <Breadcrumb items={[{ label: "Wpisy", href: "/posts" }]} />

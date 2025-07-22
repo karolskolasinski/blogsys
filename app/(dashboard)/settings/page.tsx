@@ -28,7 +28,7 @@ export default async function Settings() {
 
   return (
     <main className="flex w-full h-screen">
-      <DashboardMenu active="/settings" user={session.user} />
+      <DashboardMenu active="/settings" />
 
       <section className="flex-1 h-full flex flex-col">
         <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
