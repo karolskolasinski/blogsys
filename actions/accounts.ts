@@ -5,7 +5,8 @@ import { Account } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
-import { createCipheriv, randomBytes } from "crypto";
+import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
+import puppeteer from "puppeteer";
 
 const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || "", "hex");
 const ALGO = "aes-256-gcm";
@@ -60,18 +61,6 @@ export async function deleteAccount(id: string) {
   redirect("/accounts?deleted=true");
 }
 
-function encrypt(text: string): { iv: string; data: string; tag: string } {
-  const iv = randomBytes(12);
-  const cipher = createCipheriv(ALGO, ENCRYPTION_KEY, iv);
-  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
-  const tag = cipher.getAuthTag();
-  return {
-    iv: iv.toString("hex"),
-    data: encrypted.toString("hex"),
-    tag: tag.toString("hex"),
-  };
-}
-
 export async function saveAccount(formData: FormData) {
   const id = formData.get("id") as string;
   const login = formData.get("login") as string;
@@ -106,4 +95,91 @@ export async function saveAccount(formData: FormData) {
   }
 
   redirect("/accounts?published=true");
+}
+
+export async function activateCoupons() {
+  const accounts = await fetchAccounts();
+  for (const { login, password } of accounts) {
+    try {
+      await activateCouponsForAccount(login, password);
+    } catch (err) {
+      console.error(`Błąd dla konta ${login}:`, err);
+    }
+  }
+}
+
+function encrypt(text: string): { iv: string; data: string; tag: string } {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv(ALGO, ENCRYPTION_KEY, iv);
+  const encrypted = Buffer.concat([cipher.update(text, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return {
+    iv: iv.toString("hex"),
+    data: encrypted.toString("hex"),
+    tag: tag.toString("hex"),
+  };
+}
+
+function decrypt(ivHex: string, dataHex: string, tagHex: string): string {
+  const iv = Buffer.from(ivHex, "hex");
+  const encrypted = Buffer.from(dataHex, "hex");
+  const tag = Buffer.from(tagHex, "hex");
+  const decipher = createDecipheriv(ALGO, ENCRYPTION_KEY, iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf8");
+}
+
+async function fetchAccounts(): Promise<Array<{ login: string; password: string }>> {
+  const session = await auth();
+  const userId = session?.user?.id;
+  if (!userId) throw new Error("Brak zalogowanego użytkownika");
+
+  const query = db.collection("accounts")
+    .where("ownerId", "==", userId)
+    .orderBy("updatedAt", "desc");
+  const docs = await query.get();
+
+  return docs.docs.map((doc) => {
+    const { login, password: encryptedData, iv, tag } = doc.data();
+    const decryptedPassword = decrypt(iv, encryptedData, tag);
+    return { login, password: decryptedPassword };
+  });
+}
+
+async function activateCouponsForAccount(login: string, password: string): Promise<void> {
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle2" });
+  // await page.waitForSelector('input[name="input-email"]');
+  // await page.waitForSelector('input[name="Password"]');
+
+  await page.type('input[name="input-email"]', login);
+  await page.type('input[name="Password"]', password);
+  await Promise.all([
+    page.click('button[data-submit="true"]'),
+    page.waitForNavigation({ waitUntil: "networkidle2" }),
+  ]);
+
+  await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle2" });
+  const buttons = await page.$$('[role="button"]');
+
+  buttons[0].click();
+  await delay(300);
+
+  // for (const btn of buttons) {
+  //   try {
+  //     await btn.click();
+  //     await delay(300);
+  //   } catch (err) {
+  //     console.error(err, "=======================");
+  //     // ignoruj błędy pojedynczych kliknięć
+  //   }
+  // }
+
+  await page.goto("https://www.lidl.pl/logout", { waitUntil: "networkidle2" });
+  await browser.close();
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

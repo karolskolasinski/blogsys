@@ -4,7 +4,8 @@ import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/edit.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
 import AddIcon from "@/public/icons/add.svg";
-import { deleteAccount, getAccounts } from "@/actions/accounts";
+import ActivateIcon from "@/public/activate.svg";
+import { activateCoupons, deleteAccount, getAccounts } from "@/actions/accounts";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 
 export default async function Posts() {
@@ -28,12 +29,28 @@ export default async function Posts() {
           <div className="flex gap-4 items-center justify-between">
             <h1 className="text-3xl font-black">Konta</h1>
 
-            <Button
-              href="/accounts/new"
-              appearance="button"
-              label="Dodaj konto"
-              icon={<AddIcon className="w-5 h-5 fill-white" />}
-            />
+            <div className="flex gap-4">
+              <form
+                action={async () => {
+                  "use server";
+                  await activateCoupons();
+                }}
+              >
+                <Button
+                  href=""
+                  appearance="button"
+                  label="Aktywuj kupony"
+                  icon={<ActivateIcon className="w-5 h-5 fill-white" />}
+                />
+              </form>
+
+              <Button
+                href="/accounts/new"
+                appearance="button"
+                label="Dodaj konto"
+                icon={<AddIcon className="w-5 h-5 fill-white" />}
+              />
+            </div>
           </div>
 
           {errMsg.length > 0
