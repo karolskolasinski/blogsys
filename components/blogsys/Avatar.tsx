@@ -2,14 +2,15 @@ import AvatarIcon from "@/public/icons/avatar.svg";
 
 type AvatarProps = {
   src: string | null;
+  className?: string;
 };
 
 export default function Avatar(props: AvatarProps) {
-  const { src } = props;
+  const { src, className } = props;
 
   return (
     <div
-      className="w-36 h-36 flex items-center justify-center bg-gray-200 rounded-full bg-cover bg-center bg-no-repeat"
+      className={`${className} flex items-center justify-center bg-gray-200 rounded-full bg-cover bg-center bg-no-repeat`}
       style={{
         backgroundImage: src ? `url(${src})` : undefined,
         borderColor: "transparent",

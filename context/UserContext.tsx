@@ -5,13 +5,15 @@ import { User } from "@/types/common";
 
 type UserContextType = {
   user: User;
+  avatar: string;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export function UserProvider({ children, user }: { children: React.ReactNode; user: User }) {
+export function UserProvider(props: { children: React.ReactNode; user: User; avatar: string }) {
+  const { children, user, avatar } = props;
   return (
-    <UserContext.Provider value={{ user }}>
+    <UserContext.Provider value={{ user, avatar }}>
       {children}
     </UserContext.Provider>
   );

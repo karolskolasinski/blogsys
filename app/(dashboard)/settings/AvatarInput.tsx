@@ -55,7 +55,7 @@ export default function AvatarInput(props: AvatarInputProps) {
       </div>
 
       <div className="flex gap-4">
-        <Avatar src={avatarPreview} />
+        <Avatar src={avatarPreview} className="w-36 h-36" />
 
         <div className="flex flex-col gap-4 justify-center items-center">
           <label htmlFor="avatar" className="button">
