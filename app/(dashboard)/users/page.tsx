@@ -7,6 +7,7 @@ import AddIcon from "@/public/icons/add.svg";
 import EditIcon from "@/public/icons/edit.svg";
 import Button from "@/components/blogsys/Button";
 import DeleteIcon from "@/public/icons/delete.svg";
+import ErrorMsg from "@/components/blogsys/ErrorMsg";
 
 export default async function Users() {
   const session = await auth();
@@ -43,7 +44,7 @@ export default async function Users() {
           </div>
 
           {errMsg.length > 0
-            ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
+            ? <ErrorMsg errMsg={errMsg} />
             : (
               <div className="mt-10 overflow-x-auto rounded-xl border border-gray-200 shadow">
                 <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">

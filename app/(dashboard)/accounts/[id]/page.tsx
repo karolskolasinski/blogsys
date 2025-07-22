@@ -1,13 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { getAllAuthors, getAllTags, getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
-import PostForm from "./PostForm";
-import ErrorMsg from "@/components/blogsys/ErrorMsg";
+import { getAccount } from "@/actions/accounts";
+import AccountForm from "./AccountForm";
 
-export default async function Post(props: ServerComponentProps) {
+export default async function Account(props: ServerComponentProps) {
   const session = await auth();
   if (!session) {
     redirect("/login");
@@ -16,16 +15,9 @@ export default async function Post(props: ServerComponentProps) {
   const params = await props.params;
   const id = params.id as string;
   let errMsg = "";
-  let post;
-  let allTags;
-  let allAuthors;
-
+  let account;
   try {
-    [post, allTags, allAuthors] = await Promise.all([
-      getPost(id),
-      getAllTags(),
-      getAllAuthors(),
-    ]);
+    account = await getAccount(id);
   } catch (err) {
     console.error(err);
     errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
@@ -33,19 +25,19 @@ export default async function Post(props: ServerComponentProps) {
 
   return (
     <main className="flex w-full h-screen">
-      <DashboardMenu active="/posts" />
+      <DashboardMenu active="/accounts" />
 
       <section className="flex-1 h-full flex flex-col">
         <Breadcrumb
           items={[
-            { label: "Wpisy", href: "/posts" },
-            { label: post?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
+            { label: "Wpisy", href: "/accounts" },
+            { label: account?.login ? "Edycja konta" : "Nowe konto", href: `/accounts/${id}` },
           ]}
         />
 
         {errMsg.length > 0
-          ? <ErrorMsg errMsg={errMsg} />
-          : <PostForm post={post!} allTags={allTags!} allAuthors={allAuthors!} />}
+          ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>
+          : <AccountForm account={account!} />}
       </section>
     </main>
   );

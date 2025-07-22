@@ -2,7 +2,7 @@ import Editor from "react-simple-code-editor";
 import { highlight, languages } from "prismjs";
 import "prismjs/components/prism-markdown";
 import "prismjs/themes/prism-twilight.min.css";
-import AboutMarkdown from "@/app/(dashboard)/posts/[id]/AboutMarkdown";
+import AboutMarkdown from "./AboutMarkdown";
 
 type MarkdownEditorProps = {
   value: string;

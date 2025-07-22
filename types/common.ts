@@ -20,6 +20,15 @@ export type Post = {
   updatedAt: Date;
 };
 
+export type Account = {
+  id?: string;
+  login: string;
+  password: string;
+  ownerId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export type ServerComponentProps = {
   params: { [key: string]: string | string[] };
   searchParams: { [key: string]: string | string[] | undefined };

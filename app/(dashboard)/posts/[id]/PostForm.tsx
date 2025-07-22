@@ -9,7 +9,7 @@ import PhotoIcon from "@/public/icons/photo.svg";
 import ArrowIcon from "@/public/icons/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import Preview from "@/components/blogsys/Preview";
-import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
+import MarkdownEditor from "./MarkdownEditor";
 
 type PostFormProps = {
   post: Post;

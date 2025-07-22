@@ -1,20 +1,18 @@
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { deletePost, getPosts } from "@/actions/posts";
-import { ServerComponentProps } from "@/types/common";
+import { deletePost } from "@/actions/posts";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
-import AddIcon from "@/public/icons/add.svg";
 import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/edit.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
+import AddIcon from "@/public/icons/add.svg";
+import { getAccounts } from "@/actions/accounts";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 
-export default async function Posts(props: ServerComponentProps) {
-  const params = await props.searchParams; // todo: flash message
-
-  let posts;
+export default async function Posts() {
+  let accounts;
   let errMsg = "";
   try {
-    posts = await getPosts();
+    accounts = await getAccounts();
   } catch (err) {
     console.error(err);
     errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
@@ -22,19 +20,19 @@ export default async function Posts(props: ServerComponentProps) {
 
   return (
     <main className="flex-1 flex w-full">
-      <DashboardMenu active="/posts" />
+      <DashboardMenu active="/accounts" />
 
       <section className="flex-1 flex flex-col">
-        <Breadcrumb items={[{ label: "Wpisy", href: "/posts" }]} />
+        <Breadcrumb items={[{ label: "Konta", href: "/accounts" }]} />
 
         <div className="flex-1 bg-slate-50 p-4 pt-8 border-t border-gray-200">
           <div className="flex gap-4 items-center justify-between">
-            <h1 className="text-3xl font-black">Wpisy</h1>
+            <h1 className="text-3xl font-black">Konta</h1>
 
             <Button
-              href="/posts/new"
+              href="/accounts/new"
               appearance="button"
-              label="Dodaj wpis"
+              label="Dodaj konto"
               icon={<AddIcon className="w-5 h-5 fill-white" />}
             />
           </div>
@@ -46,21 +44,21 @@ export default async function Posts(props: ServerComponentProps) {
                 <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
                   <thead className="border-b border-b-gray-300 font-semibold">
                     <tr className="text-left text-xs uppercase">
-                      <th className="px-6 py-3">Tytuł</th>
-                      <th className="px-6 py-3">Autor</th>
+                      <th className="px-6 py-3">Login</th>
+                      <th className="px-6 py-3">Hasło</th>
                       <th className="px-6 py-3">Data utworzenia</th>
                       <th className="px-6 py-3">Data aktualizacji</th>
                     </tr>
                   </thead>
 
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {posts?.map((post) => (
-                      <tr key={post.id} className="align-top">
+                    {accounts?.map((account) => (
+                      <tr key={account.id} className="align-top">
                         <td className="px-6 py-4">
-                          {post.title}
+                          {account.login}
                           <div className="mt-2 flex gap-2 text-sm">
                             <Button
-                              href={`/posts/${post.id}`}
+                              href={`/accounts/${account.id}`}
                               appearance="link"
                               label="Edytuj"
                               icon={<EditIcon className="w-4 h-4 fill-current" />}
@@ -72,7 +70,8 @@ export default async function Posts(props: ServerComponentProps) {
                             <form
                               action={async () => {
                                 "use server";
-                                await deletePost(post.id!);
+                                // todo: delete account
+                                await deletePost(account.id!);
                               }}
                             >
                               <Button
@@ -86,9 +85,9 @@ export default async function Posts(props: ServerComponentProps) {
                           </div>
                         </td>
 
-                        <td className="px-6 py-4">{post.authorName}</td>
-                        <td className="px-6 py-4">{post.createdAt?.toLocaleString()}</td>
-                        <td className="px-6 py-4">{post.updatedAt?.toLocaleString()}</td>
+                        <td className="px-6 py-4">{account.password}</td>
+                        <td className="px-6 py-4">{account.createdAt?.toLocaleString()}</td>
+                        <td className="px-6 py-4">{account.updatedAt?.toLocaleString()}</td>
                       </tr>
                     ))}
                   </tbody>
