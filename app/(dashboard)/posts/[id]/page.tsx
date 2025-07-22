@@ -1,9 +1,9 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { getAllAuthors, getAllTags, getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import PostForm from "./PostForm";
 
 export default async function Post(props: ServerComponentProps) {

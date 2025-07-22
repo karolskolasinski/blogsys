@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import FormFooter from "@/components/FormFooter";
+import FormFooter from "@/components/blogsys/FormFooter";
 
 type ErrorProps = {
   error: Error & { digest?: string };

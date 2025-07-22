@@ -1,12 +1,12 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
 import ArrowIcon from "@/public/icons/chevron-right.svg";
-import Button from "@/components/Button";
+import Button from "@/components/blogsys/Button";
 import ResetPass from "./ResetPass";
 
 export default async function User(props: ServerComponentProps) {

@@ -7,8 +7,8 @@ import XIcon from "@/public/icons/x.svg";
 import SendIcon from "@/public/icons/send.svg";
 import PhotoIcon from "@/public/icons/photo.svg";
 import ArrowIcon from "@/public/icons/chevron-right.svg";
-import Button from "@/components/Button";
-import Preview from "@/components/Preview";
+import Button from "@/components/blogsys/Button";
+import Preview from "@/components/blogsys/Preview";
 import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
 
 type PostFormProps = {

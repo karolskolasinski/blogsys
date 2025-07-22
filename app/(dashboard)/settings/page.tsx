@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { getAvatar, getUserById, saveAvatar, saveUser } from "@/actions/users";
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import SaveIcon from "@/public/icons/save.svg";
-import Button from "@/components/Button";
+import Button from "@/components/blogsys/Button";
 import ResetPass from "../users/[id]/ResetPass";
 import AvatarInput from "./AvatarInput";
 

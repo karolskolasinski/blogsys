@@ -1,5 +1,5 @@
 import { init } from "@/actions/users";
-import FormFooter from "@/components/FormFooter";
+import FormFooter from "@/components/blogsys/FormFooter";
 
 export default async function InitAdminPage() {
   return (

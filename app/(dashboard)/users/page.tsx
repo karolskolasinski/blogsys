@@ -1,11 +1,11 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import DashboardMenu from "@/components/DashboardMenu";
+import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { deleteUser, getUsers } from "@/actions/users";
-import Breadcrumb from "@/components/Breadcrumb";
+import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import AddIcon from "@/public/icons/add.svg";
 import EditIcon from "@/public/icons/edit.svg";
-import Button from "@/components/Button";
+import Button from "@/components/blogsys/Button";
 import DeleteIcon from "@/public/icons/delete.svg";
 
 export default async function Users() {

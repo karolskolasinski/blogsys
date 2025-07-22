@@ -1,7 +1,7 @@
 import { auth, signIn } from "@/auth";
 import { redirect } from "next/navigation";
 import { ServerComponentProps } from "@/types/common";
-import FormFooter from "@/components/FormFooter";
+import FormFooter from "@/components/blogsys/FormFooter";
 
 export default async function LoginPage(props: ServerComponentProps) {
   const session = await auth();

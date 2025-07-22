@@ -1,10 +1,10 @@
 "use client";
-
 import InfoIcon from "@/public/icons/info.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
-import { useState } from "react";
-import Avatar from "@/components/Avatar";
-import Button from "@/components/Button";
+import { useEffect, useState } from "react";
+import Avatar from "@/components/blogsys/Avatar";
+import { useFormStatus } from "react-dom";
+import SpinnerIcon from "@/public/icons/spinner.svg";
 
 type AvatarInputProps = {
   data: string | null;
@@ -12,29 +12,39 @@ type AvatarInputProps = {
 
 export default function AvatarInput(props: AvatarInputProps) {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(props.data);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { pending } = useFormStatus();
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) {
       return;
     }
-
     if (file.size > 1024 * 1024) {
       alert("Plik jest za duży! Maksymalny rozmiar to 1MB.");
       e.target.value = "";
       return;
     }
-
     if (!file.type.startsWith("image/")) {
       alert("Wybierz plik obrazu!");
       e.target.value = "";
       return;
     }
-
     const url = URL.createObjectURL(file);
     setAvatarPreview(url);
     e.target.form?.requestSubmit();
   }
+
+  function handleDelete() {
+    setIsDeleting(true);
+    setAvatarPreview(null);
+  }
+
+  useEffect(() => {
+    if (!isDeleting && !pending) {
+      setIsDeleting(false);
+    }
+  }, [pending, isDeleting]);
 
   return (
     <>
@@ -60,11 +70,10 @@ export default function AvatarInput(props: AvatarInputProps) {
             />
           </label>
 
-          <button
-            type="submit"
-            onClick={() => setAvatarPreview(null)}
-            className="button-outline w-full"
-          >
+          <button type="submit" onClick={handleDelete} className="button-outline w-full">
+            {isDeleting && pending
+              ? <SpinnerIcon className="w-5 h-5 fill-current animate-spin" />
+              : <DeleteIcon className="w-5 h-5" />}
             Usuń
           </button>
         </div>

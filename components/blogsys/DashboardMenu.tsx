@@ -1,4 +1,4 @@
-import MenuItem from "@/components/MenuItem";
+import MenuItem from "./MenuItem";
 import HomeIcon from "@/public/icons/home.svg";
 import UsersIcon from "@/public/icons/users.svg";
 import SettingsIcon from "@/public/icons/settings.svg";
