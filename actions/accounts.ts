@@ -145,57 +145,40 @@ async function fetchAccounts(): Promise<Array<{ login: string; password: string 
     return { login, password: decryptedPassword };
   });
 }
+import { chromium } from "playwright";
 
-async function activateCouponsForAccount(login: string, password: string): Promise<void> {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 35 });
-  const page = await browser.newPage();
+export async function activateCouponsForAccount(login: string, password: string) {
+  const browser = await chromium.launch({ headless: false });
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
-  // Set viewport to larger size
-  await page.setViewport({ width: 1366, height: 1279 });
-  // page.on("console", (msg) => console.log("PAGE LOG:", msg.text()));
+  await page.setViewportSize({ width: 1366, height: 1279 });
+  await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
+  await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
+  await page.waitForSelector('input[name="input-email"]');
+  await page.fill('input[name="input-email"]', login);
+  await page.fill('input[name="Password"]', password);
+  await page.click('button[data-submit="true"]');
+  await page.waitForTimeout(3000);
+  await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
+  await page.waitForTimeout(3000);
 
-  await delay(5000);
-  await page.goto(
-    "https://accounts.lidl.com/Account/Login?ReturnUrl=%2Fconnect%2Fauthorize%2Fcallback%3Fcountry_code%3DPL%26response_type%3Dcode%26client_id%3DPolandEcommerceClient%26scope%3Dopenid%2520profile%2520Lidl.Authentication%2520offline_access%26state%3DuRioL0R5OK8_m-_IlXsZUw5itESRUve98eNlcILTI0U%253D%26redirect_uri%3Dhttps%253A%252F%252Fwww.lidl.pl%252Fuser-api%252Fsignin-oidc%26nonce%3DIPW5u0jBWJXBOuuFncA361AuMLi0NTdt7NQ3E95fEPU%26step%3Dlogin%26language%3Dpl-PL#login",
-    { waitUntil: "networkidle2" },
-  );
-  await page.type('input[name="input-email"]', login);
-  await page.type('input[name="Password"]', password);
-  await Promise.all([
-    page.click('button[data-submit="true"]'),
-    page.waitForNavigation({ waitUntil: "networkidle2" }),
-  ]);
-
-  await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle2" });
-
-  const buttons = await page.$$("button.bg-button_primary-positive-color-background");
-  console.log(`Found ${buttons.length} buttons`);
-
-  if (buttons.length > 0) {
-    const text = await buttons[0].evaluate((el) => el?.textContent?.trim());
-    if (text?.includes("AKTYWUJ")) {
-      console.log("Clicking first button...");
-      buttons[0].click();
-      await delay(300);
-    }
-  } else {
-    console.log('No buttons found with role="button"');
+  const acceptBtn = page.locator("#onetrust-accept-btn-handler");
+  if (await acceptBtn.isVisible()) {
+    await acceptBtn.click();
+    await page.waitForTimeout(2000);
   }
 
-  // for (const btn of buttons) {
-  //   try {
-  //     await btn.click();
-  //     await delay(300);
-  //   } catch (err) {
-  //     console.error(err, "=======================");
-  //     // ignoruj błędy pojedynczych kliknięć
-  //   }
-  // }
+  const buttons = await page.locator(".bg-button_primary-positive-color-background").all();
+  for (const btn of buttons) {
+    const text = await btn.textContent();
+    if (text?.includes("AKTYWUJ")) {
+      await Promise.all([
+        btn.click(),
+        page.waitForTimeout(3000),
+      ]);
+    }
+  }
 
-  // await page.goto("https://www.lidl.pl/logout", { waitUntil: "networkidle2" });
-  // await browser.close();
-}
-
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  await browser.close();
 }
