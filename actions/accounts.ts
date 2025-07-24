@@ -169,14 +169,25 @@ export async function activateCouponsForAccount(login: string, password: string)
     await page.waitForTimeout(2000);
   }
 
-  const buttons = await page.locator(".bg-button_primary-positive-color-background").all();
-  for (const btn of buttons) {
-    const text = await btn.textContent();
-    if (text?.includes("AKTYWUJ")) {
-      await Promise.all([
-        btn.click(),
-        page.waitForTimeout(3000),
-      ]);
+  let attempts = 0;
+  const maxAttempts = 30;
+  while (attempts++ < maxAttempts) {
+    const btn = page
+      .locator(".bg-button_primary-positive-color-background", { hasText: "AKTYWUJ" })
+      .first();
+    const visible = await btn.isVisible();
+
+    if (!visible) {
+      console.log("Brak kolejnych przycisków AKTYWUJ");
+      break;
+    }
+
+    try {
+      await btn.click({ timeout: 5000 });
+      await page.waitForTimeout(1000);
+    } catch (e) {
+      console.error("Błąd kliknięcia:", e);
+      break;
     }
   }
 
