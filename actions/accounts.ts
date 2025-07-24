@@ -148,7 +148,7 @@ async function fetchAccounts(): Promise<Array<{ login: string; password: string 
 import { chromium } from "playwright";
 
 export async function activateCouponsForAccount(login: string, password: string) {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const context = await browser.newContext();
   const page = await context.newPage();
 
