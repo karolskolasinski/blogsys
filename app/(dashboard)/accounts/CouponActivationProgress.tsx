@@ -192,7 +192,7 @@ export default function CouponActivationProgress() {
       {state.logs.length > 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <h3 className="font-medium mb-2">Dziennik aktywności:</h3>
-          <div className="space-y-1 text-sm font-mono break-all">
+          <div className="space-y-1 text-sm font-mono">
             {state.logs.map((log) => {
               const colorClass = log.status === "error"
                 ? "text-red-600"
@@ -202,10 +202,10 @@ export default function CouponActivationProgress() {
 
               return (
                 <div key={log.id} className={`flex items-center gap-2 ${colorClass}`}>
-                  <span className="text-gray-400 text-xs">
+                  <span className="text-gray-400 text-xs whitespace-nowrap">
                     {log.timestamp.toLocaleTimeString()}
                   </span>
-                  <span>{log.message}</span>
+                  <span className="break-all">{log.message}</span>
                 </div>
               );
             })}

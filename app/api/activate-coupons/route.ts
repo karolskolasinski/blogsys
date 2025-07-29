@@ -142,11 +142,8 @@ async function activateCouponsWithProgress(
 
     onProgress({ step: "logging_in", message: "Loguję się..." });
     await page.waitForSelector('input[name="input-email"]');
-    await page.waitForTimeout(1000);
     await page.fill('input[name="input-email"]', login);
-    await page.waitForTimeout(1000);
     await page.fill('input[name="Password"]', password);
-    await page.waitForTimeout(1000);
     await page.click('button[data-submit="true"]');
     await page.waitForTimeout(3000);
 
