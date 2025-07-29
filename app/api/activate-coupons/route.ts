@@ -1,7 +1,13 @@
 import { fetchAccounts } from "@/actions/accounts";
 import { chromium } from "playwright";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export async function POST() {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
@@ -35,7 +41,7 @@ export async function POST() {
           );
 
           try {
-            const result = await activateCouponsForAccountWithProgress(
+            const result = await activateCouponsWithProgress(
               login,
               password,
               (progress) => {
@@ -108,13 +114,28 @@ export async function POST() {
   });
 }
 
-async function activateCouponsForAccountWithProgress(
+async function activateCouponsWithProgress(
   login: string,
   password: string,
   onProgress: (progress: any) => void,
 ) {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
+  const browser = await chromium.launch({
+    headless: true,
+    args: [
+      "--disable-blink-features=AutomationControlled",
+    ],
+  });
+  const context = await browser.newContext({
+    userAgent:
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+    locale: "pl-PL",
+    viewport: { width: 1366, height: 768 },
+    bypassCSP: true,
+  });
+  // przed otwarciem strony:
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => false });
+  });
   const page = await context.newPage();
 
   try {

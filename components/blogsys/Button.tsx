@@ -11,6 +11,7 @@ type ButtonProps = {
   href: string;
   label: string;
   colorClass?: string;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
 export default function Button(props: ButtonProps) {
@@ -23,7 +24,7 @@ export default function Button(props: ButtonProps) {
     : `flex gap-1 items-center ${props.colorClass} cursor-pointer`;
   const sizeClass = props.appearance === "button" ? "w-5 h-5" : "w-4 h-4";
 
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
+  const handleClick = props.onClick ? props.onClick : (e: React.MouseEvent<HTMLElement>) => {
     if (props.href === "delete") {
       if (!confirm("Czy na pewno chcesz usunąć?")) {
         e.preventDefault();

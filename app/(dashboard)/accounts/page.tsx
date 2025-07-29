@@ -4,8 +4,7 @@ import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/edit.svg";
 import DeleteIcon from "@/public/icons/delete.svg";
 import AddIcon from "@/public/icons/add.svg";
-import ActivateIcon from "@/public/activate.svg";
-import { activateCoupons, deleteAccount, getAccounts } from "@/actions/accounts";
+import { deleteAccount, getAccounts } from "@/actions/accounts";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 import CouponActivationProgress from "@/app/(dashboard)/accounts/CouponActivationProgress";
 
@@ -31,20 +30,6 @@ export default async function Posts() {
             <h1 className="text-3xl font-black">Konta</h1>
 
             <div className="flex gap-4">
-              {/*<form*/}
-              {/*  action={async () => {*/}
-              {/*    "use server";*/}
-              {/*    await activateCoupons();*/}
-              {/*  }}*/}
-              {/*>*/}
-              {/*  <Button*/}
-              {/*    href=""*/}
-              {/*    appearance="button"*/}
-              {/*    label="Aktywuj kupony"*/}
-              {/*    icon={<ActivateIcon className="w-5 h-5 fill-white" />}*/}
-              {/*  />*/}
-              {/*</form>*/}
-
               <Button
                 href="/accounts/new"
                 appearance="button"

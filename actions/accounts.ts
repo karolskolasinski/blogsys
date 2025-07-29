@@ -6,7 +6,6 @@ import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
-import { chromium } from "playwright";
 
 const ENCRYPTION_KEY = Buffer.from(process.env.ENCRYPTION_KEY || "", "hex");
 const ALGO = "aes-256-gcm";
@@ -97,17 +96,6 @@ export async function saveAccount(formData: FormData) {
   redirect("/accounts?published=true");
 }
 
-export async function activateCoupons() {
-  const accounts = await fetchAccounts();
-  for (const { login, password } of accounts) {
-    try {
-      await activateCouponsForAccount(login, password);
-    } catch (err) {
-      console.error(`Błąd dla konta ${login}:`, err);
-    }
-  }
-}
-
 function encrypt(text: string): { iv: string; data: string; tag: string } {
   const iv = randomBytes(12);
   const cipher = createCipheriv(ALGO, ENCRYPTION_KEY, iv);
@@ -132,7 +120,6 @@ function decrypt(ivHex: string, dataHex: string, tagHex: string): string {
 export async function fetchAccounts(): Promise<Array<{ login: string; password: string }>> {
   const session = await auth();
   const userId = session?.user?.id;
-  if (!userId) throw new Error("Brak zalogowanego użytkownika");
 
   const query = db.collection("accounts")
     .where("ownerId", "==", userId)
@@ -144,50 +131,4 @@ export async function fetchAccounts(): Promise<Array<{ login: string; password: 
     const decryptedPassword = decrypt(iv, encryptedData, tag);
     return { login, password: decryptedPassword };
   });
-}
-
-export async function activateCouponsForAccount(login: string, password: string) {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
-  await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
-  await page.waitForSelector('input[name="input-email"]');
-  await page.fill('input[name="input-email"]', login);
-  await page.fill('input[name="Password"]', password);
-  await page.click('button[data-submit="true"]');
-  await page.waitForTimeout(3000);
-  await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
-  await page.waitForTimeout(3000);
-
-  const acceptBtn = page.locator("#onetrust-accept-btn-handler");
-  if (await acceptBtn.isVisible()) {
-    await acceptBtn.click();
-    await page.waitForTimeout(2000);
-  }
-
-  let attempts = 0;
-  const maxAttempts = 30;
-  while (attempts++ < maxAttempts) {
-    const btn = page
-      .locator(".bg-button_primary-positive-color-background", { hasText: "AKTYWUJ" })
-      .first();
-    const visible = await btn.isVisible();
-
-    if (!visible) {
-      console.log("Brak kolejnych przycisków AKTYWUJ");
-      break;
-    }
-
-    try {
-      await btn.click({ timeout: 5000 });
-      await page.waitForTimeout(1000);
-    } catch (e) {
-      console.error("Błąd kliknięcia:", e);
-      break;
-    }
-  }
-
-  await browser.close();
 }

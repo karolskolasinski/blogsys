@@ -157,17 +157,13 @@ export default function CouponActivationProgress() {
   return (
     <div className="pt-4 space-y-4">
       <div className="flex gap-4 items-center">
-        <button
-          className="button"
-          // href=""
-          // appearance="button"
-          // label={state.isActive ? "Activating..." : "Aktywuj kupony"}
-          // icon={<ActivateIcon className="w-5 h-5 fill-white" />}
+        <Button
+          href=""
+          appearance="button"
+          label={"Aktywuj kupony"}
+          icon={<ActivateIcon className="w-5 h-5 fill-white" />}
           onClick={startActivation}
-          disabled={state.isActive}
-        >
-          Aktywuj kupony
-        </button>
+        />
 
         {state.progress.total > 0 && (
           <div className="flex items-center gap-2">
@@ -195,7 +191,7 @@ export default function CouponActivationProgress() {
       {state.logs.length > 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <h3 className="font-medium mb-2">Activity Log:</h3>
-          <div className="space-y-1 text-sm font-mono">
+          <div className="space-y-1 text-sm font-mono break-all">
             {state.logs.map((log) => {
               const colorClass = log.status === "error"
                 ? "text-red-600"
