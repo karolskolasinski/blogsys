@@ -121,9 +121,7 @@ async function activateCouponsWithProgress(
 ) {
   const browser = await chromium.launch({
     headless: true,
-    args: [
-      "--disable-blink-features=AutomationControlled",
-    ],
+    args: ["--disable-blink-features=AutomationControlled"],
   });
   const context = await browser.newContext({
     userAgent:
@@ -132,27 +130,26 @@ async function activateCouponsWithProgress(
     viewport: { width: 1366, height: 768 },
     bypassCSP: true,
   });
-  // przed otwarciem strony:
-  await context.addInitScript(() => {
-    Object.defineProperty(navigator, "webdriver", { get: () => false });
-  });
+  await context.addInitScript(() =>
+    Object.defineProperty(navigator, "webdriver", { get: () => false })
+  );
   const page = await context.newPage();
 
   try {
-    await page.setViewportSize({ width: 1366, height: 1279 });
+    // await page.setViewportSize({ width: 1366, height: 1279 });
 
-    onProgress({ step: "navigating", message: "Navigating to login page..." });
+    onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
     await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
 
-    onProgress({ step: "logging_in", message: "Logging in..." });
+    onProgress({ step: "logging_in", message: "Loguję się..." });
     await page.waitForSelector('input[name="input-email"]');
     await page.fill('input[name="input-email"]', login);
     await page.fill('input[name="Password"]', password);
     await page.click('button[data-submit="true"]');
     await page.waitForTimeout(3000);
 
-    onProgress({ step: "navigating_coupons", message: "Navigating to coupons page..." });
+    onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
     await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
     await page.waitForTimeout(3000);
 
@@ -163,7 +160,7 @@ async function activateCouponsWithProgress(
       await page.waitForTimeout(2000);
     }
 
-    onProgress({ step: "activating", message: "Starting coupon activation..." });
+    onProgress({ step: "activating", message: "Rozpoczynam aktywację kuponów..." });
 
     let attempts = 0;
     let activatedCoupons = 0;
@@ -178,7 +175,8 @@ async function activateCouponsWithProgress(
       if (!visible) {
         onProgress({
           step: "completed",
-          message: `No more ACTIVATE buttons found. Activated ${activatedCoupons} coupons.`,
+          message:
+            `Nie znalazłem więcej przycisków AKTYWUJ. Aktywowałem ${activatedCoupons} kuponów.`,
           activatedCoupons,
         });
         break;
@@ -189,14 +187,14 @@ async function activateCouponsWithProgress(
         activatedCoupons++;
         onProgress({
           step: "activating",
-          message: `Activated coupon ${activatedCoupons}...`,
+          message: `Aktywowałem kupon ${activatedCoupons}...`,
           activatedCoupons,
         });
         await page.waitForTimeout(1000);
       } catch (e) {
         onProgress({
           step: "error",
-          message: `Click error: ${e}`,
+          message: `Błąd kliknięcia: ${e}`,
           activatedCoupons,
         });
         break;

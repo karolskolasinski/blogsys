@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "@/components/blogsys/Button";
 import ActivateIcon from "@/public/activate.svg";
+import SpinnerIcon from "@/public/icons/spinner.svg";
 
 interface ProgressState {
   isActive: boolean;
@@ -73,7 +74,7 @@ export default function CouponActivationProgress() {
                   }));
                   addLog({
                     type: "start",
-                    message: `Starting activation for ${data.total} accounts`,
+                    message: `Rozpoczęcie aktywacji kuponów dla ${data.total} kont`,
                     status: "info",
                   });
                   break;
@@ -87,7 +88,8 @@ export default function CouponActivationProgress() {
                   addLog({
                     login: data.login,
                     type: "account_start",
-                    message: `Starting account ${data.login} (${data.current}/${data.total})`,
+                    message:
+                      `Rozpoczynam aktywację kuponów dla konta ${data.login} (${data.current}/${data.total})`,
                     status: "info",
                   });
                   break;
@@ -106,7 +108,7 @@ export default function CouponActivationProgress() {
                     login: data.login,
                     type: "success",
                     message:
-                      `✅ Account ${data.login} completed - ${data.activatedCoupons} coupons activated`,
+                      `✅ Przetwarzanie konta ${data.login} zakończone - aktywowano ${data.activatedCoupons} kuponów`,
                     status: "success",
                   });
                   break;
@@ -115,7 +117,7 @@ export default function CouponActivationProgress() {
                   addLog({
                     login: data.login,
                     type: "error",
-                    message: `❌ Account ${data.login} failed: ${data.error}`,
+                    message: `❌ Błąd podczas przetwarzania konta ${data.login}: ${data.error}`,
                     status: "error",
                   });
                   break;
@@ -123,7 +125,7 @@ export default function CouponActivationProgress() {
                 case "complete":
                   addLog({
                     type: "complete",
-                    message: "🎉 All accounts processed!",
+                    message: "🎉 Wszystkie konta przetworzone!",
                     status: "success",
                   });
                   setState((prev) => ({ ...prev, isActive: false, currentAccount: undefined }));
@@ -132,7 +134,7 @@ export default function CouponActivationProgress() {
                 case "error":
                   addLog({
                     type: "error",
-                    message: `Global error: ${data.error}`,
+                    message: `Błąd ogólny: ${data.error}`,
                     status: "error",
                   });
                   setState((prev) => ({ ...prev, isActive: false }));
@@ -147,7 +149,7 @@ export default function CouponActivationProgress() {
     } catch (error) {
       addLog({
         type: "error",
-        message: `Connection error: ${error}`,
+        message: `Błąd połączenia: ${error}`,
         status: "error",
       });
       setState((prev) => ({ ...prev, isActive: false }));
@@ -157,13 +159,12 @@ export default function CouponActivationProgress() {
   return (
     <div className="pt-4 space-y-4">
       <div className="flex gap-4 items-center">
-        <Button
-          href=""
-          appearance="button"
-          label={"Aktywuj kupony"}
-          icon={<ActivateIcon className="w-5 h-5 fill-white" />}
-          onClick={startActivation}
-        />
+        <button onClick={startActivation} disabled={state.isActive} className="button">
+          {state.isActive
+            ? <SpinnerIcon className="w-5 h-5 fill-current animate-spin" />
+            : <ActivateIcon className="w-5 h-5 fill-white" />}
+          Aktywuj kupony
+        </button>
 
         {state.progress.total > 0 && (
           <div className="flex items-center gap-2">
@@ -183,14 +184,14 @@ export default function CouponActivationProgress() {
       {state.currentAccount && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
           <p className="text-sm font-medium text-blue-800">
-            Currently processing: {state.currentAccount}
+            Aktualnie przetwarzam: {state.currentAccount}
           </p>
         </div>
       )}
 
       {state.logs.length > 0 && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-          <h3 className="font-medium mb-2">Activity Log:</h3>
+          <h3 className="font-medium mb-2">Dziennik aktywności:</h3>
           <div className="space-y-1 text-sm font-mono break-all">
             {state.logs.map((log) => {
               const colorClass = log.status === "error"
