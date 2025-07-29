@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Button from "@/components/blogsys/Button";
 import ActivateIcon from "@/public/activate.svg";
 import SpinnerIcon from "@/public/icons/spinner.svg";
+import { v4 } from "uuid";
 
 interface ProgressState {
   isActive: boolean;
@@ -34,7 +34,7 @@ export default function CouponActivationProgress() {
       ...prev,
       logs: [...prev.logs, {
         ...log,
-        id: Date.now().toString(),
+        id: v4(),
         timestamp: new Date(),
       }],
     }));

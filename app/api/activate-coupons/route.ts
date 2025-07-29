@@ -120,14 +120,14 @@ async function activateCouponsWithProgress(
   onProgress: (progress: any) => void,
 ) {
   const browser = await chromium.launch({
-    headless: true,
+    headless: false,
     args: ["--disable-blink-features=AutomationControlled"],
   });
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
     locale: "pl-PL",
-    viewport: { width: 1366, height: 768 },
+    viewport: { width: 1366, height: 1279 },
     bypassCSP: true,
   });
   await context.addInitScript(() =>
@@ -136,16 +136,17 @@ async function activateCouponsWithProgress(
   const page = await context.newPage();
 
   try {
-    // await page.setViewportSize({ width: 1366, height: 1279 });
-
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
     await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
 
     onProgress({ step: "logging_in", message: "Loguję się..." });
     await page.waitForSelector('input[name="input-email"]');
+    await page.waitForTimeout(1000);
     await page.fill('input[name="input-email"]', login);
+    await page.waitForTimeout(1000);
     await page.fill('input[name="Password"]', password);
+    await page.waitForTimeout(1000);
     await page.click('button[data-submit="true"]');
     await page.waitForTimeout(3000);
 
