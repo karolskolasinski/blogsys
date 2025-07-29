@@ -193,7 +193,7 @@ export default function CouponActivationProgress() {
       )}
 
       {state.logs.length > 0 && (
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 max-h-96 overflow-y-auto">
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
           <h3 className="font-medium mb-2">Activity Log:</h3>
           <div className="space-y-1 text-sm font-mono">
             {state.logs.map((log) => {
