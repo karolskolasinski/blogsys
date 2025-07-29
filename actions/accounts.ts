@@ -129,7 +129,7 @@ function decrypt(ivHex: string, dataHex: string, tagHex: string): string {
   return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString("utf8");
 }
 
-async function fetchAccounts(): Promise<Array<{ login: string; password: string }>> {
+export async function fetchAccounts(): Promise<Array<{ login: string; password: string }>> {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) throw new Error("Brak zalogowanego użytkownika");
