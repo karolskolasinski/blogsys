@@ -155,7 +155,7 @@ async function activateCouponsWithProgress(
 
   try {
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
-    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
+    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
     const emailInput = 'input[name="input-email"]';
     const passInput = 'input[name="Password"]';
@@ -171,15 +171,15 @@ async function activateCouponsWithProgress(
       });
 
       await page.fill(emailInput, "");
-      await page.fill('input[name="input-email"]', login);
+      await page.fill(emailInput, login);
       await page.fill(passInput, "");
-      await page.fill('input[name="Password"]', password);
+      await page.fill(passInput, password);
       await loginBtn.focus();
       await page.keyboard.press("Space");
       await page.waitForTimeout(300);
 
       try {
-        // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
+        // Wait for either successful redirect to lidl.pl domain
         onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
         await page.waitForURL((url) => url.hostname.includes("lidl.pl"), { timeout: 2000 });
         loginSuccess = true;
@@ -197,7 +197,7 @@ async function activateCouponsWithProgress(
 
     await page.waitForTimeout(2000);
     onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
-    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
+    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle" });
 
     // Accept cookies if needed
     const acceptBtn = page.locator("#onetrust-accept-btn-handler");
