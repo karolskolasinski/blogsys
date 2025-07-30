@@ -157,12 +157,12 @@ async function activateCouponsWithProgress(
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
     await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
-    await page.waitForSelector('input[name="input-email"]');
     const emailInput = 'input[name="input-email"]';
     const passInput = 'input[name="Password"]';
     const loginBtn = page.locator('button[data-submit="true"]');
+    await page.waitForSelector(emailInput);
 
-    const maxLoginAttempts = 5;
+    const maxLoginAttempts = 7;
     let loginSuccess = false;
     for (let attempt = 1; attempt <= maxLoginAttempts; attempt++) {
       onProgress({
@@ -171,40 +171,29 @@ async function activateCouponsWithProgress(
       });
 
       await page.fill(emailInput, "");
-      await humanMove(page);
-      await humanType(page, emailInput, login);
-      await randomDelay(200, 400);
-
+      await page.fill('input[name="input-email"]', login);
       await page.fill(passInput, "");
-      await humanMove(page);
-      await humanType(page, passInput, password);
-      await randomDelay(500, 1000);
-
-      await humanMove(page);
+      await page.fill('input[name="Password"]', password);
       await loginBtn.focus();
-      await randomDelay(100, 300);
       await page.keyboard.press("Space");
-      await randomDelay(2000, 3000);
+      await page.waitForTimeout(300);
 
-      // Sprawdź wynik
       try {
-        await page.waitForURL((url) => url.hostname.includes("lidl.pl"), { timeout: 4000 });
+        // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
+        onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
+        await page.waitForURL((url) => url.hostname.includes("lidl.pl"), { timeout: 2000 });
         loginSuccess = true;
+        // If we reach here, login was successful
         onProgress({ step: "login_success", message: "Logowanie zakończone sukcesem!" });
         break;
       } catch {
         onProgress({ step: "login_failed", message: `Logowanie nieudane (próba ${attempt})` });
       }
     }
+
     if (!loginSuccess) {
       throw new Error("Nie udało się zalogować po 5 próbach.");
     }
-
-    onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
-    // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
-    await page.waitForURL((url) => url.hostname.includes("lidl.pl"), { timeout: 4000 });
-    // If we reach here, login was successful
-    onProgress({ step: "login_success", message: "Logowanie zakończone sukcesem!" });
 
     await page.waitForTimeout(2000);
     onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
@@ -260,31 +249,6 @@ async function activateCouponsWithProgress(
 
     return { activatedCoupons };
   } finally {
-    // await browser.close();
+    await browser.close();
   }
-}
-
-async function randomDelay(min = 100, max = 300) {
-  const ms = Math.random() * (max - min) + min;
-  return new Promise((f) => setTimeout(f, ms));
-}
-
-async function humanType(page, selector, text) {
-  await page.click(selector);
-  for (const char of text) {
-    await page.keyboard.press(char);
-    await randomDelay(100, 200);
-  }
-}
-
-async function humanMove(page) {
-  const vp = page.viewportSize() || { width: 1366, height: 768 };
-  const x1 = Math.random() * vp.width;
-  const y1 = Math.random() * vp.height;
-  const x2 = Math.random() * vp.width;
-  const y2 = Math.random() * vp.height;
-  await page.mouse.move(x1, y1, { steps: Math.floor(Math.random() * 10) + 5 });
-  await randomDelay(100, 300);
-  await page.mouse.move(x2, y2, { steps: Math.floor(Math.random() * 10) + 5 });
-  await randomDelay(100, 300);
 }
