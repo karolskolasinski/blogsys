@@ -8,6 +8,7 @@ import EditIcon from "@/public/icons/edit.svg";
 import Button from "@/components/blogsys/Button";
 import DeleteIcon from "@/public/icons/delete.svg";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
+import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Users() {
   const session = await auth();
@@ -29,7 +30,10 @@ export default async function Users() {
       <DashboardMenu active="/users" />
 
       <section className="flex-1 flex flex-col">
-        <Breadcrumb items={[{ label: "Użytkownicy", href: "/users" }]} />
+        <div className="flex gap-2 justify-between items-center">
+          <Breadcrumb items={[{ label: "Użytkownicy", href: "/users" }]} />
+          <HamburgerMenu />
+        </div>
 
         <div className="flex-1 bg-slate-50 p-4 pt-8 border-t border-gray-200">
           <div className="flex gap-4 items-center justify-between flex-wrap">
