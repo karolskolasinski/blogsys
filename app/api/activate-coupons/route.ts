@@ -121,7 +121,7 @@ async function activateCouponsWithProgress(
 ) {
   const debugMode = false;
   const browser = await chromium.launch({
-    headless: !debugMode,
+    headless: false,
     args: [
       "--disable-blink-features=AutomationControlled",
       "--disable-features=VizDisplayCompositor",
@@ -162,9 +162,7 @@ async function activateCouponsWithProgress(
     await page.waitForSelector('input[name="input-email"]');
     await page.fill('input[name="input-email"]', login);
     await page.fill('input[name="Password"]', password);
-    await page.waitForTimeout(2000);
     await page.click('button[data-submit="true"]');
-    await page.waitForTimeout(2000);
 
     onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
     // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
@@ -172,8 +170,7 @@ async function activateCouponsWithProgress(
     // If we reach here, login was successful
     onProgress({ step: "login_success", message: "Logowanie zakończone sukcesem!" });
 
-    // Add delay before proceeding to avoid being flagged
-    await page.waitForTimeout(Math.random() * 3000 + 2000);
+    await page.waitForTimeout(2000);
     onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
     await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
 
@@ -227,6 +224,6 @@ async function activateCouponsWithProgress(
 
     return { activatedCoupons };
   } finally {
-    await browser.close();
+    // await browser.close();
   }
 }
