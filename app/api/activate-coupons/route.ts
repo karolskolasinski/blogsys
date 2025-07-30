@@ -121,35 +121,60 @@ async function activateCouponsWithProgress(
 ) {
   const browser = await chromium.launch({
     headless: false,
-    args: ["--disable-blink-features=AutomationControlled"],
+    args: [
+      "--disable-blink-features=AutomationControlled",
+      "--disable-web-security",
+      "--disable-features=VizDisplayCompositor",
+    ],
   });
+
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
     locale: "pl-PL",
     viewport: { width: 1366, height: 1279 },
     bypassCSP: true,
+    extraHTTPHeaders: { "Accept-Language": "pl-PL,pl;q=0.9,en;q=0.8" },
   });
-  await context.addInitScript(() =>
-    Object.defineProperty(navigator, "webdriver", { get: () => false })
-  );
+
+  // Add additional anti-detection measures
+  await context.addInitScript(() => {
+    Object.defineProperty(navigator, "webdriver", { get: () => false });
+    Object.defineProperty(navigator, "plugins", { get: () => [1, 2, 3, 4, 5] });
+    Object.defineProperty(navigator, "languages", { get: () => ["pl-PL", "pl"] });
+  });
   const page = await context.newPage();
 
   try {
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
-    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
+    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
 
     onProgress({ step: "logging_in", message: "Loguję się..." });
     await page.waitForSelector('input[name="input-email"]');
-    await page.fill('input[name="input-email"]', login);
-    await page.fill('input[name="Password"]', password);
-    await page.click('button[data-submit="true"]');
-    await page.waitForTimeout(3000);
 
+    // Add random delays to mimic human behavior
+    await page.waitForTimeout(Math.random() * 2000 + 1000);
+
+    // Fill login form with human-like typing
+    await page.fill('input[name="input-email"]', login);
+    await page.waitForTimeout(Math.random() * 1000 + 500);
+    await page.fill('input[name="Password"]', password);
+    await page.waitForTimeout(Math.random() * 1000 + 500);
+
+    // Click login button
+    await page.click('button[data-submit="true"]');
+
+    onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
+    // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
+    await page.waitForURL((url) => url.hostname.includes("lidl.pl"), { timeout: 4000 });
+    // If we reach here, login was successful
+    onProgress({ step: "login_success", message: "Logowanie zakończone sukcesem!" });
+
+    // Add delay before proceeding to avoid being flagged
+    await page.waitForTimeout(Math.random() * 3000 + 2000);
     onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
-    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
-    await page.waitForTimeout(3000);
+    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle" });
 
     // Accept cookies if needed
     const acceptBtn = page.locator("#onetrust-accept-btn-handler");

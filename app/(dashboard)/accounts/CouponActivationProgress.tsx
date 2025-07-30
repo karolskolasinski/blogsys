@@ -134,7 +134,7 @@ export default function CouponActivationProgress() {
                 case "error":
                   addLog({
                     type: "error",
-                    message: `Błąd ogólny: ${data.error}`,
+                    message: `Błąd: ${data.error ?? data.message}`,
                     status: "error",
                   });
                   setState((prev) => ({ ...prev, isActive: false }));
