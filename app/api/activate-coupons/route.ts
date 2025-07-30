@@ -119,8 +119,9 @@ async function activateCouponsWithProgress(
   password: string,
   onProgress: (progress: any) => void,
 ) {
+  const debugMode = false;
   const browser = await chromium.launch({
-    headless: true,
+    headless: !debugMode,
     args: [
       "--disable-blink-features=AutomationControlled",
       "--disable-features=VizDisplayCompositor",
@@ -144,11 +145,13 @@ async function activateCouponsWithProgress(
   });
 
   const page = await context.newPage();
-  page.on("response", (response) => {
-    const status = response.status();
-    const url = response.url();
-    onProgress({ step: "network_response", message: `${status} ${url}` });
-  });
+  if (debugMode) {
+    page.on("response", (response) => {
+      const status = response.status();
+      const url = response.url();
+      onProgress({ step: "network_response", message: `${status} ${url}` });
+    });
+  }
 
   try {
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
