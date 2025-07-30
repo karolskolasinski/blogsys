@@ -15,7 +15,7 @@ type DashboardMenuProps = {
 
 export default function DashboardMenu(props: DashboardMenuProps) {
   return (
-    <aside className="w-72 flex flex-col gap-2 px-4 py-8 border-r border-gray-200">
+    <aside className="w-72 hidden lg:flex flex-col gap-2 px-4 py-8 border-r border-gray-200">
       <div className="flex gap-1 items-center pb-8">
         <PostsIcon className="w-10 h-10 fill-primary-500" />
         <h1 className="text-2xl font-black">blogsys</h1>

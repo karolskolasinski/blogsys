@@ -43,9 +43,7 @@ export default function Button(props: ButtonProps) {
       {isLoading
         ? <SpinnerIcon className={`${sizeClass} fill-current animate-spin`} />
         : props.icon}
-      <span className="hidden md:inline">
-        {props.label}
-      </span>
+      {props.label}
     </button>
   );
 }

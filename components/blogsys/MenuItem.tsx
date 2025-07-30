@@ -30,7 +30,9 @@ export default function MenuItem(props: MenuItemProps) {
       className={`flex items-center gap-2 p-4 duration-100 ease-in-out font-bold hover:bg-gray-100 rounded-xl cursor-pointer ${activeClass}`}
     >
       {isPending ? <SpinnerIcon className="w-6 h-6 fill-gray-500 animate-spin" /> : icon}
-      {label}
+      <span className="text-left whitespace-nowrap">
+        {label}
+      </span>
     </button>
   );
 }

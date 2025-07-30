@@ -48,12 +48,8 @@ export default function CouponActivationProgress() {
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
 
-      if (!reader) {
-        throw new Error("No reader available");
-      }
-
       while (true) {
-        const { done, value } = await reader.read();
+        const { done, value } = await reader!.read();
         if (done) {
           break;
         }
@@ -147,11 +143,7 @@ export default function CouponActivationProgress() {
         }
       }
     } catch (error) {
-      addLog({
-        type: "error",
-        message: `Błąd połączenia: ${error}`,
-        status: "error",
-      });
+      addLog({ type: "error", message: `Błąd: ${error}`, status: "error" });
       setState((prev) => ({ ...prev, isActive: false }));
     }
   };
