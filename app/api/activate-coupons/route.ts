@@ -142,7 +142,13 @@ async function activateCouponsWithProgress(
     Object.defineProperty(navigator, "plugins", { get: () => [1, 2, 3, 4, 5] });
     Object.defineProperty(navigator, "languages", { get: () => ["pl-PL", "pl"] });
   });
+
   const page = await context.newPage();
+  page.on("response", (response) => {
+    const status = response.status();
+    const url = response.url();
+    onProgress({ step: "network_response", message: `${status} ${url}` });
+  });
 
   try {
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
