@@ -120,10 +120,9 @@ async function activateCouponsWithProgress(
   onProgress: (progress: any) => void,
 ) {
   const browser = await chromium.launch({
-    headless: false,
+    headless: true,
     args: [
       "--disable-blink-features=AutomationControlled",
-      "--disable-web-security",
       "--disable-features=VizDisplayCompositor",
     ],
   });
@@ -147,23 +146,16 @@ async function activateCouponsWithProgress(
 
   try {
     onProgress({ step: "navigating", message: "Przechodzę do strony logowania..." });
-    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "networkidle" });
+    await page.goto("https://www.lidl.pl/mla/", { waitUntil: "load" });
     await page.waitForURL((url) => url.hostname.includes("accounts.lidl.com"));
 
     onProgress({ step: "logging_in", message: "Loguję się..." });
     await page.waitForSelector('input[name="input-email"]');
-
-    // Add random delays to mimic human behavior
-    await page.waitForTimeout(Math.random() * 2000 + 1000);
-
-    // Fill login form with human-like typing
     await page.fill('input[name="input-email"]', login);
-    await page.waitForTimeout(Math.random() * 1000 + 500);
     await page.fill('input[name="Password"]', password);
-    await page.waitForTimeout(Math.random() * 1000 + 500);
-
-    // Click login button
+    await page.waitForTimeout(2000);
     await page.click('button[data-submit="true"]');
+    await page.waitForTimeout(2000);
 
     onProgress({ step: "verifying_login", message: "Sprawdzam status logowania..." });
     // Wait for either successful redirect to lidl.pl domain or error message (todo if needed)
@@ -174,7 +166,7 @@ async function activateCouponsWithProgress(
     // Add delay before proceeding to avoid being flagged
     await page.waitForTimeout(Math.random() * 3000 + 2000);
     onProgress({ step: "navigating_coupons", message: "Przechodzę do strony kuponów..." });
-    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "networkidle" });
+    await page.goto("https://www.lidl.pl/prm/promotions-list", { waitUntil: "load" });
 
     // Accept cookies if needed
     const acceptBtn = page.locator("#onetrust-accept-btn-handler");

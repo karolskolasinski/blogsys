@@ -67,6 +67,7 @@ export default function AccountForm(props: AccountFormProps) {
           className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
           placeholder="Wpisz hasło"
           required
+          autoComplete="off"
         />
       </div>
     </form>
