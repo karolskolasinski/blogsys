@@ -2,7 +2,7 @@
 
 ## Ustawienia bazy danych
 
-### Firestore -> Rules
+### Firestore > Rules
 
 ```firestore
 rules_version = '2';
@@ -22,7 +22,7 @@ service cloud.firestore {
 }
 ```
 
-### Firestore -> Indexes
+### Firestore > Indexes
 
 | Collection ID | Fields indexed                  | Query scope | Index ID       | Status   |
 |---------------|---------------------------------|-------------|----------------|----------|
@@ -30,3 +30,15 @@ service cloud.firestore {
 | posts         | authorId, updatedAt, __name__   | Collection  | CICAgOjXh4EK   | Enabled  |
 
 
+## Pliki blogsys
+
+Pliki, które są potrzebne do działania blogsys:
+
+- `actions`
+- `app/(blogsys)`
+- `app/(dashboard)`
+- `app/api`
+- `components/blogsys`
+- `context`
+- `lib`
+- `public/icons/blogsys`
