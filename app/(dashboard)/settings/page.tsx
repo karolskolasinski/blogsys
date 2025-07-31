@@ -34,7 +34,7 @@ export default async function Settings() {
       <section className="flex-1 h-full flex flex-col">
         <div className="flex gap-2 justify-between items-center">
           <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
-          <HamburgerMenu active="/users" />
+          <HamburgerMenu active="/settings" />
         </div>
 
         <div className="flex-1 bg-slate-50">
