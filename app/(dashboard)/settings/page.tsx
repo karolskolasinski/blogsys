@@ -7,6 +7,7 @@ import SaveIcon from "@/public/icons/save.svg";
 import Button from "@/components/blogsys/Button";
 import ResetPass from "../users/[id]/ResetPass";
 import AvatarInput from "./AvatarInput";
+import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Settings() {
   const session = await auth();
@@ -31,7 +32,10 @@ export default async function Settings() {
       <DashboardMenu active="/settings" />
 
       <section className="flex-1 h-full flex flex-col">
-        <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
+        <div className="flex gap-2 justify-between items-center">
+          <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
+          <HamburgerMenu active="/users" />
+        </div>
 
         <div className="flex-1 bg-slate-50">
           <form
@@ -62,7 +66,7 @@ export default async function Settings() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2 text-gray-700">
+            <div className="flex flex-col lg:flex-row lg:items-center gap-2 text-gray-700">
               <input
                 name="name"
                 className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
@@ -91,7 +95,7 @@ export default async function Settings() {
               "use server";
               await saveAvatar(formData);
             }}
-            className="px-4 flex flex-col gap-2"
+            className="px-4 pb-4 flex flex-col gap-2"
           >
             <input type="hidden" name="id" defaultValue={user?.id} />
 

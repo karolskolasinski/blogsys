@@ -10,8 +10,8 @@ export default function ResetPass() {
   return (
     <>
       <h2 className="font-bold text-2xl mt-8">Zmiana hasła</h2>
-      <div className="h-8 flex gap-2 items-center text-gray-700 text-sm">
-        <InfoIcon className="w-5 h-5 fill-current" />
+      <div className="pb-2 lg:h-8 flex gap-2 items-center text-gray-700 text-sm">
+        <InfoIcon className="min-w-5 h-5 fill-current" />
         Aby zmienić hasło naciśnij przycisk poniżej, wpisz nowe hasło lub pozostaw wygenerowane
         domyślnie, po czym naciśnij przycisk Zapisz.
       </div>
