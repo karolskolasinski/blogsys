@@ -123,7 +123,7 @@ export default function PostForm(props: PostFormProps) {
       </div>
 
       <div className="flex-1 flex gap-8 py-4">
-        <div className="flex-1 h-full flex flex-col gap-4">
+        <div className="flex-1 h-full flex flex-col gap-4 min-h-[calc(100vh-250px)]">
           <div className="flex items-center gap-2">
             <input
               list="tag"
