@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
-import XIcon from "@/public/icons/x.svg";
-import SendIcon from "@/public/icons/send.svg";
-import PhotoIcon from "@/public/icons/photo.svg";
-import ArrowIcon from "@/public/icons/chevron-right.svg";
+import XIcon from "@/public/icons/blogsys/x.svg";
+import SendIcon from "@/public/icons/blogsys/send.svg";
+import PhotoIcon from "@/public/icons/blogsys/photo.svg";
+import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import Preview from "@/components/blogsys/Preview";
 import MarkdownEditor from "./MarkdownEditor";
@@ -174,7 +174,7 @@ export default function PostForm(props: PostFormProps) {
                 </option>
               ))}
             </select>
-            <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
+            <ChevronIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
           </div>
 
           <div className="flex gap-2 items-center">

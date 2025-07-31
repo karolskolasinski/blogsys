@@ -1,10 +1,10 @@
 "use client";
 
-import SaveIcon from "@/public/icons/save.svg";
 import Button from "@/components/blogsys/Button";
 import { Account } from "@/types/common";
-import LidlIcon from "@/public/lidl.svg";
-import InfoIcon from "@/public/icons/info.svg";
+import LidlIcon from "@/public/icons/lidl.svg";
+import InfoIcon from "@/public/icons/blogsys/info.svg";
+import SaveIcon from "@/public/icons/blogsys/save.svg";
 import { saveAccount } from "@/actions/accounts";
 
 type AccountFormProps = {

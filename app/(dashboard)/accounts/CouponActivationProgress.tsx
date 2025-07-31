@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import ActivateIcon from "@/public/activate.svg";
-import SpinnerIcon from "@/public/icons/spinner.svg";
+import ActivateIcon from "@/public/icons/blogsys/activate.svg";
+import SpinnerIcon from "@/public/icons/blogsys/spinner.svg";
 import { v4 } from "uuid";
 
 interface ProgressState {

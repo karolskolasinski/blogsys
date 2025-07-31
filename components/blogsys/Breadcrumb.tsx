@@ -1,5 +1,5 @@
-import HomeIcon from "@/public/icons/home.svg";
-import ChevronRightIcon from "@/public/icons/chevron-right.svg";
+import HomeIcon from "@/public/icons/blogsys/home.svg";
+import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Link from "next/link";
 
 type BreadcrumbProps = {
@@ -13,7 +13,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
         <HomeIcon className="w-5 h-5 hover:fill-gray-700" />
       </Link>
 
-      <ChevronRightIcon className="w-6 h-6 fill-gray-300" />
+      <ChevronIcon className="w-6 h-6 fill-gray-300" />
 
       {items.map((link, index) => (
         <div key={index} className="flex items-center">
@@ -21,7 +21,7 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
             <span className="text-sm">{link.label}</span>
           </Link>
 
-          {index < items.length - 1 && <ChevronRightIcon className="w-6 h-6 fill-gray-300" />}
+          {index < items.length - 1 && <ChevronIcon className="w-6 h-6 fill-gray-300" />}
         </div>
       ))}
     </nav>

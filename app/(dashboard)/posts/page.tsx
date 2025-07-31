@@ -2,10 +2,10 @@ import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { deletePost, getPosts } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
-import AddIcon from "@/public/icons/add.svg";
+import AddIcon from "@/public/icons/blogsys/add.svg";
 import Button from "@/components/blogsys/Button";
-import EditIcon from "@/public/icons/edit.svg";
-import DeleteIcon from "@/public/icons/delete.svg";
+import EditIcon from "@/public/icons/blogsys/edit.svg";
+import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 

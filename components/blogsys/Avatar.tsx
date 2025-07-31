@@ -1,4 +1,4 @@
-import AvatarIcon from "@/public/icons/avatar.svg";
+import AvatarIcon from "@/public/icons/blogsys/avatar.svg";
 
 type AvatarProps = {
   src: string | null;

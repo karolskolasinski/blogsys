@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import InfoIcon from "@/public/icons/info.svg";
-import XIcon from "@/public/icons/x.svg";
+import InfoIcon from "@/public/icons/blogsys/info.svg";
+import XIcon from "@/public/icons/blogsys/x.svg";
 import Link from "next/link";
 
 export default function AboutMarkdown() {

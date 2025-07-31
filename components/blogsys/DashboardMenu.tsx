@@ -1,10 +1,10 @@
 import MenuItem from "./MenuItem";
-import HomeIcon from "@/public/icons/home.svg";
-import UsersIcon from "@/public/icons/users.svg";
-import SettingsIcon from "@/public/icons/settings.svg";
-import PostsIcon from "@/public/icons/post.svg";
-import LogoutIcon from "@/public/icons/logout.svg";
-import CredentialsIcon from "@/public/icons/credentials.svg";
+import HomeIcon from "@/public/icons/blogsys/home.svg";
+import UsersIcon from "@/public/icons/blogsys/users.svg";
+import SettingsIcon from "@/public/icons/blogsys/settings.svg";
+import PostsIcon from "@/public/icons/blogsys/post.svg";
+import LogoutIcon from "@/public/icons/blogsys/logout.svg";
+import CredentialsIcon from "@/public/icons/blogsys/credentials.svg";
 import { signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import UserInfo from "@/components/blogsys/UserInfo";

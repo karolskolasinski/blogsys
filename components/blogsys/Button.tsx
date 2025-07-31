@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import SpinnerIcon from "@/public/icons/spinner.svg";
+import SpinnerIcon from "@/public/icons/blogsys/spinner.svg";
 import { useFormStatus } from "react-dom";
 
 type ButtonProps = {

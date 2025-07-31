@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { getAvatar, getUserById, saveAvatar, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
-import SaveIcon from "@/public/icons/save.svg";
+import SaveIcon from "@/public/icons/blogsys/save.svg";
 import Button from "@/components/blogsys/Button";
-import ResetPass from "../users/[id]/ResetPass";
 import AvatarInput from "./AvatarInput";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
+import ResetPass from "@/app/(dashboard)/users/[id]/ResetPass";
 
 export default async function Settings() {
   const session = await auth();

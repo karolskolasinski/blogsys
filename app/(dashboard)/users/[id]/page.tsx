@@ -4,8 +4,8 @@ import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { ServerComponentProps } from "@/types/common";
 import { getUserById, saveUser } from "@/actions/users";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
-import SaveIcon from "@/public/icons/save.svg";
-import ArrowIcon from "@/public/icons/chevron-right.svg";
+import SaveIcon from "@/public/icons/blogsys/save.svg";
+import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import ResetPass from "./ResetPass";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
@@ -92,7 +92,7 @@ export default async function User(props: ServerComponentProps) {
                 <option value="user">Użytkownik</option>
                 <option value="admin">Administrator</option>
               </select>
-              <ArrowIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
+              <ChevronIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
             </div>
           </div>
 

@@ -1,10 +1,11 @@
 "use client";
-import InfoIcon from "@/public/icons/info.svg";
-import DeleteIcon from "@/public/icons/delete.svg";
+
 import { useEffect, useState } from "react";
 import Avatar from "@/components/blogsys/Avatar";
 import { useFormStatus } from "react-dom";
-import SpinnerIcon from "@/public/icons/spinner.svg";
+import DeleteIcon from "@/public/icons/blogsys/delete.svg";
+import InfoIcon from "@/public/icons/blogsys/info.svg";
+import SpinnerIcon from "@/public/icons/blogsys/spinner.svg";
 
 type AvatarInputProps = {
   data: string | null;

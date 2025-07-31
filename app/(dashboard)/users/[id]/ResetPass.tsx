@@ -1,7 +1,7 @@
 "use client";
 
-import InfoIcon from "@/public/icons/info.svg";
-import WarningIcon from "@/public/icons/warning.svg";
+import InfoIcon from "@/public/icons/blogsys/info.svg";
+import WarningIcon from "@/public/icons/blogsys/warning.svg";
 import { useState } from "react";
 
 export default function ResetPass() {
