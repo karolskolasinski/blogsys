@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/blogsys/x.svg";
@@ -10,11 +10,17 @@ import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import Preview from "@/components/blogsys/Preview";
 import MarkdownEditor from "./MarkdownEditor";
+import toast from 'react-hot-toast';
 
 type PostFormProps = {
   post: Post;
   allTags: string[];
   allAuthors: { id: string; name: string }[];
+};
+
+const initialState = {
+  success: false,
+  error: null,
 };
 
 export default function PostForm(props: PostFormProps) {
@@ -23,6 +29,16 @@ export default function PostForm(props: PostFormProps) {
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(post.cover || null);
+  const [state, formAction] = useActionState(savePost, initialState);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.success('Post został zapisany!');
+    }
+    if (state.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
 
   function addTag() {
     if (tags.length >= 3) return;
@@ -71,7 +87,7 @@ export default function PostForm(props: PostFormProps) {
 
   return (
     <form
-      action={async (formData) => await savePost(formData)}
+      action={formAction}
       className="px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <input type="hidden" name="id" defaultValue={post.id} />

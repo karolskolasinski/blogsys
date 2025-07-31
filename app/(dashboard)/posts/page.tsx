@@ -8,9 +8,11 @@ import EditIcon from "@/public/icons/blogsys/edit.svg";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
+import { auth } from "@/auth";
 
 export default async function Posts(props: ServerComponentProps) {
   const params = await props.searchParams; // todo: flash message
+  const session = await auth();
 
   let posts;
   let errMsg = "";
@@ -54,6 +56,9 @@ export default async function Posts(props: ServerComponentProps) {
                       return null;
                     }
 
+                    const canEdit = post.authorId === session?.user?.id ||
+                      session?.user?.role === "admin";
+
                     return (
                       <div key={post.id} className="border-b border-gray-200 p-4 last:border-b-0">
                         <div className="flex flex-col">
@@ -66,30 +71,32 @@ export default async function Posts(props: ServerComponentProps) {
                             Zaktualizowany: {post.updatedAt?.toLocaleString()}
                           </div>
 
-                          <div className="flex flex-wrap gap-3 text-sm pt-4">
-                            <Button
-                              href={`/posts/${post.id}`}
-                              appearance="link"
-                              label="Edytuj"
-                              icon={<EditIcon className="w-4 h-4 fill-current" />}
-                              colorClass="text-sky-600 hover:text-sky-500"
-                            />
-                            <form
-                              action={async () => {
-                                "use server";
-                                await deletePost(post.id!);
-                              }}
-                              className="inline"
-                            >
+                          {canEdit && (
+                            <div className="flex flex-wrap gap-3 text-sm pt-4">
                               <Button
-                                href="delete"
+                                href={`/posts/${post.id}`}
                                 appearance="link"
-                                label="Usuń"
-                                icon={<DeleteIcon className="w-4 h-4 fill-current" />}
-                                colorClass="text-red-600 hover:text-red-500"
+                                label="Edytuj"
+                                icon={<EditIcon className="w-4 h-4 fill-current" />}
+                                colorClass="text-sky-600 hover:text-sky-500"
                               />
-                            </form>
-                          </div>
+                              <form
+                                action={async () => {
+                                  "use server";
+                                  await deletePost(post.id!);
+                                }}
+                                className="inline"
+                              >
+                                <Button
+                                  href="delete"
+                                  appearance="link"
+                                  label="Usuń"
+                                  icon={<DeleteIcon className="w-4 h-4 fill-current" />}
+                                  colorClass="text-red-600 hover:text-red-500"
+                                />
+                              </form>
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -109,41 +116,55 @@ export default async function Posts(props: ServerComponentProps) {
                     </thead>
 
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {posts?.map((post) => (
-                        <tr key={post.id} className="align-top">
-                          <td className="px-6 py-4">
-                            {post.title}
-                            <div className="mt-2 flex gap-2 text-sm">
-                              <Button
-                                href={`/posts/${post.id}`}
-                                appearance="link"
-                                label="Edytuj"
-                                icon={<EditIcon className="w-4 h-4 fill-current" />}
-                                colorClass="text-sky-600 hover:text-sky-500"
-                              />
-                              <span className="text-gray-400">|</span>
-                              <form
-                                action={async () => {
-                                  "use server";
-                                  await deletePost(post.id!);
-                                }}
-                              >
-                                <Button
-                                  href="delete"
-                                  appearance="link"
-                                  label="Usuń"
-                                  icon={<DeleteIcon className="w-4 h-4 fill-current" />}
-                                  colorClass="text-red-600 hover:text-red-500"
-                                />
-                              </form>
-                            </div>
-                          </td>
+                      {posts?.map((post) => {
+                        const canEdit = post.authorId === session?.user?.id ||
+                          session?.user?.role === "admin";
 
-                          <td className="px-6 py-4">{post.authorName}</td>
-                          <td className="px-6 py-4">{post.createdAt?.toLocaleString()}</td>
-                          <td className="px-6 py-4">{post.updatedAt?.toLocaleString()}</td>
-                        </tr>
-                      ))}
+                        return (
+                          <tr key={post.id} className="align-top">
+                            <td className="px-6 py-4">
+                              {post.title}
+
+                              {canEdit
+                                ? (
+                                  <div className="mt-2 flex gap-2 text-sm">
+                                    <Button
+                                      href={`/posts/${post.id}`}
+                                      appearance="link"
+                                      label="Edytuj"
+                                      icon={<EditIcon className="w-4 h-4 fill-current" />}
+                                      colorClass="text-sky-600 hover:text-sky-500"
+                                    />
+                                    <span className="text-gray-400">|</span>
+                                    <form
+                                      action={async () => {
+                                        "use server";
+                                        await deletePost(post.id!);
+                                      }}
+                                    >
+                                      <Button
+                                        href="delete"
+                                        appearance="link"
+                                        label="Usuń"
+                                        icon={<DeleteIcon className="w-4 h-4 fill-current" />}
+                                        colorClass="text-red-600 hover:text-red-500"
+                                      />
+                                    </form>
+                                  </div>
+                                )
+                                : (
+                                  <div className="text-gray-400 text-sm">
+                                    Nie możesz edytować tego wpisu
+                                  </div>
+                                )}
+                            </td>
+
+                            <td className="px-6 py-4">{post.authorName}</td>
+                            <td className="px-6 py-4">{post.createdAt?.toLocaleString()}</td>
+                            <td className="px-6 py-4">{post.updatedAt?.toLocaleString()}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

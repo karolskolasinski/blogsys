@@ -1,21 +1,15 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { Post } from "@/types/common";
+import { ActionState, Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 import { toBase64 } from "@/lib/utils";
 
 export async function getPosts() {
-  const session = await auth(); // todo: move to save Post (if author)
-  const role = session?.user?.role;
-  const userId = session?.user?.id;
   const fields = ["title", "authorId", "createdAt", "updatedAt"];
-  let query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
-  if (role !== "admin") {
-    query = query.where("authorId", "==", userId);
-  }
+  const query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
   const docSnap = await query.get();
 
   const posts = docSnap.docs.map((doc) => {
@@ -80,42 +74,59 @@ export async function deletePost(id: string) {
   redirect("/posts?deleted=true");
 }
 
-export async function savePost(formData: FormData) {
-  const id = formData.get("id") as string;
-  const authorId = formData.get("authorId") as string;
-  const title = (formData.get("title") as string).trim();
-  const content = (formData.get("content") as string).trim();
-  const tags = formData.getAll("tags[]").map((t) => (t as string).trim()).filter(Boolean);
+export async function savePost(_prevState: ActionState, formData: FormData) {
+  try {
+    const id = formData.get("id") as string;
+    const authorId = formData.get("authorId") as string;
+    const title = (formData.get("title") as string).trim();
+    const content = (formData.get("content") as string).trim();
+    const tags = formData.getAll("tags[]").map((t) => (t as string).trim()).filter(Boolean);
 
-  const createdAt = id === "new"
-    ? Timestamp.now()
-    : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
+    const session = await auth();
+    const role = session?.user?.role;
+    const userId = session?.user?.id;
+    const doc = await db.collection("posts").doc(id).get();
+    if (doc.exists && doc.data()?.authorId !== userId && role !== "admin") {
+      return {
+        success: false,
+        error: "Nie masz uprawnień do edycji tego posta",
+      };
+    }
 
-  const data: Record<string, string | string[] | Timestamp> = {
-    title,
-    content,
-    tags,
-    authorId,
-    createdAt,
-    updatedAt: Timestamp.now(),
-  };
+    const createdAt = id === "new"
+      ? Timestamp.now()
+      : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
 
-  const file = formData.get("cover") as File;
-  if (file && file.size > 0) {
-    // const buf = await file.arrayBuffer();
-    // const b64 = Buffer.from(buf).toString("base64");
-    // data.cover = `data:${file.type};base64,${b64}`;
-    // todo: check
-    data.cover = await toBase64(file);
+    const data: Record<string, string | string[] | Timestamp> = {
+      title,
+      content,
+      tags,
+      authorId,
+      createdAt,
+      updatedAt: Timestamp.now(),
+    };
+
+    const file = formData.get("cover") as File;
+    if (file && file.size > 0) {
+      data.cover = await toBase64(file);
+    }
+
+    if (id === "new") {
+      await db.collection("posts").add(data);
+    } else {
+      await db.collection("posts").doc(id).update(data);
+    }
+
+    return {
+      success: true,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Błąd zapisu",
+    };
   }
-
-  if (id === "new") {
-    await db.collection("posts").add(data);
-  } else {
-    await db.collection("posts").doc(id).update(data);
-  }
-
-  redirect("/posts?published=true");
 }
 
 export async function getAllTags() {

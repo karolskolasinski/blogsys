@@ -8,7 +8,7 @@ export default async function Header() {
         <div className="flex items-center gap-2">
           <a href="#" className="flex gap-2 items-center font-bold text-2xl">
             <Image
-              src="/logo.svg"
+              src="/icons/logo.svg"
               alt="logo"
               width={0}
               height={0}

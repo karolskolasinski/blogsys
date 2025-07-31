@@ -35,3 +35,8 @@ export type ServerComponentProps = {
   params: { [key: string]: string | string[] };
   searchParams: { [key: string]: string | string[] | undefined };
 };
+
+export type ActionState = {
+  success: boolean;
+  error: string | null;
+};

@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import InstagramIcon from "@/public/instagram.svg";
-import FacebookIcon from "@/public/facebook.svg";
-import YoutubeIcon from "@/public/youtube.svg";
-import TikTokIcon from "@/public/tiktok.svg";
+import InstagramIcon from "@/public/icons/instagram.svg";
+import FacebookIcon from "@/public/icons/facebook.svg";
+import YoutubeIcon from "@/public/icons/youtube.svg";
+import TikTokIcon from "@/public/icons/tiktok.svg";
 
 export default function Footer() {
   return (
@@ -14,7 +14,7 @@ export default function Footer() {
             <div className="flex flex-col gap-2 pb-10">
               <a href="./" className="flex gap-2 items-center font-bold py-1">
                 <Image
-                  src="/logo.svg"
+                  src="/icons/logo.svg"
                   alt="logo"
                   width={0}
                   height={0}
