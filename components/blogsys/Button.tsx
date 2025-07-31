@@ -19,7 +19,7 @@ export default function Button(props: ButtonProps) {
   const { pending: formPending } = useFormStatus();
   const isLoading = isPending || formPending;
   const className = props.appearance === "button"
-    ? "button !rounded-full md:!rounded-lg flex items-center gap-2"
+    ? "button rounded-lg flex items-center gap-2"
     : `flex gap-1 items-center ${props.colorClass} cursor-pointer`;
   const sizeClass = props.appearance === "button" ? "w-5 h-5" : "w-4 h-4";
 

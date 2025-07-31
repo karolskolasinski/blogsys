@@ -29,6 +29,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
           flex: "1",
         }}
         textareaClassName="!border !border-transparent !rounded-xl"
+        preClassName="!break-all"
       />
 
       <AboutMarkdown />
