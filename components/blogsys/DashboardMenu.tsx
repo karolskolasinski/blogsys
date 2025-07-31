@@ -11,11 +11,16 @@ import UserInfo from "@/components/blogsys/UserInfo";
 
 type DashboardMenuProps = {
   active: string;
+  mobile?: boolean;
 };
 
 export default function DashboardMenu(props: DashboardMenuProps) {
+  const asideClass = props.mobile
+    ? "h-full flex flex-col py-2 text-lg"
+    : "w-72 hidden lg:flex flex-col gap-2 px-4 py-8 border-r border-gray-200";
+
   return (
-    <aside className="w-72 hidden lg:flex flex-col gap-2 px-4 py-8 border-r border-gray-200">
+    <aside className={asideClass}>
       <div className="flex gap-1 items-center pb-8">
         <PostsIcon className="w-10 h-10 fill-primary-500" />
         <h1 className="text-2xl font-black">blogsys</h1>
@@ -56,8 +61,8 @@ export default function DashboardMenu(props: DashboardMenuProps) {
         active={props.active}
       />
 
-      <div className="w-64 fixed bottom-8">
-        <div className="w-full flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6">
+      <div className="flex-1 flex items-end">
+        <div className="flex-1 flex gap-2 items-center justify-between border-t border-t-gray-200 pt-6 lg:sticky bottom-8">
           <UserInfo />
 
           <form

@@ -32,7 +32,7 @@ export default async function Post(props: ServerComponentProps) {
   }
 
   return (
-    <main className="flex w-full h-screen">
+    <main className="flex w-full min-h-screen">
       <DashboardMenu active="/posts" />
 
       <section className="flex-1 h-full flex flex-col">

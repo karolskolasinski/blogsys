@@ -32,7 +32,7 @@ export default async function Users() {
       <section className="flex-1 flex flex-col">
         <div className="flex gap-2 justify-between items-center">
           <Breadcrumb items={[{ label: "Użytkownicy", href: "/users" }]} />
-          <HamburgerMenu />
+          <HamburgerMenu active="/users" />
         </div>
 
         <div className="flex-1 bg-slate-50 p-4 pt-8 border-t border-gray-200">
