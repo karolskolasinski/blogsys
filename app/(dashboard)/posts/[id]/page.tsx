@@ -6,6 +6,7 @@ import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import PostForm from "./PostForm";
 import ErrorMsg from "@/components/blogsys/ErrorMsg";
+import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Post(props: ServerComponentProps) {
   const session = await auth();
@@ -36,12 +37,15 @@ export default async function Post(props: ServerComponentProps) {
       <DashboardMenu active="/posts" />
 
       <section className="flex-1 h-full flex flex-col">
-        <Breadcrumb
-          items={[
-            { label: "Wpisy", href: "/posts" },
-            { label: post?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
-          ]}
-        />
+        <div className="flex gap-2 justify-between items-center">
+          <Breadcrumb
+            items={[
+              { label: "Wpisy", href: "/posts" },
+              { label: post?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
+            ]}
+          />
+          <HamburgerMenu active="/posts" />
+        </div>
 
         {errMsg.length > 0
           ? <ErrorMsg errMsg={errMsg} />

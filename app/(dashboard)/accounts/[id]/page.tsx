@@ -5,6 +5,7 @@ import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import { getAccount } from "@/actions/accounts";
 import AccountForm from "./AccountForm";
+import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Account(props: ServerComponentProps) {
   const session = await auth();
@@ -28,12 +29,15 @@ export default async function Account(props: ServerComponentProps) {
       <DashboardMenu active="/accounts" />
 
       <section className="flex-1 h-full flex flex-col">
-        <Breadcrumb
-          items={[
-            { label: "Wpisy", href: "/accounts" },
-            { label: account?.login ? "Edycja konta" : "Nowe konto", href: `/accounts/${id}` },
-          ]}
-        />
+        <div className="flex gap-2 justify-between items-center">
+          <Breadcrumb
+            items={[
+              { label: "Wpisy", href: "/accounts" },
+              { label: account?.login ? "Edycja konta" : "Nowe konto", href: `/accounts/${id}` },
+            ]}
+          />
+          <HamburgerMenu active="/accounts" />
+        </div>
 
         {errMsg.length > 0
           ? <div className="h-40 flex items-center justify-center text-red-500">{errMsg}</div>

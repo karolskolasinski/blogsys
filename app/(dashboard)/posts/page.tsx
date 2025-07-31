@@ -26,7 +26,7 @@ export default async function Posts(props: ServerComponentProps) {
       <DashboardMenu active="/posts" />
 
       <section className="flex-1 flex flex-col">
-        <div className="flex gap-2 justify-between items-center">
+        <div className="flex gap-2 justify-between items-center max-w-screen">
           <Breadcrumb items={[{ label: "Wpisy", href: "/posts" }]} />
           <HamburgerMenu active="/posts" />
         </div>

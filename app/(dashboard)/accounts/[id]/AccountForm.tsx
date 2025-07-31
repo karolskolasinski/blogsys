@@ -34,23 +34,23 @@ export default function AccountForm(props: AccountFormProps) {
         />
       </div>
 
-      <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
+      <div className="flex flex-col sm:flex-row gap-2 flex-wrap md:items-center text-sm text-gray-700">
         <input name="createdAt" type="hidden" value={account.createdAt?.toISOString()} />
         <div className="h-8 flex items-center">
           Data utworzenia: {account.createdAt?.toLocaleString()}
         </div>
-        <span className="text-gray-300 font-black">•</span>
+        <span className="text-gray-300 font-black hidden sm:inline content-center">•</span>
         <div className="h-8 flex items-center">
           Ostatnio edytowany: {account.updatedAt?.toLocaleString()}
         </div>
       </div>
 
-      <div className="h-8 flex gap-2 items-center text-gray-700 text-sm">
-        <InfoIcon className="w-5 h-5 fill-current" />
+      <div className="pb-2 flex gap-2 items-center text-gray-700 text-sm">
+        <InfoIcon className="min-w-5 h-5 fill-current" />
         Hasła zostaną zaszyfrowane w bazie danych. W trybie edycji widzisz zaszyfrowane hasło.
       </div>
 
-      <div className="flex items-center gap-2 text-gray-700">
+      <div className="flex flex-col lg:flex-row lg:items-center gap-2 text-gray-700">
         <input
           name="login"
           defaultValue={account?.login}

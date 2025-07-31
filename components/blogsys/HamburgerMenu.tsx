@@ -6,7 +6,7 @@ type HamburgerMenuProps = {
 
 export default function HamburgerMenu(props: HamburgerMenuProps) {
   return (
-    <nav className="lg:hidden px-4">
+    <nav className="lg:hidden px-4 z-10">
       <div className="relative flex items-center">
         <input
           id="hamburger"

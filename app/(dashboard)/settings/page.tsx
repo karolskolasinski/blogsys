@@ -32,7 +32,7 @@ export default async function Settings() {
       <DashboardMenu active="/settings" />
 
       <section className="flex-1 h-full flex flex-col">
-        <div className="flex gap-2 justify-between items-center">
+        <div className="flex gap-2 justify-between items-center max-w-screen">
           <Breadcrumb items={[{ label: "Ustawienia", href: "/settings" }]} />
           <HamburgerMenu active="/settings" />
         </div>

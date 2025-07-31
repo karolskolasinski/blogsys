@@ -8,6 +8,7 @@ import SaveIcon from "@/public/icons/save.svg";
 import ArrowIcon from "@/public/icons/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import ResetPass from "./ResetPass";
+import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function User(props: ServerComponentProps) {
   const session = await auth();
@@ -25,12 +26,15 @@ export default async function User(props: ServerComponentProps) {
       <DashboardMenu active="/users" />
 
       <section className="flex-1 h-full flex flex-col">
-        <Breadcrumb
-          items={[
-            { label: "Użytkownicy", href: "/users" },
-            { label: title, href: `/posts/${user?.id}` },
-          ]}
-        />
+        <div className="flex gap-2 justify-between items-center max-w-screen">
+          <Breadcrumb
+            items={[{ label: "Użytkownicy", href: "/users" }, {
+              label: title,
+              href: `/posts/${user?.id}`,
+            }]}
+          />
+          <HamburgerMenu active="/users" />
+        </div>
 
         <form
           action={async (formData) => {
@@ -66,7 +70,7 @@ export default async function User(props: ServerComponentProps) {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-gray-700">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-2 text-gray-700">
             <input
               name="email"
               type="email"
