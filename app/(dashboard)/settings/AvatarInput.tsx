@@ -1,20 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Avatar from "@/components/blogsys/Avatar";
-import { useFormStatus } from "react-dom";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import InfoIcon from "@/public/icons/blogsys/info.svg";
-import SpinnerIcon from "@/public/icons/blogsys/spinner.svg";
 
 type AvatarInputProps = {
-  data: string | null;
+  data?: string;
 };
 
 export default function AvatarInput(props: AvatarInputProps) {
-  const [avatarPreview, setAvatarPreview] = useState<string | null>(props.data);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const { pending } = useFormStatus();
+  const [avatarPreview, setAvatarPreview] = useState(props.data);
+  const [avatarChanged, setAvatarChanged] = useState(false);
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -33,19 +30,13 @@ export default function AvatarInput(props: AvatarInputProps) {
     }
     const url = URL.createObjectURL(file);
     setAvatarPreview(url);
-    e.target.form?.requestSubmit();
+    setAvatarChanged(true);
   }
 
   function handleDelete() {
-    setIsDeleting(true);
-    setAvatarPreview(null);
+    setAvatarPreview(undefined);
+    setAvatarChanged(true);
   }
-
-  useEffect(() => {
-    if (!isDeleting && !pending) {
-      setIsDeleting(false);
-    }
-  }, [pending, isDeleting]);
 
   return (
     <>
@@ -71,14 +62,18 @@ export default function AvatarInput(props: AvatarInputProps) {
             />
           </label>
 
-          <button type="submit" onClick={handleDelete} className="button-outline w-full">
-            {isDeleting && pending
-              ? <SpinnerIcon className="w-5 h-5 fill-current animate-spin" />
-              : <DeleteIcon className="w-5 h-5" />}
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="button-outline w-full"
+          >
+            <DeleteIcon className="w-5 h-5" />
             Usuń
           </button>
         </div>
       </div>
+
+      <input type="hidden" name="avatarChanged" value={avatarChanged ? "true" : "false"} />
     </>
   );
 }

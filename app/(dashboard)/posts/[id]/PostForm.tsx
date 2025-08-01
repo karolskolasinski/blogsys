@@ -12,16 +12,12 @@ import Preview from "@/components/blogsys/Preview";
 import MarkdownEditor from "./MarkdownEditor";
 import Toast from "@/components/blogsys/Toast";
 import { redirect } from "next/navigation";
+import { initialActionState } from "@/lib/utils";
 
 type PostFormProps = {
   post: Post;
   allTags: string[];
   allAuthors: { id: string; name: string }[];
-};
-
-const initialState: ActionResponse = {
-  success: false,
-  messages: [],
 };
 
 export default function PostForm(props: PostFormProps) {
@@ -30,7 +26,7 @@ export default function PostForm(props: PostFormProps) {
   const [tags, setTags] = useState<string[]>(post.tags);
   const [tagInput, setTagInput] = useState("");
   const [coverPreview, setCoverPreview] = useState<string | null>(post.cover || null);
-  const [state, formAction] = useActionState(savePost, initialState);
+  const [state, formAction] = useActionState(savePost, initialActionState);
 
   useEffect(() => {
     if (state.success) {

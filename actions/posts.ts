@@ -89,32 +89,29 @@ export async function savePost(_: unknown, formData: FormData): Promise<ActionRe
     if (doc.exists && doc.data()?.authorId !== userId && role !== "admin") {
       return {
         success: false,
-        messages: ["Nie masz uprawnień do edycji tego posta"],
+        messages: ["Brak uprawnień"],
       };
     }
 
-    const createdAt = id === "new"
-      ? Timestamp.now()
-      : Timestamp.fromDate(new Date(formData.get("createdAt") as string));
-
-    const data: Record<string, string | string[] | Timestamp> = {
+    const post: Record<string, string | string[] | Timestamp> = {
       title,
       content,
       tags,
       authorId,
-      createdAt,
+      ...(id === "new" && { createdAt: Timestamp.now() }),
       updatedAt: Timestamp.now(),
     };
 
     const file = formData.get("cover") as File;
     if (file && file.size > 0) {
-      data.cover = await toBase64(file);
+      post.cover = await toBase64(file);
     }
 
+    const docRef = db.collection("posts");
     if (id === "new") {
-      await db.collection("posts").add(data);
+      await docRef.add(post);
     } else {
-      await db.collection("posts").doc(id).update(data);
+      await docRef.doc(id).update(post);
     }
 
     return {

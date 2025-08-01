@@ -1,7 +1,7 @@
 import AvatarIcon from "@/public/icons/blogsys/avatar.svg";
 
 type AvatarProps = {
-  src: string | null;
+  src?: string;
   className?: string;
 };
 

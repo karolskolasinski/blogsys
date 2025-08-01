@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/lib/db";
 import { ActionResponse, User } from "@/types/common";
 import bcrypt from "bcryptjs";
@@ -6,7 +8,6 @@ import { auth } from "@/auth";
 import { Timestamp } from "firebase-admin/firestore";
 import _ from "lodash";
 import { firestore } from "firebase-admin";
-import { revalidatePath } from "next/cache";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
@@ -65,7 +66,7 @@ export async function getUserByEmail(email: string, keepPass?: boolean) {
   return userDocToUser(docSnap.docs[0], keepPass);
 }
 
-export async function getUserById(id: string): Promise<ActionResponse<User | null>> {
+export async function getUserById(id: string): Promise<ActionResponse<User>> {
   try {
     const docSnap = await db.collection("users").doc(id).get();
     return {
@@ -83,7 +84,7 @@ export async function getUserById(id: string): Promise<ActionResponse<User | nul
 
 function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, keepPass?: boolean) {
   if (!docSnap.exists) {
-    return null;
+    return;
   }
 
   const data = keepPass ? docSnap.data() : _.omit(docSnap.data(), ["password"]);
@@ -103,23 +104,45 @@ export async function deleteUser(id: string) {
   redirect("/users?deleted=true");
 }
 
-export async function saveUser(formData: FormData) {
-  const session = await auth();
-  const rawData = Object.fromEntries(formData.entries());
+export async function saveUser(_: unknown, formData: FormData): Promise<ActionResponse> {
+  try {
+    const session = await auth();
+    const id = formData.get("id") as string;
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const file = formData.get("avatar") as File;
+    const avatarChanged = formData.get("avatarChanged") as string;
 
-  if (session?.user?.id !== rawData.id && session?.user?.role !== "admin") {
-    throw new Error("Unauthorized");
-  }
+    if (session?.user?.id !== id && session?.user?.role !== "admin") {
+      return {
+        success: false,
+        messages: ["Brak uprawnień"],
+      };
+    }
 
-  await save({
-    ...rawData,
-    ...(rawData.password && { password: await bcrypt.hash(rawData.password as string, 10) }),
-  });
+    const user = {
+      ...(id === "new" ? {} : { id }),
+      name,
+      email,
+      ...(id === "new" && { createdAt: Timestamp.now() }),
+      ...(password && { password: await bcrypt.hash(password, 10) }),
+    };
 
-  if (rawData.settings) {
-    revalidatePath("/settings?saved=true");
-  } else {
-    redirect("/users?saved=true");
+    await save(user);
+    if (id !== "new" && avatarChanged === "true") {
+      await saveAvatar(user.id!, file);
+    }
+
+    return {
+      success: true,
+      messages: ["Zapisano"],
+    };
+  } catch (err) {
+    return {
+      success: false,
+      messages: [err instanceof Error ? err.message : "Błąd zapisu"],
+    };
   }
 }
 
@@ -128,14 +151,28 @@ async function save(user: WithFieldValue<DocumentData>) {
 
   if (user.id) {
     const omitted = _.omit(user, ["id"]);
-    await docRef.doc(user.id).update({ ...omitted, createdAt: Timestamp.now() });
+    await docRef.doc(user.id).update({ ...omitted });
   } else {
     const docSnap = await docRef.where("email", "==", user.email).get();
     if (!docSnap.empty) {
-      throw new Error("User with this email already exists");
+      throw new Error("Konto z takim adresem email już istnieje");
     }
-    delete user.id;
     await docRef.add(user);
+  }
+}
+
+export async function saveAvatar(id: string, file: File) {
+  const data = file.size > 0 ? await toBase64(file) : "";
+  const userSnap = await db.collection("users").doc(id).get();
+  const existingAvatarId = userSnap.exists && userSnap.data()?.avatarId
+    ? (userSnap.data()!.avatarId as string)
+    : "";
+
+  if (existingAvatarId) {
+    await db.collection("images").doc(existingAvatarId).update({ data });
+  } else {
+    const ref = await db.collection("images").add({ data });
+    await db.collection("users").doc(id).update({ avatarId: ref.id });
   }
 }
 
@@ -144,7 +181,7 @@ export async function getAvatar(avatarId: string): Promise<ActionResponse<string
     return {
       success: true,
       messages: [],
-      data: ""
+      data: "",
     };
   }
 
@@ -161,28 +198,4 @@ export async function getAvatar(avatarId: string): Promise<ActionResponse<string
     messages: [],
     data: docSnap.data()?.data,
   };
-}
-
-export async function saveAvatar(formData: FormData) {
-  const id = formData.get("id") as string;
-  const file = formData.get("avatar") as File;
-  const data = file.size > 0 ? await toBase64(file) : "";
-
-  const userSnap = await db.collection("users").doc(id).get();
-  const existingAvatarId = userSnap.exists && userSnap.data()?.avatarId
-    ? (userSnap.data()!.avatarId as string)
-    : "";
-
-  if (existingAvatarId) {
-    await db.collection("images").doc(existingAvatarId).update({ data });
-  } else {
-    const ref = await db.collection("images").add({ data });
-    await db.collection("users").doc(id).update({ avatarId: ref.id });
-  }
-
-  if (data) {
-    redirect("/settings?saved=true");
-  } else {
-    revalidatePath("/settings");
-  }
 }
