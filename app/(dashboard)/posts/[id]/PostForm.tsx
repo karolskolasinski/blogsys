@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState, useState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { savePost } from "@/actions/posts";
-import { Post } from "@/types/common";
+import { ActionResponse, Post } from "@/types/common";
 import XIcon from "@/public/icons/blogsys/x.svg";
 import SendIcon from "@/public/icons/blogsys/send.svg";
 import PhotoIcon from "@/public/icons/blogsys/photo.svg";
@@ -10,7 +10,8 @@ import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import Preview from "@/components/blogsys/Preview";
 import MarkdownEditor from "./MarkdownEditor";
-import toast from 'react-hot-toast';
+import Toast from "@/components/blogsys/Toast";
+import { redirect } from "next/navigation";
 
 type PostFormProps = {
   post: Post;
@@ -18,9 +19,9 @@ type PostFormProps = {
   allAuthors: { id: string; name: string }[];
 };
 
-const initialState = {
+const initialState: ActionResponse = {
   success: false,
-  error: null,
+  messages: [],
 };
 
 export default function PostForm(props: PostFormProps) {
@@ -33,10 +34,7 @@ export default function PostForm(props: PostFormProps) {
 
   useEffect(() => {
     if (state.success) {
-      toast.success('Post został zapisany!');
-    }
-    if (state.error) {
-      toast.error(state.error);
+      redirect("/posts");
     }
   }, [state]);
 
@@ -90,6 +88,7 @@ export default function PostForm(props: PostFormProps) {
       action={formAction}
       className="px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
+      <Toast success={state.success} messages={state.messages} />
       <input type="hidden" name="id" defaultValue={post.id} />
       <div className="flex justify-between items-center gap-4">
         <input

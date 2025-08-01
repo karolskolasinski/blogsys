@@ -8,6 +8,7 @@ import Button from "@/components/blogsys/Button";
 import AvatarInput from "./AvatarInput";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 import ResetPass from "@/app/(dashboard)/users/[id]/ResetPass";
+import Toast from "@/components/blogsys/Toast";
 
 export default async function Settings() {
   const session = await auth();
@@ -15,20 +16,16 @@ export default async function Settings() {
     redirect("/login");
   }
 
-  let user = null;
-  let avatar = null;
-  let errMsg = "";
-  try {
-    const userId = session?.user?.id ?? "";
-    user = await getUserById(userId);
-    avatar = await getAvatar(user?.avatarId ?? "");
-  } catch (err) {
-    console.error(err);
-    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
-  }
+  const userId = session?.user?.id ?? "";
+  const resUser = await getUserById(userId);
+  const user = resUser?.data;
+  const resAvatar = await getAvatar(user?.avatarId ?? "");
+  const messages = [...resUser.messages, ...resAvatar.messages];
+  const success = resUser.success && resAvatar.success;
 
   return (
     <main className="flex w-full h-screen">
+      <Toast success={success} messages={messages} />
       <DashboardMenu active="/settings" />
 
       <section className="flex-1 h-full flex flex-col">
@@ -99,7 +96,7 @@ export default async function Settings() {
           >
             <input type="hidden" name="id" defaultValue={user?.id} />
 
-            <AvatarInput data={avatar?.data ?? null} />
+            <AvatarInput data={resAvatar?.data ?? null} />
           </form>
         </div>
       </section>

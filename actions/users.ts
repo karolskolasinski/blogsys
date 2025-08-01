@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { User } from "@/types/common";
+import { ActionResponse, User } from "@/types/common";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
@@ -65,9 +65,20 @@ export async function getUserByEmail(email: string, keepPass?: boolean) {
   return userDocToUser(docSnap.docs[0], keepPass);
 }
 
-export async function getUserById(id: string) {
-  const docSnap = await db.collection("users").doc(id).get();
-  return userDocToUser(docSnap);
+export async function getUserById(id: string): Promise<ActionResponse<User | null>> {
+  try {
+    const docSnap = await db.collection("users").doc(id).get();
+    return {
+      success: true,
+      messages: [],
+      data: userDocToUser(docSnap),
+    };
+  } catch (err) {
+    return {
+      success: false,
+      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
+    };
+  }
 }
 
 function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, keepPass?: boolean) {
@@ -128,17 +139,28 @@ async function save(user: WithFieldValue<DocumentData>) {
   }
 }
 
-export async function getAvatar(avatarId: string) {
+export async function getAvatar(avatarId: string): Promise<ActionResponse<string>> {
   if (!avatarId) {
-    return null;
+    return {
+      success: true,
+      messages: [],
+      data: ""
+    };
   }
 
   const docSnap = await db.collection("images").doc(avatarId).get();
   if (!docSnap.exists) {
-    return null;
+    return {
+      success: false,
+      messages: ["Nie znaleziono avatara"],
+    };
   }
 
-  return docSnap.data() as { data: string };
+  return {
+    success: true,
+    messages: [],
+    data: docSnap.data()?.data,
+  };
 }
 
 export async function saveAvatar(formData: FormData) {

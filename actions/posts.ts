@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { ActionState, Post } from "@/types/common";
+import { ActionResponse, Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
@@ -74,7 +74,7 @@ export async function deletePost(id: string) {
   redirect("/posts?deleted=true");
 }
 
-export async function savePost(_prevState: ActionState, formData: FormData) {
+export async function savePost(_: unknown, formData: FormData): Promise<ActionResponse> {
   try {
     const id = formData.get("id") as string;
     const authorId = formData.get("authorId") as string;
@@ -89,7 +89,7 @@ export async function savePost(_prevState: ActionState, formData: FormData) {
     if (doc.exists && doc.data()?.authorId !== userId && role !== "admin") {
       return {
         success: false,
-        error: "Nie masz uprawnień do edycji tego posta",
+        messages: ["Nie masz uprawnień do edycji tego posta"],
       };
     }
 
@@ -119,12 +119,12 @@ export async function savePost(_prevState: ActionState, formData: FormData) {
 
     return {
       success: true,
-      error: null,
+      messages: ["Zapisano"],
     };
   } catch (error) {
     return {
       success: false,
-      error: error instanceof Error ? error.message : "Błąd zapisu",
+      messages: [error instanceof Error ? error.message : "Błąd zapisu"],
     };
   }
 }

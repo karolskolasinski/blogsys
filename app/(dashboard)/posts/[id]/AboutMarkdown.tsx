@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import InfoIcon from "@/public/icons/blogsys/info.svg";
 import XIcon from "@/public/icons/blogsys/x.svg";
