@@ -9,6 +9,7 @@ import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import ResetPass from "./ResetPass";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
+import Toast from "@/components/blogsys/Toast";
 
 export default async function User(props: ServerComponentProps) {
   const session = await auth();
@@ -17,12 +18,13 @@ export default async function User(props: ServerComponentProps) {
   }
 
   const params = await props.params;
-  const user = await getUserById(params.id as string);
+  const res = await getUserById(params.id as string);
+  const user = res?.data;
   const title = user?.name ? "Edycja użytkownika" : "Dodaj użytkownika";
-  const selectedRole = user?.role || "user";
 
   return (
     <main className="flex w-full h-screen">
+      <Toast success={res.success} messages={res.messages} />
       <DashboardMenu active="/users" />
 
       <section className="flex-1 h-full flex flex-col">
@@ -39,7 +41,7 @@ export default async function User(props: ServerComponentProps) {
         <form
           action={async (formData) => {
             "use server";
-            await saveUser(formData);
+            await saveUser(null, formData);
           }}
           className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
         >
@@ -85,7 +87,7 @@ export default async function User(props: ServerComponentProps) {
               <select
                 id="role"
                 name="role"
-                defaultValue={selectedRole}
+                defaultValue={user?.role || "user"}
                 className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow appearance-none"
               >
                 <option disabled>Rola</option>

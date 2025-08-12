@@ -10,18 +10,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/login");
   }
 
-  let user;
-  let avatar;
-  try {
-    user = await getUserById(session.user.id ?? "");
-    avatar = await getAvatar(session.user.avatarId ?? "");
-  } catch (err) {
-    console.error(err);
-    return children;
-  }
+  const userRes = await getUserById(session.user.id ?? "");
+  const user = userRes.data;
+  const avatar = await getAvatar(session.user.avatarId ?? "");
 
   return (
-    <UserProvider user={user!} avatar={avatar?.data ?? ""}>
+    <UserProvider user={user} avatar={avatar?.data ?? ""}>
       {children}
       <Toaster position="top-center" />
     </UserProvider>

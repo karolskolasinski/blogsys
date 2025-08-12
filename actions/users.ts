@@ -49,16 +49,30 @@ export async function init(formData: FormData) {
   redirect("/login?initialized=true");
 }
 
-export async function getUsers() {
+export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> {
   const session = await auth();
   const role = session?.user?.role;
   if (role !== "admin") {
-    throw new Error("Unauthorized");
+    return {
+      success: false,
+      messages: ["Brak dostępu"],
+    };
   }
 
-  const fields = ["name", "email", "role", "createdAt"];
-  const docSnap = await db.collection("users").select(...fields).get();
-  return docSnap.docs.map((doc) => userDocToUser(doc));
+  try {
+    const fields = ["name", "email", "role", "createdAt"];
+    const docSnap = await db.collection("users").select(...fields).get();
+    return {
+      success: true,
+      messages: [],
+      data: docSnap.docs.map((doc) => userDocToUser(doc)),
+    };
+  } catch (err) {
+    return {
+      success: false,
+      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
+    };
+  }
 }
 
 export async function getUserByEmail(email: string, keepPass?: boolean) {
@@ -181,7 +195,6 @@ export async function getAvatar(avatarId: string): Promise<ActionResponse<string
     return {
       success: true,
       messages: [],
-      data: "",
     };
   }
 
