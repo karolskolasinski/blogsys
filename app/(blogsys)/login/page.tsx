@@ -20,7 +20,7 @@ export default async function LoginPage(props: ServerComponentProps) {
           }}
           className="flex-1 w-full max-w-96 mx-auto"
         >
-          <h1 className="text-3xl font-bold mb-8 mt-16 text-center">
+          <h1 className="text-3xl font-bold mb-8 mt-20 text-center">
             Logowanie
           </h1>
 

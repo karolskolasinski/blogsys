@@ -11,42 +11,46 @@ import { firestore } from "firebase-admin";
 import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
-import { toBase64 } from "@/lib/utils";
+import { handleError, toBase64 } from "@/lib/utils";
 
-export async function init(formData: FormData) {
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const key = formData.get("key");
-  const secretKey = process.env.INIT_ADMIN_SECRET_KEY;
+export async function init(_: unknown, formData: FormData): Promise<ActionResponse<void>> {
+  try {
+    const email = formData.get("email");
+    const password = formData.get("password");
+    const key = formData.get("key");
+    const secretKey = process.env.INIT_ADMIN_SECRET_KEY;
 
-  if (!secretKey) {
-    throw new Error("Server configuration error");
+    if (!secretKey) {
+      return handleError(null, "Błędna konfiguracja serwera");
+    }
+
+    if (key !== secretKey) {
+      return handleError(null, "Brak dostępu");
+    }
+
+    if (!email || !password) {
+      return handleError(null, "Email i hasło są wymagane");
+    }
+
+    if (typeof email !== "string" || typeof password !== "string") {
+      return handleError(null, "Niepoprawny format danych");
+    }
+
+    const hashedPassword = await bcrypt.hash(password.trim(), 10);
+    const user = {
+      email: email.toLowerCase().trim(),
+      password: hashedPassword,
+      name: "Admin",
+      role: "admin",
+      createdAt: Timestamp.now(),
+      avatarId: "",
+    };
+
+    await save(user);
+    redirect("/login");
+  } catch (err) {
+    return handleError(err, "Błąd inicjalizacji");
   }
-
-  if (key !== secretKey) {
-    throw new Error("Unauthorized");
-  }
-
-  if (!email || !password) {
-    throw new Error("Email and password required");
-  }
-
-  if (typeof email !== "string" || typeof password !== "string") {
-    throw new Error("Invalid input types");
-  }
-
-  const hashedPassword = await bcrypt.hash(password.trim(), 10);
-  const user = {
-    email: email.toLowerCase().trim(),
-    password: hashedPassword,
-    name: "Admin",
-    role: "admin",
-    createdAt: Timestamp.now(),
-    avatarId: "",
-  };
-
-  await save(user);
-  redirect("/login?initialized=true");
 }
 
 export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> {
@@ -75,9 +79,20 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
   }
 }
 
-export async function getUserByEmail(email: string, keepPass?: boolean) {
-  const docSnap = await db.collection("users").where("email", "==", email).get();
-  return userDocToUser(docSnap.docs[0], keepPass);
+export async function getUserByEmail(
+  email: string,
+  keepPass?: boolean,
+): Promise<ActionResponse<User>> {
+  try {
+    const docSnap = await db.collection("users").where("email", "==", email).get();
+    return {
+      success: true,
+      messages: [],
+      data: userDocToUser(docSnap.docs[0], keepPass),
+    };
+  } catch (err) {
+    return handleError(err, "Błąd odczytu");
+  }
 }
 
 export async function getUserById(id: string): Promise<ActionResponse<User>> {
@@ -175,7 +190,7 @@ async function save(user: WithFieldValue<DocumentData>) {
   }
 }
 
-export async function saveAvatar(id: string, file: File) {
+async function saveAvatar(id: string, file: File) {
   const data = file.size > 0 ? await toBase64(file) : "";
   const userSnap = await db.collection("users").doc(id).get();
   const existingAvatarId = userSnap.exists && userSnap.data()?.avatarId

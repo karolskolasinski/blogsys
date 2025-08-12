@@ -16,12 +16,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         assert(typeof credentials?.email === "string", "Email is not a string");
         assert(typeof credentials?.password === "string", "Password is not a string");
 
-        try {
-          const user = await getUserByEmail(credentials.email, true);
-          if (!user) {
-            return null;
-          }
+        const res = await getUserByEmail(credentials.email, true);
+        const user = res.data;
+        if (!user) {
+          return null;
+        }
 
+        try {
           const isValid = await bcrypt.compare(credentials.password, user.password ?? "");
           if (!isValid) {
             return null;

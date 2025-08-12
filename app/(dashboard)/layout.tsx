@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { UserProvider } from "@/context/UserContext";
 import { getAvatar, getUserById } from "@/actions/users";
-import { Toaster } from "react-hot-toast";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -17,7 +16,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <UserProvider user={user} avatar={avatar?.data ?? ""}>
       {children}
-      <Toaster position="top-center" />
     </UserProvider>
   );
 }

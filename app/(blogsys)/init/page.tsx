@@ -1,18 +1,23 @@
+"use client";
+
 import { init } from "@/actions/users";
 import FormFooter from "@/components/blogsys/FormFooter";
+import { useActionState } from "react";
+import { initialActionState } from "@/lib/utils";
+import Toast from "@/components/blogsys/Toast";
 
-export default async function InitAdminPage() {
+export default function InitAdminPage() {
+  const [state, formAction] = useActionState(init, initialActionState);
+
   return (
     <main className="flex-1">
+      <Toast success={state.success} messages={state.messages} />
       <section className="mx-auto max-w-5xl px-4">
         <form
-          action={async (formData) => {
-            "use server";
-            await init(formData);
-          }}
+          action={formAction}
           className="flex-1 w-full max-w-96 mx-auto"
         >
-          <h1 className="text-3xl font-bold mb-8 mt-16 text-center">
+          <h1 className="text-3xl font-bold mb-8 mt-20 text-center">
             Tworzenie konta startowego
           </h1>
 

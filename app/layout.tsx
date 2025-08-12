@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const calSans = localFont({
   src: "../public/fonts/CalSans-Regular.woff2",
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="pl" className={`${calSans.variable} ${plusJakartaSans.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">
+        <Toaster position="top-center" />
         {children}
       </body>
     </html>
