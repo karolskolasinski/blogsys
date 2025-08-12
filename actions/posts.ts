@@ -5,7 +5,7 @@ import { ActionResponse, Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
-import { toBase64 } from "@/lib/utils";
+import { handleError, toBase64 } from "@/lib/utils";
 
 export async function getPosts(): Promise<ActionResponse<Post[]>> {
   try {
@@ -40,44 +40,51 @@ export async function getPosts(): Promise<ActionResponse<Post[]>> {
       })),
     };
   } catch (err) {
-    return {
-      success: false,
-      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
-    };
+    return handleError(err, "Błąd odczytu");
   }
 }
 
-export async function getAllAuthors() {
-  const snap = await db.collection("users").select("name").get();
-  return snap.docs.map((doc) => ({
-    id: doc.id,
-    name: doc.data().name,
-  }));
+export async function getAuthors(): Promise<ActionResponse<{ id: string; name: string }[]>> {
+  try {
+    const snap = await db.collection("users").select("name").get();
+    return {
+      success: true,
+      messages: [],
+      data: snap.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().name,
+      })),
+    };
+  } catch (err) {
+    return handleError(err, "Błąd odczytu");
+  }
 }
 
-export async function getPost(id: string) {
-  const doc = await db.collection("posts").doc(id).get();
-  if (!doc.exists) {
-    return {
-      id,
-      title: "",
-      content: "",
-      tags: [],
-      authorId: "",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      cover: "",
-    };
-  }
+export async function getPost(id: string): Promise<ActionResponse<Post>> {
+  try {
+    const doc = await db.collection("posts").doc(id).get();
+    if (!doc.exists) {
+      return {
+        success: true,
+        messages: [],
+      };
+    }
 
-  const data = doc.data();
-  return {
-    ...data,
-    id: doc.id,
-    createdAt: data?.createdAt?.toDate(),
-    updatedAt: data?.updatedAt?.toDate(),
-    cover: data?.cover || "",
-  } as Post;
+    const data = doc.data();
+    return {
+      success: true,
+      messages: [],
+      data: {
+        ...data,
+        id: doc.id,
+        createdAt: data?.createdAt?.toDate(),
+        updatedAt: data?.updatedAt?.toDate(),
+        cover: data?.cover || "",
+      } as Post,
+    };
+  } catch (err) {
+    return handleError(err, "Błąd odczytu");
+  }
 }
 
 export async function deletePost(id: string) {
@@ -130,19 +137,24 @@ export async function savePost(_: unknown, formData: FormData): Promise<ActionRe
       messages: ["Zapisano"],
     };
   } catch (err) {
-    return {
-      success: false,
-      messages: [err instanceof Error ? err.message : "Błąd zapisu"],
-    };
+    return handleError(err, "Błąd zapisu");
   }
 }
 
-export async function getAllTags() {
-  const docSnap = await db.collection("posts").select("tags").get();
-  const tags: string[] = docSnap.docs.reduce((acc, doc) => {
-    const data = doc.data();
-    return [...acc, ...data.tags];
-  }, [] as string[]);
+export async function getTags(): Promise<ActionResponse<string[]>> {
+  try {
+    const docSnap = await db.collection("posts").select("tags").get();
+    const tags: string[] = docSnap.docs.reduce((acc, doc) => {
+      const data = doc.data();
+      return [...acc, ...data.tags];
+    }, [] as string[]);
 
-  return [...new Set(tags)].sort();
+    return {
+      success: true,
+      messages: [],
+      data: [...new Set(tags)].sort(),
+    };
+  } catch (err) {
+    return handleError(err, "Błąd odczytu");
+  }
 }

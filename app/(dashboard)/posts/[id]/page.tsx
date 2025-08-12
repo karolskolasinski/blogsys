@@ -1,11 +1,10 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { getAllAuthors, getAllTags, getPost } from "@/actions/posts";
+import { getAuthors, getTags, getPost } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import PostForm from "./PostForm";
-import ErrorMsg from "@/components/blogsys/ErrorMsg";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Post(props: ServerComponentProps) {
@@ -16,21 +15,11 @@ export default async function Post(props: ServerComponentProps) {
 
   const params = await props.params;
   const id = params.id as string;
-  let errMsg = "";
-  let post;
-  let allTags;
-  let allAuthors;
-
-  try {
-    [post, allTags, allAuthors] = await Promise.all([
-      getPost(id),
-      getAllTags(),
-      getAllAuthors(),
-    ]);
-  } catch (err) {
-    console.error(err);
-    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
-  }
+  const [postRes, tagsRes, authorsRes] = await Promise.all([
+    getPost(id),
+    getTags(),
+    getAuthors(),
+  ]);
 
   return (
     <main className="flex w-full min-h-screen">
@@ -41,15 +30,13 @@ export default async function Post(props: ServerComponentProps) {
           <Breadcrumb
             items={[
               { label: "Wpisy", href: "/posts" },
-              { label: post?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
+              { label: postRes?.data?.title ? "Edycja wpisu" : "Nowy wpis", href: `/posts/${id}` },
             ]}
           />
           <HamburgerMenu active="/posts" />
         </div>
 
-        {errMsg.length > 0
-          ? <ErrorMsg errMsg={errMsg} />
-          : <PostForm post={post!} allTags={allTags!} allAuthors={allAuthors!} />}
+        <PostForm post={postRes?.data} allTags={tagsRes?.data} allAuthors={authorsRes?.data} />
       </section>
     </main>
   );

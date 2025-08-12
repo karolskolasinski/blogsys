@@ -10,3 +10,10 @@ export const initialActionState: ActionResponse = {
   success: false,
   messages: [],
 };
+
+export function handleError(err: unknown, msg: string = "Coś poszło nie tak") {
+  return {
+    success: false,
+    messages: [err instanceof Error ? err.message : msg],
+  };
+}

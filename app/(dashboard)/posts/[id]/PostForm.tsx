@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { savePost } from "@/actions/posts";
-import { ActionResponse, Post } from "@/types/common";
+import { Post } from "@/types/common";
 import XIcon from "@/public/icons/blogsys/x.svg";
 import SendIcon from "@/public/icons/blogsys/send.svg";
 import PhotoIcon from "@/public/icons/blogsys/photo.svg";
@@ -15,17 +15,17 @@ import { redirect } from "next/navigation";
 import { initialActionState } from "@/lib/utils";
 
 type PostFormProps = {
-  post: Post;
-  allTags: string[];
-  allAuthors: { id: string; name: string }[];
+  post?: Post;
+  allTags?: string[];
+  allAuthors?: { id: string; name: string }[];
 };
 
 export default function PostForm(props: PostFormProps) {
   const { post, allTags } = props;
-  const [value, setValue] = useState(post.content);
-  const [tags, setTags] = useState<string[]>(post.tags);
+  const [value, setValue] = useState(post?.content);
+  const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
-  const [coverPreview, setCoverPreview] = useState<string | null>(post.cover || null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(post?.cover || null);
   const [state, formAction] = useActionState(savePost, initialActionState);
 
   useEffect(() => {
@@ -76,8 +76,8 @@ export default function PostForm(props: PostFormProps) {
     setCoverPreview(url);
   }
 
-  const isValidAuthor = props.allAuthors.some((author) => author.id === post.authorId);
-  const selectedAuthorId = isValidAuthor ? post.authorId : "";
+  const isValidAuthor = props?.allAuthors?.some((author) => author.id === post?.authorId);
+  const selectedAuthorId = isValidAuthor ? post?.authorId : "";
 
   return (
     <form
@@ -85,12 +85,12 @@ export default function PostForm(props: PostFormProps) {
       className="px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <Toast success={state.success} messages={state.messages} />
-      <input type="hidden" name="id" defaultValue={post.id} />
+      <input type="hidden" name="id" defaultValue={post?.id} />
       <div className="flex justify-between items-center gap-4">
         <input
           name="title"
           className="w-full text-3xl font-black focus:bg-white rounded-lg"
-          defaultValue={post.title}
+          defaultValue={post?.title}
           placeholder="Wpisz tytuł"
           maxLength={100}
           required
@@ -105,13 +105,13 @@ export default function PostForm(props: PostFormProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2 flex-wrap md:items-center text-sm text-gray-700">
-        <input name="createdAt" type="hidden" value={post.createdAt?.toISOString()} />
+        <input name="createdAt" type="hidden" value={post?.createdAt?.toISOString()} />
         <div className="h-8 flex items-center">
-          Data utworzenia: {post.createdAt?.toLocaleString()}
+          Data utworzenia: {post?.createdAt?.toLocaleString()}
         </div>
         <span className="text-gray-300 font-black hidden sm:inline content-center">•</span>
         <div className="h-8 flex items-center">
-          Ostatnio edytowany: {post.updatedAt?.toLocaleString()}
+          Ostatnio edytowany: {post?.updatedAt?.toLocaleString()}
         </div>
 
         {tags.length > 0 && (
@@ -156,7 +156,7 @@ export default function PostForm(props: PostFormProps) {
               disabled={tags.length >= 3}
             />
             <datalist id="tag">
-              {allTags.map((tag) => <option key={tag} value={tag} />)}
+              {allTags?.map((tag) => <option key={tag} value={tag} />)}
             </datalist>
 
             <button
@@ -179,7 +179,7 @@ export default function PostForm(props: PostFormProps) {
               title="Autor"
             >
               <option disabled>Autor</option>
-              {props.allAuthors.map((author) => (
+              {props?.allAuthors?.map((author) => (
                 <option key={author.id} value={author.id}>
                   {author.name}
                 </option>

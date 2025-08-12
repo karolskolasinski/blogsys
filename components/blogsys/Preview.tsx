@@ -10,7 +10,7 @@ const SyntaxHighlighter = dynamic(
 );
 
 type PreviewProps = {
-  value: string;
+  value?: string;
 };
 
 export default function Preview(props: PreviewProps) {
@@ -31,7 +31,7 @@ export default function Preview(props: PreviewProps) {
         },
       }}
     >
-      {props.value}
+      {props?.value ?? ""}
     </Markdown>
   );
 }

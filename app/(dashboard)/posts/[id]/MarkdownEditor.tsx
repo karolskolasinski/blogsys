@@ -5,7 +5,7 @@ import "prismjs/themes/prism-twilight.min.css";
 import AboutMarkdown from "./AboutMarkdown";
 
 type MarkdownEditorProps = {
-  value: string;
+  value?: string;
   setValue: (value: string) => void;
 };
 
@@ -15,7 +15,7 @@ export default function MarkdownEditor(props: MarkdownEditorProps) {
       <Editor
         placeholder="Wpisz treść"
         name="content"
-        value={props.value}
+        value={props.value ?? ""}
         onValueChange={props.setValue}
         highlight={(code) => highlight(code, languages.markdown, "markdown")}
         padding={16}

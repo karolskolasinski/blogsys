@@ -70,7 +70,7 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
   } catch (err) {
     return {
       success: false,
-      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
+      messages: [err instanceof Error ? err.message : "Błąd odczytu"],
     };
   }
 }
@@ -91,7 +91,7 @@ export async function getUserById(id: string): Promise<ActionResponse<User>> {
   } catch (err) {
     return {
       success: false,
-      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
+      messages: [err instanceof Error ? err.message : "Błąd odczytu"],
     };
   }
 }

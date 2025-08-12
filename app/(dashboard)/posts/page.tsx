@@ -1,6 +1,5 @@
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { deletePost, getPosts } from "@/actions/posts";
-import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import AddIcon from "@/public/icons/blogsys/add.svg";
 import Button from "@/components/blogsys/Button";
@@ -10,8 +9,7 @@ import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 import { auth } from "@/auth";
 import Toast from "@/components/blogsys/Toast";
 
-export default async function Posts(props: ServerComponentProps) {
-  const params = await props.searchParams; // todo: flash message
+export default async function Posts() {
   const session = await auth();
 
   const res = await getPosts();
