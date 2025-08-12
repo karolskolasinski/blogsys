@@ -7,33 +7,44 @@ import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 import { toBase64 } from "@/lib/utils";
 
-export async function getPosts() {
-  const fields = ["title", "authorId", "createdAt", "updatedAt"];
-  const query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
-  const docSnap = await query.get();
+export async function getPosts(): Promise<ActionResponse<Post[]>> {
+  try {
+    const fields = ["title", "authorId", "createdAt", "updatedAt"];
+    const query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
+    const docSnap = await query.get();
 
-  const posts = docSnap.docs.map((doc) => {
-    const data = doc.data();
+    const posts = docSnap.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        ...data,
+        id: doc.id,
+        createdAt: data.createdAt?.toDate(),
+        updatedAt: data.updatedAt?.toDate(),
+      } as Post;
+    });
+
+    const authorIds = [...new Set(posts.map((post) => post.authorId).filter((id) => !!id))];
+    const authors = await Promise.all(authorIds.map((id) => db.collection("users").doc(id).get()));
+    const authorMap = new Map(
+      authors
+        .filter((doc) => doc.exists)
+        .map((doc) => [doc.id, doc.data()?.name || ""]),
+    );
+
     return {
-      ...data,
-      id: doc.id,
-      createdAt: data.createdAt?.toDate(),
-      updatedAt: data.updatedAt?.toDate(),
-    } as Post;
-  });
-
-  const authorIds = [...new Set(posts.map((post) => post.authorId).filter((id) => !!id))];
-  const authors = await Promise.all(authorIds.map((id) => db.collection("users").doc(id).get()));
-  const authorMap = new Map(
-    authors
-      .filter((doc) => doc.exists)
-      .map((doc) => [doc.id, doc.data()?.name || ""]),
-  );
-
-  return posts.map((post) => ({
-    ...post,
-    authorName: authorMap.get(post.authorId) || "",
-  }));
+      success: true,
+      messages: [],
+      data: posts.map((post) => ({
+        ...post,
+        authorName: authorMap.get(post.authorId) || "",
+      })),
+    };
+  } catch (err) {
+    return {
+      success: false,
+      messages: [err instanceof Error ? err.message : "Coś poszło nie tak"],
+    };
+  }
 }
 
 export async function getAllAuthors() {
@@ -118,10 +129,10 @@ export async function savePost(_: unknown, formData: FormData): Promise<ActionRe
       success: true,
       messages: ["Zapisano"],
     };
-  } catch (error) {
+  } catch (err) {
     return {
       success: false,
-      messages: [error instanceof Error ? error.message : "Błąd zapisu"],
+      messages: [err instanceof Error ? err.message : "Błąd zapisu"],
     };
   }
 }
