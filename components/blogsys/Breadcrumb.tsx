@@ -15,15 +15,25 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
 
       <ChevronIcon className="w-6 h-6 fill-gray-300" />
 
-      {items.map((link, index) => (
-        <div key={index} className="flex items-center">
-          <Link href={link.href} className="hover:text-gray-700">
-            <span className="text-sm">{link.label}</span>
-          </Link>
+      {items.map((link, index) => {
+        if (index === items.length - 1) {
+          return (
+            <div key={index} className="flex items-center gap-2">
+              <span className="text-sm">{link.label}</span>
+            </div>
+          );
+        }
 
-          {index < items.length - 1 && <ChevronIcon className="w-6 h-6 fill-gray-300" />}
-        </div>
-      ))}
+        return (
+          <div key={index} className="flex items-center gap-2">
+            <Link href={link.href} className="hover:text-gray-700">
+              <span className="text-sm">{link.label}</span>
+            </Link>
+
+            {index < items.length - 1 && <ChevronIcon className="w-6 h-6 fill-gray-300" />}
+          </div>
+        );
+      })}
     </nav>
   );
 }

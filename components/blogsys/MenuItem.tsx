@@ -17,17 +17,30 @@ export default function MenuItem(props: MenuItemProps) {
   const router = useRouter();
   const isActive = href === "/" ? active === href : active.startsWith(href);
   const activeClass = isActive ? "bg-gray-100" : "";
+  const btnClass =
+    "flex items-center gap-2 p-4 duration-100 ease-in-out font-bold hover:bg-gray-100 rounded-xl cursor-pointer";
   const [isPending, startTransition] = useTransition();
   const { user } = useUser();
   if (user.role !== "admin" && href === "/users") {
     return null;
   }
 
+  if (isActive) {
+    return (
+      <button className={`${btnClass} ${activeClass}`} disabled>
+        {icon}
+        <span className="text-left whitespace-nowrap">
+          {label}
+        </span>
+      </button>
+    );
+  }
+
   return (
     <button
       onClick={() => startTransition(() => router.push(props.href))}
       disabled={isPending}
-      className={`flex items-center gap-2 p-4 duration-100 ease-in-out font-bold hover:bg-gray-100 rounded-xl cursor-pointer ${activeClass}`}
+      className={btnClass}
     >
       {isPending ? <SpinnerIcon className="w-6 h-6 fill-gray-500 animate-spin" /> : icon}
       <span className="text-left whitespace-nowrap">
