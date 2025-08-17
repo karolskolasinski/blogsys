@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import assert from "node:assert";
 import bcrypt from "bcryptjs";
 import _ from "lodash";
 import { getUserByEmail } from "@/actions/users";
@@ -13,8 +12,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        assert(typeof credentials?.email === "string", "Email is not a string");
-        assert(typeof credentials?.password === "string", "Password is not a string");
+        if (typeof credentials?.email !== "string" || typeof credentials?.password !== "string") {
+          return null;
+        }
 
         const res = await getUserByEmail(credentials.email, true);
         const user = res.data;
@@ -29,9 +29,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           return _.omit(user, "password");
-        } catch (error) {
-          console.error("Authentication error: ", error);
-          throw new Error("Invalid credentials");
+        } catch (err) {
+          console.error("Authentication error: ", err);
+          return null;
         }
       },
     }),

@@ -12,6 +12,9 @@ import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
 import { handleError, toBase64 } from "@/lib/utils";
+import { signIn } from "@/auth";
+import { RedirectError } from "next/dist/client/components/redirect-error";
+import { CredentialsSignin } from "next-auth";
 
 export async function init(_: unknown, formData: FormData): Promise<ActionResponse<void>> {
   try {
@@ -50,6 +53,22 @@ export async function init(_: unknown, formData: FormData): Promise<ActionRespon
     redirect("/login");
   } catch (err) {
     return handleError(err, "Błąd inicjalizacji");
+  }
+}
+
+export async function login(_: unknown, formData: FormData) {
+  try {
+    await signIn("credentials", formData);
+  } catch (err) {
+    const redirect = err as RedirectError;
+    if (redirect?.digest?.startsWith("NEXT_REDIRECT")) {
+      // valid signIn, but we need to throw NEXT_REDIRECT
+      throw err;
+    }
+
+    return err instanceof CredentialsSignin
+      ? handleError(null, "Błąd logowania")
+      : handleError(err);
   }
 }
 
