@@ -4,8 +4,12 @@ import InfoIcon from "@/public/icons/blogsys/info.svg";
 import WarningIcon from "@/public/icons/blogsys/warning.svg";
 import { useState } from "react";
 
-export default function ResetPass() {
-  const [resetMode, setResetMode] = useState(false);
+type ResetPassProps = {
+  resetMode?: boolean;
+};
+
+export default function ResetPass(props: ResetPassProps) {
+  const [resetMode, setResetMode] = useState(props.resetMode);
 
   return (
     <>

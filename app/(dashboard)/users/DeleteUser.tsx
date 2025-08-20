@@ -1,12 +1,13 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { deleteUser } from "@/actions/users";
 import Button from "@/components/blogsys/Button";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import { User } from "@/types/common";
 import { initialActionState } from "@/lib/utils";
 import Toast from "@/components/blogsys/Toast";
+import { useRouter } from "next/navigation";
 
 type DeleteUserProps = {
   user: User;
@@ -15,6 +16,13 @@ type DeleteUserProps = {
 export function DeleteUser(props: DeleteUserProps) {
   const { user } = props;
   const [state, formAction] = useActionState(deleteUser, initialActionState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      router.refresh();
+    }
+  }, [state.success, router]);
 
   return (
     <form action={formAction} className="inline">

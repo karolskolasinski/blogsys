@@ -157,6 +157,7 @@ export async function saveUser(_prevState: unknown, formData: FormData): Promise
     const password = formData.get("password") as string;
     const file = formData.get("avatar") as File;
     const avatarChanged = formData.get("avatarChanged") as string;
+    const role = formData.get("role") as string;
 
     if (session?.user?.id !== id && session?.user?.role !== "admin") {
       return {
@@ -171,6 +172,7 @@ export async function saveUser(_prevState: unknown, formData: FormData): Promise
       email,
       ...(id === "new" && { createdAt: Timestamp.now() }),
       ...(password && { password: await bcrypt.hash(password, 10) }),
+      ...(role && { role }),
     };
 
     await save(user);
