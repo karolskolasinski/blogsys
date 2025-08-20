@@ -16,7 +16,7 @@ export default async function Accounts() {
     accounts = await getAccounts();
   } catch (err) {
     console.error(err);
-    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
+    errMsg = err instanceof Error ? err.message : "Wystąpił błąd";
   }
 
   return (

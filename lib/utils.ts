@@ -11,7 +11,7 @@ export const initialActionState: ActionResponse = {
   messages: [],
 };
 
-export function handleError(err: unknown, msg: string = "Coś poszło nie tak") {
+export function handleError(err: unknown, msg: string = "Wystąpił błąd") {
   return {
     success: false,
     messages: [err instanceof Error ? err.message : msg],

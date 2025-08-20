@@ -1,18 +1,28 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { loginAction } from "@/actions/auth";
 import { initialActionState } from "@/lib/utils";
 import FormFooter from "@/components/blogsys/FormFooter";
 import Toast from "@/components/blogsys/Toast";
-import { login } from "@/actions/users";
+import { redirect } from "next/navigation";
 
 export default function LoginForm() {
-  const [state, formAction] = useActionState(login, initialActionState);
+  const [state, formAction] = useActionState(loginAction, initialActionState);
+
+  useEffect(() => {
+    if (state.success) {
+      redirect("/posts");
+    }
+  }, [state.success]);
 
   return (
     <form action={formAction} className="flex-1 w-full max-w-96 mx-auto">
-      <Toast success={state?.success ?? false} messages={state?.messages ?? []} />
-      <h1 className="text-3xl font-bold mb-8 mt-20 text-center">Logowanie</h1>
+      <Toast success={state.success} messages={state.messages} />
+
+      <h1 className="text-3xl font-bold mb-8 mt-20 text-center">
+        Logowanie
+      </h1>
 
       <div className="h-44">
         <label className="block text-sm text-gray-600">Login</label>
@@ -33,7 +43,9 @@ export default function LoginForm() {
       </div>
 
       <div className="flex justify-center">
-        <button type="submit" className="button">Zaloguj się</button>
+        <button type="submit" className="button">
+          Zaloguj się
+        </button>
       </div>
 
       <FormFooter showLoginLink={false} />

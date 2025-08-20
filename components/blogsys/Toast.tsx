@@ -5,17 +5,15 @@ import toast from "react-hot-toast";
 import { ActionResponse } from "@/types/common";
 
 export default function Toast(props: Omit<ActionResponse, "data">) {
+  const { success, messages } = props;
+
   useEffect(() => {
-    const { success, messages } = props;
-
-    if (messages.length === 0) return;
-
-    if (success) {
-      messages.forEach((msg) => toast.success(msg));
-    } else {
-      messages.forEach((msg) => toast.error(msg));
+    if (messages.length === 0) {
+      return;
     }
-  }, [props]);
+
+    messages.forEach((msg) => success ? toast.success(msg) : toast.error(msg));
+  }, [success, messages]);
 
   return null;
 }

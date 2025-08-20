@@ -21,7 +21,7 @@ export default async function Account(props: ServerComponentProps) {
     account = await getAccount(id);
   } catch (err) {
     console.error(err);
-    errMsg = err instanceof Error ? err.message : "Coś poszło nie tak";
+    errMsg = err instanceof Error ? err.message : "Wystąpił błąd";
   }
 
   return (
