@@ -13,7 +13,7 @@ import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
 import { handleError, toBase64 } from "@/lib/utils";
 
-export async function init(_: unknown, formData: FormData): Promise<ActionResponse<void>> {
+export async function init(_prevState: unknown, formData: FormData): Promise<ActionResponse<void>> {
   try {
     const email = formData.get("email");
     const password = formData.get("password");
@@ -47,7 +47,10 @@ export async function init(_: unknown, formData: FormData): Promise<ActionRespon
     };
 
     await save(user);
-    redirect("/login");
+    return {
+      success: true,
+      messages: ["Utworzono nowe konto administratora"],
+    };
   } catch (err) {
     return handleError(err, "Błąd inicjalizacji");
   }
@@ -133,7 +136,7 @@ export async function deleteUser(id: string) {
   redirect("/users?deleted=true");
 }
 
-export async function saveUser(_: unknown, formData: FormData): Promise<ActionResponse> {
+export async function saveUser(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
   try {
     const session = await auth();
     const id = formData.get("id") as string;

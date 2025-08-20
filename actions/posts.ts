@@ -92,7 +92,7 @@ export async function deletePost(id: string) {
   redirect("/posts?deleted=true");
 }
 
-export async function savePost(_: unknown, formData: FormData): Promise<ActionResponse> {
+export async function savePost(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
   try {
     const id = formData.get("id") as string;
     const authorId = formData.get("authorId") as string;

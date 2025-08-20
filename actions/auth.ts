@@ -3,7 +3,7 @@
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
-export async function loginAction(_: unknown, formData: FormData) {
+export async function login(_prevState: unknown, formData: FormData) {
   try {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
