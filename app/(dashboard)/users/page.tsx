@@ -1,14 +1,14 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { deleteUser, getUsers } from "@/actions/users";
+import { getUsers } from "@/actions/users";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import AddIcon from "@/public/icons/blogsys/add.svg";
-import EditIcon from "@/public/icons/blogsys/edit.svg";
 import Button from "@/components/blogsys/Button";
-import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 import Toast from "@/components/blogsys/Toast";
+import { DeleteUser } from "@/app/(dashboard)/users/DeleteUser";
+import { EditUser } from "@/app/(dashboard)/users/EditUser";
 
 export default async function Users() {
   const session = await auth();
@@ -71,28 +71,8 @@ export default async function Users() {
                       </div>
 
                       <div className="flex flex-wrap gap-3 text-sm pt-4">
-                        <Button
-                          href={`/users/${user.id}`}
-                          appearance="link"
-                          label="Edytuj"
-                          icon={<EditIcon className="w-4 h-4 fill-current" />}
-                          colorClass="text-sky-600 hover:text-sky-500"
-                        />
-                        <form
-                          action={async () => {
-                            "use server";
-                            await deleteUser(user.id!);
-                          }}
-                          className="inline"
-                        >
-                          <Button
-                            href="delete"
-                            appearance="link"
-                            label="Usuń"
-                            icon={<DeleteIcon className="w-4 h-4 fill-current" />}
-                            colorClass="text-red-600 hover:text-red-500"
-                          />
-                        </form>
+                        <EditUser user={user} />
+                        <DeleteUser user={user} />
                       </div>
                     </div>
                   </div>
@@ -122,28 +102,9 @@ export default async function Users() {
                         <td className="px-6 py-4">
                           {user.name}
                           <div className="mt-2 flex gap-2 text-sm">
-                            <Button
-                              href={`/users/${user.id}`}
-                              appearance="link"
-                              label="Edytuj"
-                              icon={<EditIcon className="w-4 h-4 fill-current" />}
-                              colorClass="text-sky-600 hover:text-sky-500"
-                            />
+                            <EditUser user={user} />
                             <span className="text-gray-400">|</span>
-                            <form
-                              action={async () => {
-                                "use server";
-                                await deleteUser(user.id!);
-                              }}
-                            >
-                              <Button
-                                href="delete"
-                                appearance="link"
-                                label="Usuń"
-                                icon={<DeleteIcon className="w-4 h-4 fill-current" />}
-                                colorClass="text-red-600 hover:text-red-500"
-                              />
-                            </form>
+                            <DeleteUser user={user} />
                           </div>
                         </td>
                         <td className="px-6 py-4">{user.email}</td>

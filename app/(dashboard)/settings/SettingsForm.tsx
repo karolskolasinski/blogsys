@@ -22,10 +22,7 @@ export default function SettingsForm(props: SettingsFormProps) {
   return (
     <div className="flex-1 bg-slate-50">
       <Toast success={state.success} messages={state.messages} />
-      <form
-        action={formAction}
-        className="px-4 pt-8 flex flex-col gap-2 border-t border-gray-200"
-      >
+      <form action={formAction} className="px-4 pt-8 flex flex-col gap-2 border-t border-gray-200">
         <input type="hidden" name="id" defaultValue={user?.id} />
 
         <div className="flex justify-between items-center gap-4">

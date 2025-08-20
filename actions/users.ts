@@ -3,7 +3,6 @@
 import { db } from "@/lib/db";
 import { ActionResponse, User } from "@/types/common";
 import bcrypt from "bcryptjs";
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { Timestamp } from "firebase-admin/firestore";
 import _ from "lodash";
@@ -127,13 +126,26 @@ function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, ke
   } as User;
 }
 
-export async function deleteUser(id: string) {
+export async function deleteUser(_prevState: unknown, formData: FormData) {
   const session = await auth();
+  const id = formData.get("id") as string;
   if (session?.user?.id === id) {
-    throw new Error("You cannot delete yourself");
+    return {
+      success: false,
+      messages: ["Nie możesz usunąć samego siebie"],
+    };
   }
-  await db.collection("users").doc(id).delete();
-  redirect("/users?deleted=true");
+
+  try {
+    await db.collection("users").doc(id).delete();
+
+    return {
+      success: true,
+      messages: ["Usunięto"],
+    };
+  } catch (err) {
+    return handleError(err);
+  }
 }
 
 export async function saveUser(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
