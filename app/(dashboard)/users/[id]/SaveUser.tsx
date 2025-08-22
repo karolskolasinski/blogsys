@@ -5,25 +5,29 @@ import Button from "@/components/blogsys/Button";
 import SaveIcon from "@/public/icons/blogsys/save.svg";
 import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import ResetPass from "@/app/(dashboard)/users/[id]/ResetPass";
-import { User } from "@/types/common";
-import { useActionState, useEffect } from "react";
-import { initialActionState } from "@/lib/utils";
+import { ActionRes, User } from "@/types/common";
+import { useActionState } from "react";
 import Toast from "@/components/blogsys/Toast";
-import { redirect } from "next/navigation";
+import Loader from "@/components/blogsys/Loader";
 
 type SaveUserProps = {
   user?: User;
 };
 
 export function SaveUser(props: SaveUserProps) {
-  const { user } = props;
-  const [state, formAction] = useActionState(saveUser, initialActionState);
+  const initialState = {
+    success: false,
+    messages: [],
+    data: props.user,
+  };
+  const [state, formAction, isPending] = useActionState<ActionRes<User>, FormData>(
+    saveUser,
+    initialState,
+  );
 
-  useEffect(() => {
-    if (state.success) {
-      redirect("/users");
-    }
-  }, [state]);
+  if (isPending) {
+    return <Loader />;
+  }
 
   return (
     <form
@@ -31,13 +35,13 @@ export function SaveUser(props: SaveUserProps) {
       className="h-full px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <Toast success={state.success} messages={state.messages} />
-      <input type="hidden" name="id" defaultValue={user?.id ?? "new"} />
+      <input type="hidden" name="id" defaultValue={state.data?.id ?? "new"} />
 
       <div className="flex justify-between items-center gap-4">
         <input
           name="name"
           className="w-full text-3xl font-black rounded-lg focus:bg-white"
-          defaultValue={user?.name}
+          defaultValue={state.data?.name}
           placeholder="Wpisz nazwę"
           maxLength={100}
           required
@@ -52,9 +56,9 @@ export function SaveUser(props: SaveUserProps) {
       </div>
 
       <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
-        <input name="createdAt" type="hidden" value={user?.createdAt?.toISOString()} />
+        <input name="createdAt" type="hidden" value={state.data?.createdAt?.toISOString()} />
         <div className="h-8 flex items-center">
-          Data utworzenia: {user?.createdAt?.toLocaleString()}
+          Data utworzenia: {state.data?.createdAt?.toLocaleString()}
         </div>
       </div>
 
@@ -62,7 +66,7 @@ export function SaveUser(props: SaveUserProps) {
         <input
           name="email"
           type="email"
-          defaultValue={user?.email}
+          defaultValue={state.data?.email}
           maxLength={50}
           className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
           placeholder="Wpisz email"
@@ -73,7 +77,7 @@ export function SaveUser(props: SaveUserProps) {
           <select
             id="role"
             name="role"
-            defaultValue={user?.role || "user"}
+            defaultValue={state.data?.role ?? "user"}
             className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow appearance-none"
           >
             <option disabled>Rola</option>
@@ -84,7 +88,7 @@ export function SaveUser(props: SaveUserProps) {
         </div>
       </div>
 
-      <ResetPass resetMode={user === undefined} />
+      <ResetPass resetMode={state.data === undefined} />
     </form>
   );
 }

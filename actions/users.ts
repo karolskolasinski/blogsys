@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { ActionResponse, User } from "@/types/common";
+import { ActionRes, User } from "@/types/common";
 import bcrypt from "bcryptjs";
 import { auth } from "@/auth";
 import { Timestamp } from "firebase-admin/firestore";
@@ -11,8 +11,9 @@ import DocumentSnapshot = firestore.DocumentSnapshot;
 import DocumentData = firestore.DocumentData;
 import WithFieldValue = firestore.WithFieldValue;
 import { handleError, toBase64 } from "@/lib/utils";
+import { revalidatePath } from "next/cache";
 
-export async function init(_prevState: unknown, formData: FormData): Promise<ActionResponse<void>> {
+export async function init(_prevState: unknown, formData: FormData): Promise<ActionRes<void>> {
   try {
     const email = formData.get("email");
     const password = formData.get("password");
@@ -55,7 +56,7 @@ export async function init(_prevState: unknown, formData: FormData): Promise<Act
   }
 }
 
-export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> {
+export async function getUsers(): Promise<ActionRes<(User | undefined)[]>> {
   const session = await auth();
   const role = session?.user?.role;
   if (role !== "admin") {
@@ -84,7 +85,7 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
 export async function getUserByEmail(
   email: string,
   keepPass?: boolean,
-): Promise<ActionResponse<User>> {
+): Promise<ActionRes<User>> {
   try {
     const docSnap = await db.collection("users").where("email", "==", email).get();
     return {
@@ -97,7 +98,7 @@ export async function getUserByEmail(
   }
 }
 
-export async function getUserById(id: string): Promise<ActionResponse<User>> {
+export async function getUserById(id: string): Promise<ActionRes<User>> {
   try {
     const docSnap = await db.collection("users").doc(id).get();
     return {
@@ -148,7 +149,7 @@ export async function deleteUser(_prevState: unknown, formData: FormData) {
   }
 }
 
-export async function saveUser(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function saveUser(_prevState: unknown, formData: FormData): Promise<ActionRes<User>> {
   try {
     const session = await auth();
     const id = formData.get("id") as string;
@@ -159,7 +160,11 @@ export async function saveUser(_prevState: unknown, formData: FormData): Promise
     const avatarChanged = formData.get("avatarChanged") as string;
     const role = formData.get("role") as string;
 
-    if (session?.user?.id !== id && session?.user?.role !== "admin") {
+    const isAdmin = session?.user?.role === "admin";
+    const isEditingSelf = session?.user?.id === id;
+    const wantsToChangeRole = Boolean(role);
+    const noAccess = (!isEditingSelf && !isAdmin) || (wantsToChangeRole && !isAdmin);
+    if (noAccess) {
       return {
         success: false,
         messages: ["Brak uprawnień"],
@@ -168,8 +173,8 @@ export async function saveUser(_prevState: unknown, formData: FormData): Promise
 
     const user = {
       ...(id === "new" ? {} : { id }),
-      name,
-      email,
+      name: name.trim(),
+      email: email.trim(),
       ...(id === "new" && { createdAt: Timestamp.now() }),
       ...(password && { password: await bcrypt.hash(password, 10) }),
       ...(role && { role }),
@@ -180,9 +185,12 @@ export async function saveUser(_prevState: unknown, formData: FormData): Promise
       await saveAvatar(user.id!, file);
     }
 
+    const docSnap = await db.collection("users").doc(id).get();
+
     return {
       success: true,
       messages: ["Zapisano"],
+      data: userDocToUser(docSnap),
     };
   } catch (err) {
     return {
@@ -222,7 +230,7 @@ async function saveAvatar(id: string, file: File) {
   }
 }
 
-export async function getAvatar(avatarId: string): Promise<ActionResponse<string>> {
+export async function getAvatar(avatarId: string): Promise<ActionRes<string>> {
   if (!avatarId) {
     return {
       success: true,

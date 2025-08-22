@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { ActionResponse, Post } from "@/types/common";
+import { ActionRes, Post } from "@/types/common";
 import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 import { handleError, toBase64 } from "@/lib/utils";
 
-export async function getPosts(): Promise<ActionResponse<Post[]>> {
+export async function getPosts(): Promise<ActionRes<Post[]>> {
   try {
     const fields = ["title", "authorId", "createdAt", "updatedAt"];
     const query = db.collection("posts").select(...fields).orderBy("updatedAt", "desc");
@@ -44,7 +44,7 @@ export async function getPosts(): Promise<ActionResponse<Post[]>> {
   }
 }
 
-export async function getAuthors(): Promise<ActionResponse<{ id: string; name: string }[]>> {
+export async function getAuthors(): Promise<ActionRes<{ id: string; name: string }[]>> {
   try {
     const snap = await db.collection("users").select("name").get();
     return {
@@ -60,7 +60,7 @@ export async function getAuthors(): Promise<ActionResponse<{ id: string; name: s
   }
 }
 
-export async function getPost(id: string): Promise<ActionResponse<Post>> {
+export async function getPost(id: string): Promise<ActionRes<Post>> {
   try {
     const doc = await db.collection("posts").doc(id).get();
     if (!doc.exists) {
@@ -92,7 +92,7 @@ export async function deletePost(id: string) {
   redirect("/posts?deleted=true");
 }
 
-export async function savePost(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function savePost(_prevState: unknown, formData: FormData): Promise<ActionRes> {
   try {
     const id = formData.get("id") as string;
     const authorId = formData.get("authorId") as string;
@@ -141,7 +141,7 @@ export async function savePost(_prevState: unknown, formData: FormData): Promise
   }
 }
 
-export async function getTags(): Promise<ActionResponse<string[]>> {
+export async function getTags(): Promise<ActionRes<string[]>> {
   try {
     const docSnap = await db.collection("posts").select("tags").get();
     const tags: string[] = docSnap.docs.reduce((acc, doc) => {

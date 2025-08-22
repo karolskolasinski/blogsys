@@ -9,6 +9,7 @@ import { User } from "@/types/common";
 import { useActionState } from "react";
 import Toast from "@/components/blogsys/Toast";
 import { initialActionState } from "@/lib/utils";
+import { useState } from "react";
 
 type SettingsFormProps = {
   user?: User;
@@ -17,13 +18,15 @@ type SettingsFormProps = {
 
 export default function SettingsForm(props: SettingsFormProps) {
   const { user, avatar } = props;
+  const [name, setName] = useState(user?.name ?? "");
+  const [email, setEmail] = useState(user?.email ?? "");
   const [state, formAction] = useActionState(saveUser, initialActionState);
 
   return (
     <div className="flex-1 bg-slate-50">
       <Toast success={state.success} messages={state.messages} />
       <form action={formAction} className="px-4 pt-8 flex flex-col gap-2 border-t border-gray-200">
-        <input type="hidden" name="id" defaultValue={user?.id} />
+        <input type="hidden" name="id" value={user?.id} />
 
         <div className="flex justify-between items-center gap-4">
           <div className="text-3xl font-black">Ustawienia</div>
@@ -47,7 +50,8 @@ export default function SettingsForm(props: SettingsFormProps) {
           <input
             name="name"
             className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
-            defaultValue={user?.name}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Wpisz nazwę"
             maxLength={100}
             required
@@ -56,7 +60,8 @@ export default function SettingsForm(props: SettingsFormProps) {
           <input
             name="email"
             type="email"
-            defaultValue={user?.email}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             maxLength={50}
             className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
             placeholder="Wpisz email"

@@ -1,18 +1,11 @@
-import React from "react";
-
 export default function Loader() {
   return (
-    <section className="flex-1 w-full max-w-7xl mx-auto py-4 px-2">
-      <div className="text-gray-500 uppercase font-semibold mx-5 my-3 text-sm">
-        Ładowanie...
-      </div>
-
-      <div className="flex-1 flex justify-center items-center h-24">
+    <div className="pt-8 flex-1 bg-slate-50">
+      <div className="flex flex-col gap-4 justify-center items-center">
+        <strong>Ładownie...</strong>
         <svg
-          aria-hidden="true"
-          className="inline w-8 h-8 text-gray-300 animate-spin fill-purple-500"
+          className="inline w-8 h-8 text-gray-300 animate-spin fill-primary-500"
           viewBox="0 0 100 101"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
@@ -25,6 +18,6 @@ export default function Loader() {
           />
         </svg>
       </div>
-    </section>
+    </div>
   );
 }
