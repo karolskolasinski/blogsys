@@ -111,7 +111,10 @@ export async function deletePost(
   }
 }
 
-export async function savePost(_prevState: unknown, formData: FormData): Promise<ActionResponse> {
+export async function savePost(
+  _prevState: unknown,
+  formData: FormData,
+): Promise<ActionResponse<Post>> {
   try {
     const id = formData.get("id") as string;
     const authorId = formData.get("authorId") as string;

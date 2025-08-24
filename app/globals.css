@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @layer base {
-    input::-webkit-calendar-picker-indicator {
-        line-height: 1;
+    input[list]::-webkit-calendar-picker-indicator {
+        display: none !important;
+        -webkit-appearance: none;
     }
 
     #preview * {

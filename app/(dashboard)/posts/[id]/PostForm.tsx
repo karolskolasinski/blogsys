@@ -32,10 +32,12 @@ export default function PostForm(props: PostFormProps) {
     if (state.success) {
       redirect("/posts");
     }
-  }, [state]);
+  }, [state.success]);
 
   function addTag() {
-    if (tags.length >= 3) return;
+    if (tags.length >= 3) {
+      return;
+    }
     const newTag = tagInput.trim();
     if (newTag && !tags.includes(newTag)) {
       setTags((prev) => [...prev, newTag]);
@@ -143,21 +145,24 @@ export default function PostForm(props: PostFormProps) {
       <div className="flex-1 flex gap-8 py-4">
         <div className="flex-1 h-full flex flex-col gap-4 min-h-[calc(100vh-250px)]">
           <div className="flex items-center gap-2">
-            <input
-              list="tag"
-              name="tag"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-              onKeyDown={handleEnter}
-              maxLength={20}
-              className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow disabled:cursor-not-allowed"
-              placeholder={tags.length >= 3 ? "Możesz dodać maksymalnie 3 tagi" : "Wpisz tag"}
-              title="Możesz dodać maksymalnie 3 tagi"
-              disabled={tags.length >= 3}
-            />
-            <datalist id="tag">
-              {allTags?.map((tag) => <option key={tag} value={tag} />)}
-            </datalist>
+            <div className="group flex-1 relative inline-block">
+              <input
+                list="tag"
+                name="tag"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleEnter}
+                maxLength={20}
+                className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow disabled:cursor-not-allowed"
+                placeholder={tags.length >= 3 ? "Możesz dodać maksymalnie 3 tagi" : "Wpisz tag"}
+                title="Możesz dodać maksymalnie 3 tagi"
+                disabled={tags.length >= 3}
+              />
+              <datalist id="tag">
+                {allTags?.map((tag) => <option key={tag} value={tag} />)}
+              </datalist>
+              <ChevronIcon className="hidden group-hover:block group-focus-within:block w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
+            </div>
 
             <button
               type="button"
