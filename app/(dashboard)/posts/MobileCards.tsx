@@ -1,20 +1,35 @@
+"use client";
+
 import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/blogsys/edit.svg";
 import { deletePost } from "@/actions/posts";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
-import { Post } from "@/types/common";
+import { Post, Role } from "@/types/common";
+import { useActionState, useEffect } from "react";
+import { initialActionState } from "@/lib/utils";
+import Toast from "@/components/blogsys/Toast";
+import { useRouter } from "next/navigation";
 
 type MobileCardsProps = {
   posts?: Post[];
   userId?: string;
-  role?: "admin" | "user";
+  role?: Role;
 };
 
 export function MobileCards(props: MobileCardsProps) {
   const { posts, userId, role } = props;
+  const [state, formAction] = useActionState(deletePost, initialActionState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      router.refresh();
+    }
+  }, [state.success, router]);
 
   return (
     <div className="lg:hidden bg-white">
+      <Toast success={state.success} messages={state.messages} />
       {posts?.map((post) => {
         if (!post) {
           return null;
@@ -43,13 +58,8 @@ export function MobileCards(props: MobileCardsProps) {
                     icon={<EditIcon className="w-4 h-4 fill-current" />}
                     colorClass="text-sky-600 hover:text-sky-500"
                   />
-                  <form
-                    action={async () => {
-                      "use server";
-                      await deletePost(post.id!);
-                    }}
-                    className="inline"
-                  >
+                  <form action={formAction} className="inline">
+                    <input type="hidden" name="id" defaultValue={post.id} />
                     <Button
                       href="delete"
                       appearance="link"

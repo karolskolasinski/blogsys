@@ -2,7 +2,6 @@
 
 import { db } from "@/lib/db";
 import { ActionResponse, Post } from "@/types/common";
-import { redirect } from "next/navigation";
 import { Timestamp } from "firebase-admin/firestore";
 import { auth } from "@/auth";
 import { handleError, toBase64 } from "@/lib/utils";
@@ -87,9 +86,29 @@ export async function getPost(id: string): Promise<ActionResponse<Post>> {
   }
 }
 
-export async function deletePost(id: string) {
-  await db.collection("posts").doc(id).delete();
-  redirect("/posts?deleted=true");
+export async function deletePost(
+  _prevState: unknown,
+  formData: FormData,
+): Promise<ActionResponse<void>> {
+  const session = await auth();
+  const id = formData.get("id") as string;
+  const doc = await db.collection("posts").doc(id).get();
+  if (doc.exists && doc.data()?.authorId !== session?.user?.id && session?.user?.role !== "admin") {
+    return {
+      success: false,
+      messages: ["Brak uprawnień"],
+    };
+  }
+
+  try {
+    await db.collection("posts").doc(id).delete();
+    return {
+      success: true,
+      messages: ["Usunięto"],
+    };
+  } catch (err) {
+    return handleError(err, "Błąd usuwania");
+  }
 }
 
 export async function savePost(_prevState: unknown, formData: FormData): Promise<ActionResponse> {

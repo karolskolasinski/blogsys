@@ -3,10 +3,12 @@ export type User = {
   name: string;
   email: string;
   password?: string;
-  role: "admin" | "user";
+  role: Role;
   createdAt: Date;
   avatarId?: string;
 };
+
+export type Role = "admin" | "user";
 
 export type Post = {
   id?: string;

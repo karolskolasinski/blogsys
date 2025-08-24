@@ -1,20 +1,35 @@
+"use client";
+
 import Button from "@/components/blogsys/Button";
 import EditIcon from "@/public/icons/blogsys/edit.svg";
 import { deletePost } from "@/actions/posts";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
-import { Post } from "@/types/common";
+import { Post, Role } from "@/types/common";
+import { useActionState, useEffect } from "react";
+import { initialActionState } from "@/lib/utils";
+import Toast from "@/components/blogsys/Toast";
+import { useRouter } from "next/navigation";
 
 type DesktopTableProps = {
   posts?: Post[];
   userId?: string;
-  role?: string;
+  role?: Role;
 };
 
 export function DesktopTable(props: DesktopTableProps) {
   const { posts, userId, role } = props;
+  const [state, formAction] = useActionState(deletePost, initialActionState);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (state.success) {
+      router.refresh();
+    }
+  }, [state.success, router]);
 
   return (
     <div className="hidden lg:block">
+      <Toast success={state.success} messages={state.messages} />
       <table className="table-auto min-w-full divide-y divide-gray-200 bg-white border-collapse">
         <thead className="border-b border-b-gray-300 font-semibold">
           <tr className="text-left text-xs uppercase">
@@ -45,12 +60,8 @@ export function DesktopTable(props: DesktopTableProps) {
                           colorClass="text-sky-600 hover:text-sky-500"
                         />
                         <span className="text-gray-400">|</span>
-                        <form
-                          action={async () => {
-                            "use server";
-                            await deletePost(post.id!);
-                          }}
-                        >
+                        <form action={formAction}>
+                          <input type="hidden" name="id" defaultValue={post.id} />
                           <Button
                             href="delete"
                             appearance="link"

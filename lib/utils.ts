@@ -13,7 +13,6 @@ export const initialActionState: ActionResponse = {
 
 export function handleError(err: unknown, msg: string = "Wystąpił błąd") {
   console.error(err);
-
   return {
     success: false,
     messages: [err instanceof Error ? err.message : msg],

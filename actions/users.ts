@@ -126,7 +126,10 @@ function userDocToUser(docSnap: DocumentSnapshot<DocumentData, DocumentData>, ke
   } as User;
 }
 
-export async function deleteUser(_prevState: unknown, formData: FormData) {
+export async function deleteUser(
+  _prevState: unknown,
+  formData: FormData,
+): Promise<ActionResponse<void>> {
   const session = await auth();
   const id = formData.get("id") as string;
   if (session?.user?.id === id) {
@@ -138,13 +141,12 @@ export async function deleteUser(_prevState: unknown, formData: FormData) {
 
   try {
     await db.collection("users").doc(id).delete();
-
     return {
       success: true,
       messages: ["Usunięto"],
     };
   } catch (err) {
-    return handleError(err);
+    return handleError(err, "Błąd usuwania");
   }
 }
 
