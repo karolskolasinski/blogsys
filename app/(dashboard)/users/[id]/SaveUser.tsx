@@ -40,7 +40,7 @@ export function SaveUser(props: SaveUserProps) {
         <input
           name="name"
           className="w-full text-3xl font-black rounded-lg focus:bg-white"
-          defaultValue={state.data?.name}
+          defaultValue={state.data?.name ?? ""}
           placeholder="Wpisz nazwę"
           maxLength={100}
           required
@@ -55,7 +55,11 @@ export function SaveUser(props: SaveUserProps) {
       </div>
 
       <div className="flex items-center gap-2 flex-wrap text-sm text-gray-700">
-        <input name="createdAt" type="hidden" value={state.data?.createdAt?.toISOString()} />
+        <input
+          name="createdAt"
+          type="hidden"
+          defaultValue={state.data?.createdAt?.toISOString() ?? ""}
+        />
         <div className="h-8 flex items-center">
           Data utworzenia: {state.data?.createdAt?.toLocaleString()}
         </div>
@@ -65,7 +69,7 @@ export function SaveUser(props: SaveUserProps) {
         <input
           name="email"
           type="email"
-          defaultValue={state.data?.email}
+          defaultValue={state.data?.email ?? ""}
           maxLength={50}
           className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
           placeholder="Wpisz email"
