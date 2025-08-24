@@ -15,23 +15,28 @@ type PreviewProps = {
 
 export default function Preview(props: PreviewProps) {
   return (
-    <Markdown
-      remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw]}
-      components={{
-        code({ children, className }) {
-          const match = /language-(\w+)/.exec(className || "");
-          return match
-            ? (
-              <SyntaxHighlighter PreTag="div" language={match[1]} style={tomorrow}>
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            )
-            : <code className={className}>{children}</code>;
-        },
-      }}
+    <div
+      className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-xl shadow"
+      id="preview"
     >
-      {props?.value ?? ""}
-    </Markdown>
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
+        components={{
+          code({ children, className }) {
+            const match = /language-(\w+)/.exec(className || "");
+            return match
+              ? (
+                <SyntaxHighlighter PreTag="div" language={match[1]} style={tomorrow}>
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              )
+              : <code className={className}>{children}</code>;
+          },
+        }}
+      >
+        {props?.value ?? ""}
+      </Markdown>
+    </div>
   );
 }

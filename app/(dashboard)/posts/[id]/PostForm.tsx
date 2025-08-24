@@ -5,7 +5,6 @@ import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
 import XIcon from "@/public/icons/blogsys/x.svg";
 import SendIcon from "@/public/icons/blogsys/send.svg";
-import PhotoIcon from "@/public/icons/blogsys/photo.svg";
 import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import Button from "@/components/blogsys/Button";
 import Preview from "@/components/blogsys/Preview";
@@ -13,6 +12,7 @@ import MarkdownEditor from "./MarkdownEditor";
 import Toast from "@/components/blogsys/Toast";
 import { redirect } from "next/navigation";
 import { initialActionState } from "@/lib/utils";
+import { Cover } from "@/app/(dashboard)/posts/[id]/Cover";
 
 type PostFormProps = {
   post?: Post;
@@ -25,7 +25,6 @@ export default function PostForm(props: PostFormProps) {
   const [value, setValue] = useState(post?.content);
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
-  const [coverPreview, setCoverPreview] = useState<string | null>(post?.cover || null);
   const [state, formAction] = useActionState(savePost, initialActionState);
 
   useEffect(() => {
@@ -54,28 +53,6 @@ export default function PostForm(props: PostFormProps) {
 
   function removeTag(toRemove: string) {
     setTags((prev) => prev.filter((t) => t !== toRemove));
-  }
-
-  function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) {
-      return;
-    }
-
-    if (file.size > 1024 * 1024) {
-      alert("Plik jest za duży! Maksymalny rozmiar to 1MB.");
-      e.target.value = "";
-      return;
-    }
-
-    if (!file.type.startsWith("image/")) {
-      alert("Wybierz plik obrazu!");
-      e.target.value = "";
-      return;
-    }
-
-    const url = URL.createObjectURL(file);
-    setCoverPreview(url);
   }
 
   const isValidAuthor = props?.allAuthors?.some((author) => author.id === post?.authorId);
@@ -193,39 +170,12 @@ export default function PostForm(props: PostFormProps) {
             <ChevronIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
           </div>
 
-          <div className="flex gap-2 items-center">
-            <label
-              htmlFor="cover"
-              className="button flex-1 whitespace-nowrap overflow-hidden text-shadow-md bg-cover bg-center bg-no-repeat"
-              style={{
-                backgroundImage: coverPreview ? `url(${coverPreview})` : undefined,
-                borderColor: "transparent",
-              }}
-            >
-              <div className="flex gap-2 p-1 rounded bg-gray-800">
-                <PhotoIcon className="w-5 h-5 fill-white" />
-                {coverPreview ? "Zmień okładkę" : "Dodaj okładkę"}
-              </div>
-              <input
-                id="cover"
-                name="cover"
-                type="file"
-                accept="image/jpeg, image/png, image/gif, image/webp"
-                className="hidden"
-                onChange={handleCoverChange}
-              />
-            </label>
-          </div>
+          <Cover cover={post?.cover} />
 
           <MarkdownEditor value={value} setValue={setValue} />
         </div>
 
-        <div
-          className="hidden flex-1 min-h-[calc(100vh-250px)] lg:block p-4 border border-gray-300 rounded-xl shadow"
-          id="preview"
-        >
-          <Preview value={value} />
-        </div>
+        <Preview value={value} />
       </div>
     </form>
   );
