@@ -5,10 +5,10 @@ import Button from "@/components/blogsys/Button";
 import SaveIcon from "@/public/icons/blogsys/save.svg";
 import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
 import ResetPass from "@/app/(dashboard)/users/[id]/ResetPass";
-import { ActionRes, User } from "@/types/common";
-import { useActionState } from "react";
+import { User } from "@/types/common";
+import { useActionState, useEffect } from "react";
 import Toast from "@/components/blogsys/Toast";
-import Loader from "@/components/blogsys/Loader";
+import { redirect } from "next/navigation";
 
 type SaveUserProps = {
   user?: User;
@@ -20,14 +20,13 @@ export function SaveUser(props: SaveUserProps) {
     messages: [],
     data: props.user,
   };
-  const [state, formAction, isPending] = useActionState<ActionRes<User>, FormData>(
-    saveUser,
-    initialState,
-  );
+  const [state, formAction] = useActionState(saveUser, initialState);
 
-  if (isPending) {
-    return <Loader />;
-  }
+  useEffect(() => {
+    if (state.success) {
+      redirect("/users");
+    }
+  }, [state.success]);
 
   return (
     <form

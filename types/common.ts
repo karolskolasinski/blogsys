@@ -36,8 +36,12 @@ export type ServerComponentProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export type ActionRes<T = unknown> = {
+export type ActionResponse<T = unknown> = {
   success: boolean;
   messages: string[];
   data?: T;
+};
+
+export type LoginData = {
+  email?: string;
 };

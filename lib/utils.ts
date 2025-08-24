@@ -1,4 +1,4 @@
-import { ActionRes } from "@/types/common";
+import { ActionResponse } from "@/types/common";
 
 export async function toBase64(file: File) {
   const buf = await file?.arrayBuffer();
@@ -6,7 +6,7 @@ export async function toBase64(file: File) {
   return `data:${file.type};base64,${b64}`;
 }
 
-export const initialActionState: ActionRes = {
+export const initialActionState: ActionResponse = {
   success: false,
   messages: [],
 };

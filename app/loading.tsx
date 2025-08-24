@@ -1,8 +1,8 @@
-export default function Loader() {
+export default function Loading() {
   return (
-    <div className="pt-8 flex-1 bg-slate-50">
-      <div className="flex flex-col gap-4 justify-center items-center">
-        <strong>Ładownie...</strong>
+    <div className="flex-1 bg-slate-50">
+      <div className="pt-[126px] flex flex-col gap-4 justify-center items-center">
+        <strong className="text-xl">Ładownie...</strong>
         <svg
           className="inline w-8 h-8 text-gray-300 animate-spin fill-primary-500"
           viewBox="0 0 100 101"
