@@ -119,15 +119,17 @@ export async function savePost(_prevState: unknown, formData: FormData): Promise
     const content = (formData.get("content") as string).trim();
     const tags = formData.getAll("tags[]").map((t) => (t as string).trim()).filter(Boolean);
 
-    const session = await auth();
-    const role = session?.user?.role;
-    const userId = session?.user?.id;
-    const doc = await db.collection("posts").doc(id).get();
-    if (doc.exists && doc.data()?.authorId !== userId && role !== "admin") {
-      return {
-        success: false,
-        messages: ["Brak uprawnień"],
-      };
+    if (id !== "new") {
+      const session = await auth();
+      const role = session?.user?.role;
+      const userId = session?.user?.id;
+      const doc = await db.collection("posts").doc(id).get();
+      if (doc.exists && doc.data()?.authorId !== userId && role !== "admin") {
+        return {
+          success: false,
+          messages: ["Brak uprawnień"],
+        };
+      }
     }
 
     const post: Record<string, string | string[] | Timestamp> = {

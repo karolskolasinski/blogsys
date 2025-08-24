@@ -85,7 +85,7 @@ export default function PostForm(props: PostFormProps) {
       className="px-4 pt-8 flex flex-col gap-2 bg-slate-50 border-t border-gray-200"
     >
       <Toast success={state.success} messages={state.messages} />
-      <input type="hidden" name="id" defaultValue={post?.id} />
+      <input type="hidden" name="id" defaultValue={post?.id ?? "new"} />
       <div className="flex justify-between items-center gap-4">
         <input
           name="title"
