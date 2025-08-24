@@ -21,17 +21,20 @@ type PostFormProps = {
 };
 
 export default function PostForm(props: PostFormProps) {
-  const { post, allTags } = props;
+  const { post, allTags, allAuthors } = props;
+  const [title, setTitle] = useState(post?.title);
   const [value, setValue] = useState(post?.content);
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
   const [tagInput, setTagInput] = useState("");
+  const isValidAuthor = allAuthors?.some((author) => author.id === post?.authorId);
+  const [author, setAuthor] = useState(isValidAuthor ? post?.authorId : "");
   const [state, formAction] = useActionState(savePost, initialActionState);
 
   useEffect(() => {
     if (state.success) {
       redirect("/posts");
     }
-  }, [state.success]);
+  }, [state.success, author, allAuthors]);
 
   function addTag() {
     if (tags.length >= 3) {
@@ -55,9 +58,6 @@ export default function PostForm(props: PostFormProps) {
     setTags((prev) => prev.filter((t) => t !== toRemove));
   }
 
-  const isValidAuthor = props?.allAuthors?.some((author) => author.id === post?.authorId);
-  const selectedAuthorId = isValidAuthor ? post?.authorId : "";
-
   return (
     <form
       action={formAction}
@@ -69,7 +69,8 @@ export default function PostForm(props: PostFormProps) {
         <input
           name="title"
           className="w-full text-3xl font-black focus:bg-white rounded-lg"
-          defaultValue={post?.title}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="Wpisz tytuł"
           maxLength={100}
           required
@@ -156,12 +157,13 @@ export default function PostForm(props: PostFormProps) {
             <select
               id="authorId"
               name="authorId"
-              defaultValue={selectedAuthorId}
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
               className="w-full bg-white p-2 pr-8 border border-gray-300 rounded-lg shadow appearance-none"
               title="Autor"
             >
               <option disabled>Autor</option>
-              {props?.allAuthors?.map((author) => (
+              {allAuthors?.map((author) => (
                 <option key={author.id} value={author.id}>
                   {author.name}
                 </option>
