@@ -9,7 +9,9 @@ import { User } from "@/types/common";
 import { useActionState } from "react";
 import Toast from "@/components/blogsys/Toast";
 import { initialActionState } from "@/lib/utils";
-import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from "@/lib/redux/userSlice";
+import { RootState } from "@/lib/redux/store";
 
 type SettingsFormProps = {
   user?: User;
@@ -18,8 +20,8 @@ type SettingsFormProps = {
 
 export default function SettingsForm(props: SettingsFormProps) {
   const { user, avatar } = props;
-  const [name, setName] = useState(user?.name ?? "");
-  const [email, setEmail] = useState(user?.email ?? "");
+  const reduxUser = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
   const [state, formAction] = useActionState(saveUser, initialActionState);
 
   return (
@@ -50,18 +52,18 @@ export default function SettingsForm(props: SettingsFormProps) {
           <input
             name="name"
             className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={reduxUser?.data?.name}
+            onChange={(e) => dispatch(updateUser({ name: e.target.value }))}
             placeholder="Wpisz nazwę"
-            maxLength={100}
+            maxLength={50}
             required
           />
 
           <input
             name="email"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={reduxUser?.data?.email}
+            onChange={(e) => dispatch(updateUser({ email: e.target.value }))}
             maxLength={50}
             className="flex-1 bg-white p-2 border border-gray-300 rounded-lg shadow"
             placeholder="Wpisz email"

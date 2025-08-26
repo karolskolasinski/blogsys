@@ -4,6 +4,8 @@ import { useState } from "react";
 import Avatar from "@/components/blogsys/Avatar";
 import DeleteIcon from "@/public/icons/blogsys/delete.svg";
 import InfoIcon from "@/public/icons/blogsys/info.svg";
+import { useDispatch } from "react-redux";
+import { setAvatar } from "@/lib/redux/avatarSlice";
 
 type AvatarInputProps = {
   data?: string;
@@ -12,6 +14,7 @@ type AvatarInputProps = {
 export default function AvatarInput(props: AvatarInputProps) {
   const [avatarPreview, setAvatarPreview] = useState(props.data);
   const [avatarChanged, setAvatarChanged] = useState(false);
+  const dispatch = useDispatch();
 
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -31,11 +34,13 @@ export default function AvatarInput(props: AvatarInputProps) {
     const url = URL.createObjectURL(file);
     setAvatarPreview(url);
     setAvatarChanged(true);
+    dispatch(setAvatar(url));
   }
 
   function handleDelete() {
     setAvatarPreview(undefined);
     setAvatarChanged(true);
+    dispatch(setAvatar(undefined));
   }
 
   return (

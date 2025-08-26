@@ -14,10 +14,11 @@ type DashboardMenuProps = {
   mobile?: boolean;
 };
 
-export default function DashboardMenu(props: DashboardMenuProps) {
+export default async function DashboardMenu(props: DashboardMenuProps) {
   const asideClass = props.mobile
     ? "h-full flex flex-col py-2 text-lg"
     : "w-72 hidden lg:flex flex-col gap-2 px-4 py-8 border-r border-gray-200";
+  const active = props.active;
 
   return (
     <aside className={asideClass}>
@@ -30,35 +31,35 @@ export default function DashboardMenu(props: DashboardMenuProps) {
         href="/"
         label="Strona główna"
         icon={<HomeIcon className="w-6 h-6 fill-gray-400" />}
-        active={props.active}
+        active={active}
       />
 
       <MenuItem
         href="/accounts"
         label="Konta"
         icon={<CredentialsIcon className="w-6 h-6 fill-gray-400" />}
-        active={props.active}
+        active={active}
       />
 
       <MenuItem
         href="/posts"
         label="Wpisy"
         icon={<PostsIcon className="w-6 h-6 fill-gray-400" />}
-        active={props.active}
+        active={active}
       />
 
       <MenuItem
         href="/users"
         label="Użytkownicy"
         icon={<UsersIcon className="w-6 h-6 fill-gray-400" />}
-        active={props.active}
+        active={active}
       />
 
       <MenuItem
         href="/settings"
         label="Ustawienia"
         icon={<SettingsIcon className="w-6 h-6 fill-gray-400" />}
-        active={props.active}
+        active={active}
       />
 
       <div className="flex-1 flex items-end">

@@ -1,10 +1,12 @@
 "use client";
 
-import { useUser } from "@/context/UserContext";
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/redux/store";
 import Avatar from "@/components/blogsys/Avatar";
 
 export default function UserInfo() {
-  const { user, avatar } = useUser();
+  const user = useSelector((state: RootState) => state.user.data);
+  const avatar = useSelector((state: RootState) => state.avatar.blob);
 
   return (
     <div className="flex gap-4 items-center justify-center">
@@ -12,7 +14,9 @@ export default function UserInfo() {
 
       <div>
         <strong>{user?.name}</strong>
-        <div className="text-gray-500">{user?.role}</div>
+        <div className="text-gray-500">
+          {user?.role === "admin" ? "Administrator" : "Użytkownik"}
+        </div>
       </div>
     </div>
   );
