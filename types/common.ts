@@ -43,7 +43,3 @@ export type ActionResponse<T = unknown> = {
   messages: string[];
   data?: T;
 };
-
-export type LoginData = {
-  email?: string;
-};

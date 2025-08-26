@@ -2,7 +2,11 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
-import { ActionResponse, LoginData } from "@/types/common";
+import { ActionResponse } from "@/types/common";
+
+type LoginData = {
+  email?: string;
+};
 
 export async function login(
   _prevState: unknown,
