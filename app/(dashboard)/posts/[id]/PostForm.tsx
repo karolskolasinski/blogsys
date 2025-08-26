@@ -3,16 +3,16 @@
 import { useActionState, useEffect, useState } from "react";
 import { savePost } from "@/actions/posts";
 import { Post } from "@/types/common";
-import XIcon from "@/public/icons/blogsys/x.svg";
-import SendIcon from "@/public/icons/blogsys/send.svg";
-import ChevronIcon from "@/public/icons/blogsys/chevron-right.svg";
-import Button from "@/components/blogsys/Button";
-import Preview from "@/components/blogsys/Preview";
-import MarkdownEditor from "./MarkdownEditor";
 import Toast from "@/components/blogsys/Toast";
 import { redirect } from "next/navigation";
 import { initialActionState } from "@/lib/utils";
 import { Cover } from "@/app/(dashboard)/posts/[id]/Cover";
+import PostTitle from "./PostTitle";
+import PostMeta from "./PostMeta";
+import TagsInput from "./TagsInput";
+import AuthorSelect from "./AuthorSelect";
+import MarkdownEditor from "@/app/(dashboard)/posts/[id]/MarkdownEditor";
+import Preview from "@/components/blogsys/Preview";
 
 type PostFormProps = {
   post?: Post;
@@ -20,13 +20,11 @@ type PostFormProps = {
   allAuthors?: { id: string; name: string }[];
 };
 
-export default function PostForm(props: PostFormProps) {
-  const { post, allTags, allAuthors } = props;
-  const [title, setTitle] = useState(post?.title);
-  const [value, setValue] = useState(post?.content);
+export default function PostForm({ post, allTags, allAuthors }: PostFormProps) {
+  const [title, setTitle] = useState(post?.title ?? "");
+  const [value, setValue] = useState(post?.content ?? "");
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);
-  const [tagInput, setTagInput] = useState("");
-  const isValidAuthor = allAuthors?.some((author) => author.id === post?.authorId);
+  const isValidAuthor = allAuthors?.some((a) => a.id === post?.authorId);
   const [author, setAuthor] = useState(isValidAuthor ? post?.authorId : "");
   const [state, formAction] = useActionState(savePost, initialActionState);
 
@@ -34,29 +32,7 @@ export default function PostForm(props: PostFormProps) {
     if (state.success) {
       redirect("/posts");
     }
-  }, [state.success, author, allAuthors]);
-
-  function addTag() {
-    if (tags.length >= 3) {
-      return;
-    }
-    const newTag = tagInput.trim();
-    if (newTag && !tags.includes(newTag)) {
-      setTags((prev) => [...prev, newTag]);
-    }
-    setTagInput("");
-  }
-
-  function handleEnter(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addTag();
-    }
-  }
-
-  function removeTag(toRemove: string) {
-    setTags((prev) => prev.filter((t) => t !== toRemove));
-  }
+  }, [state.success]);
 
   return (
     <form
@@ -65,115 +41,15 @@ export default function PostForm(props: PostFormProps) {
     >
       <Toast success={state.success} messages={state.messages} />
       <input type="hidden" name="id" defaultValue={post?.id ?? "new"} />
-      <div className="flex justify-between items-center gap-4">
-        <input
-          name="title"
-          className="w-full text-3xl font-black focus:bg-white rounded-lg"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Wpisz tytuł"
-          maxLength={100}
-          required
-        />
 
-        <Button
-          href=""
-          appearance="button"
-          label="Opublikuj"
-          icon={<SendIcon className="w-5 h-5 fill-white" />}
-        />
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-2 flex-wrap md:items-center text-sm text-gray-700">
-        <input name="createdAt" type="hidden" value={post?.createdAt?.toISOString()} />
-        <div className="h-8 flex items-center">
-          Data utworzenia: {post?.createdAt?.toLocaleString()}
-        </div>
-        <span className="text-gray-300 font-black hidden sm:inline content-center">•</span>
-        <div className="h-8 flex items-center">
-          Ostatnio edytowany: {post?.updatedAt?.toLocaleString()}
-        </div>
-
-        {tags.length > 0 && (
-          <>
-            <span className="text-gray-300 font-black hidden sm:inline content-center">•</span>
-
-            <div className="flex gap-1 pt-2 sm:pt-0">
-              {tags.map((tag) => (
-                <div
-                  key={tag}
-                  className="px-2 py-1 bg-primary-50 border border-primary-200 rounded-lg flex items-center text-primary-700"
-                  title="Możesz dodać maksymalnie 3 tagi"
-                >
-                  <input type="hidden" name="tags[]" value={tag} />
-                  <span className="mr-2">{tag}</span>
-                  <div title="Usuń">
-                    <XIcon
-                      className="w-4 h-4 cursor-pointer fill-gray-500 hover:fill-red-400"
-                      onClick={() => removeTag(tag)}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
+      <PostTitle title={title} setTitle={setTitle} />
+      <PostMeta post={post} tags={tags} setTags={setTags} />
 
       <div className="flex-1 flex gap-8 py-4">
         <div className="flex-1 h-full flex flex-col gap-4 min-h-[calc(100vh-250px)]">
-          <div className="flex items-center gap-2">
-            <div className="group flex-1 relative inline-block">
-              <input
-                list="tag"
-                name="tag"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={handleEnter}
-                maxLength={20}
-                className="w-full bg-white p-2 border border-gray-300 rounded-lg shadow disabled:cursor-not-allowed"
-                placeholder={tags.length >= 3 ? "Możesz dodać maksymalnie 3 tagi" : "Wpisz tag"}
-                title="Możesz dodać maksymalnie 3 tagi"
-                disabled={tags.length >= 3}
-              />
-              <datalist id="tag">
-                {allTags?.map((tag) => <option key={tag} value={tag} />)}
-              </datalist>
-              <ChevronIcon className="hidden group-hover:block group-focus-within:block w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
-            </div>
-
-            <button
-              type="button"
-              onClick={addTag}
-              className="button disabled:opacity-30 disabled:!translate-0"
-              title="Możesz dodać maksymalnie 3 tagi"
-              disabled={tags.length >= 3}
-            >
-              Dodaj
-            </button>
-          </div>
-
-          <div className="relative inline-block">
-            <select
-              id="authorId"
-              name="authorId"
-              value={author}
-              onChange={(e) => setAuthor(e.target.value)}
-              className="w-full bg-white p-2 pr-8 border border-gray-300 rounded-lg shadow appearance-none"
-              title="Autor"
-            >
-              <option disabled>Autor</option>
-              {allAuthors?.map((author) => (
-                <option key={author.id} value={author.id}>
-                  {author.name}
-                </option>
-              ))}
-            </select>
-            <ChevronIcon className="w-5 h-5 pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform rotate-90" />
-          </div>
-
+          <TagsInput tags={tags} allTags={allTags} setTags={setTags} />
+          <AuthorSelect author={author} allAuthors={allAuthors} setAuthor={setAuthor} />
           <Cover cover={post?.cover} />
-
           <MarkdownEditor value={value} setValue={setValue} />
         </div>
 
