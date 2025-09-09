@@ -27,7 +27,7 @@ export default function Init() {
           </h1>
 
           <div className="h-72">
-            <label className="block text-sm text-gray-600">Email</label>
+            <label htmlFor="email" className="block text-sm text-gray-600">Email</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="email"
@@ -36,7 +36,7 @@ export default function Init() {
               required
             />
 
-            <label className="block text-sm text-gray-600">Hasło</label>
+            <label htmlFor="password" className="block text-sm text-gray-600">Hasło</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="password"
@@ -45,7 +45,7 @@ export default function Init() {
               required
             />
 
-            <label className="block text-sm text-gray-600">Klucz autoryzacyjny</label>
+            <label htmlFor="key" className="block text-sm text-gray-600">Klucz autoryzacyjny</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               type="password"
