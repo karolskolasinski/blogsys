@@ -13,7 +13,7 @@ type ReduxProviderProps = {
   avatar?: string;
 };
 
-export default function ReduxProvider(props: ReduxProviderProps) {
+export default function ReduxProvider(props: Readonly<ReduxProviderProps>) {
   const { children, user, avatar } = props;
   const storeRef = useRef<AppStore | null>(null);
 

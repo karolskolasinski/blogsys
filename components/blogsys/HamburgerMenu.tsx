@@ -4,7 +4,7 @@ type HamburgerMenuProps = {
   active: string;
 };
 
-export default function HamburgerMenu(props: HamburgerMenuProps) {
+export default function HamburgerMenu(props: Readonly<HamburgerMenuProps>) {
   return (
     <nav className="lg:hidden px-4 z-10">
       <div className="relative flex items-center">

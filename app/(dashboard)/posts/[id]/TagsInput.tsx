@@ -7,7 +7,7 @@ type TagsInputProps = {
   setTags: (fn: (prev: string[]) => string[]) => void;
 };
 
-export default function TagsInput(props: TagsInputProps) {
+export default function TagsInput(props: Readonly<TagsInputProps>) {
   const { tags, allTags, setTags } = props;
   const [tagInput, setTagInput] = useState("");
 

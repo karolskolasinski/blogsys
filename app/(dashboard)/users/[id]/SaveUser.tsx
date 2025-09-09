@@ -14,7 +14,7 @@ type SaveUserProps = {
   user?: User;
 };
 
-export function SaveUser(props: SaveUserProps) {
+export function SaveUser(props: Readonly<SaveUserProps>) {
   const initialState = {
     success: false,
     messages: [],

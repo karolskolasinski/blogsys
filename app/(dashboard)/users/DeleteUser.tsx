@@ -13,7 +13,7 @@ type DeleteUserProps = {
   user: User;
 };
 
-export function DeleteUser(props: DeleteUserProps) {
+export function DeleteUser(props: Readonly<DeleteUserProps>) {
   const { user } = props;
   const [state, formAction] = useActionState(deleteUser, initialActionState);
   const router = useRouter();

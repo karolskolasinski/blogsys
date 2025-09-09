@@ -7,7 +7,7 @@ type PostMetaProps = {
   setTags: (fn: (prev: string[]) => string[]) => void;
 };
 
-export default function PostMeta(props: PostMetaProps) {
+export default function PostMeta(props: Readonly<PostMetaProps>) {
   const { post, tags, setTags } = props;
   function removeTag(tag: string) {
     setTags((prev) => prev.filter((t) => t !== tag));

@@ -16,7 +16,7 @@ type DesktopTableProps = {
   role?: Role;
 };
 
-export function DesktopTable(props: DesktopTableProps) {
+export function DesktopTable(props: Readonly<DesktopTableProps>) {
   const { posts, userId, role } = props;
   const [state, formAction] = useActionState(deletePost, initialActionState);
   const router = useRouter();

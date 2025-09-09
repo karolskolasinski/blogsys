@@ -18,7 +18,7 @@ type SettingsFormProps = {
   avatar?: string;
 };
 
-export default function SettingsForm(props: SettingsFormProps) {
+export default function SettingsForm(props: Readonly<SettingsFormProps>) {
   const { user, avatar } = props;
   const reduxUser = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();

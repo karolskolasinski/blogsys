@@ -6,7 +6,7 @@ type PostTitleProps = {
   setTitle: (v: string) => void;
 };
 
-export default function PostTitle(props: PostTitleProps) {
+export default function PostTitle(props: Readonly<PostTitleProps>) {
   const { title, setTitle } = props;
 
   return (

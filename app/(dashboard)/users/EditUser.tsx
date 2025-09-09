@@ -8,7 +8,7 @@ type EditUserProps = {
   user: User;
 };
 
-export function EditUser(props: EditUserProps) {
+export function EditUser(props: Readonly<EditUserProps>) {
   const { user } = props;
 
   return (

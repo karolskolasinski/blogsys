@@ -5,7 +5,7 @@ type CoverProps = {
   cover?: string;
 };
 
-export function Cover(props: CoverProps) {
+export function Cover(props: Readonly<CoverProps>) {
   const [coverPreview, setCoverPreview] = useState<string | null>(props.cover ?? null);
 
   function handleCoverChange(e: React.ChangeEvent<HTMLInputElement>) {

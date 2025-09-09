@@ -6,7 +6,7 @@ type AuthorSelectProps = {
   setAuthor: (v: string) => void;
 };
 
-export default function AuthorSelect(props: AuthorSelectProps) {
+export default function AuthorSelect(props: Readonly<AuthorSelectProps>) {
   const { author, allAuthors, setAuthor } = props;
 
   return (
