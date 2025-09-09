@@ -176,7 +176,7 @@ export async function getTags(): Promise<ActionResponse<string[]>> {
     return {
       success: true,
       messages: [],
-      data: [...new Set(tags)].sort(),
+      data: [...new Set(tags)].sort((a, b) => a.localeCompare(b)),
     };
   } catch (err) {
     return handleError(err, "Błąd odczytu");
