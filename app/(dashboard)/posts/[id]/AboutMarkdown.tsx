@@ -8,7 +8,10 @@ import Link from "next/link";
 export default function AboutMarkdown() {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const openDialog = () => dialogRef.current?.showModal();
+  const openDialog = (e: React.MouseEvent) => {
+    e.preventDefault();
+    return dialogRef.current?.showModal();
+  };
   const closeDialog = () => dialogRef.current?.close();
 
   useEffect(() => {
@@ -35,15 +38,13 @@ export default function AboutMarkdown() {
 
   return (
     <>
-      <div
+      <button
         className="absolute top-[6px] right-[6px] hover:bg-gray-100 rounded-xl p-2 cursor-pointer"
         onClick={openDialog}
-        role="button"
-        tabIndex={0}
         title="Podstawy Markdown"
       >
         <InfoIcon className="w-7 h-7 fill-black cursor-pointer" />
-      </div>
+      </button>
 
       <dialog
         ref={dialogRef}
