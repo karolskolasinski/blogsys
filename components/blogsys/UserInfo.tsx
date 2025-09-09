@@ -10,7 +10,7 @@ export default function UserInfo() {
 
   return (
     <div className="flex gap-4 items-center justify-center">
-      <Avatar src={avatar} className="w-14 h-14" />
+      <Avatar src={avatar} className="min-w-14 h-14" />
 
       <div>
         <strong>{user?.name}</strong>

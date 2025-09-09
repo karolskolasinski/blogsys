@@ -1,18 +1,11 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
-import { getAuthors, getTags, getPost } from "@/actions/posts";
+import { getAuthors, getPost, getTags } from "@/actions/posts";
 import { ServerComponentProps } from "@/types/common";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import PostForm from "./PostForm";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
 export default async function Post(props: ServerComponentProps) {
-  const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   const params = await props.params;
   const id = params.id as string;
   const [postRes, tagsRes, authorsRes] = await Promise.all([

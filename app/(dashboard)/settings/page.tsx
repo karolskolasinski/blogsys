@@ -1,5 +1,4 @@
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { getAvatar, getUserById } from "@/actions/users";
 import Breadcrumb from "@/components/blogsys/Breadcrumb";
@@ -9,10 +8,6 @@ import SettingsForm from "./SettingsForm";
 
 export default async function Settings() {
   const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   const userId = session?.user?.id ?? "";
   const userRes = await getUserById(userId);
   const user = userRes?.data;

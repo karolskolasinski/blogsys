@@ -1,5 +1,3 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import DashboardMenu from "@/components/blogsys/DashboardMenu";
 import { ServerComponentProps } from "@/types/common";
 import { getUserById } from "@/actions/users";
@@ -9,11 +7,6 @@ import Toast from "@/components/blogsys/Toast";
 import { SaveUser } from "@/app/(dashboard)/users/[id]/SaveUser";
 
 export default async function User(props: ServerComponentProps) {
-  const session = await auth();
-  if (!session) {
-    redirect("/login");
-  }
-
   const params = await props.params;
   const res = await getUserById(params.id as string);
   const user = res?.data;
