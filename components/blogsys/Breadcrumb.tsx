@@ -18,14 +18,14 @@ export default function Breadcrumb({ items }: BreadcrumbProps) {
       {items.map((link, index) => {
         if (index === items.length - 1) {
           return (
-            <div key={index} className="flex items-center gap-2">
+            <div key={link.href} className="flex items-center gap-2">
               <span className="text-sm">{link.label}</span>
             </div>
           );
         }
 
         return (
-          <div key={index} className="flex items-center gap-2">
+          <div key={link.href} className="flex items-center gap-2">
             <Link href={link.href} className="hover:text-gray-700">
               <span className="text-sm">{link.label}</span>
             </Link>
