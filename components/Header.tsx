@@ -30,6 +30,7 @@ export default async function Header() {
           <div className="relative flex items-center">
             <input
               id="hamburger"
+              name="hamburger"
               type="checkbox"
               className="peer opacity-0 w-0 h-[26px] cursor-pointer"
             />

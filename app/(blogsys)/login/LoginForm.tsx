@@ -31,7 +31,7 @@ export default function LoginForm() {
           </h1>
 
           <div className="h-44">
-            <label className="block text-sm text-gray-600">Login</label>
+            <label htmlFor="email" className="block text-sm text-gray-600">Login</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               name="email"
@@ -41,7 +41,7 @@ export default function LoginForm() {
               defaultValue={state.data?.email ?? ""}
             />
 
-            <label className="block text-sm text-gray-600">Hasło</label>
+            <label htmlFor="password" className="block text-sm text-gray-600">Hasło</label>
             <input
               className="w-full h-10 p-2 mt-2 mb-4 border border-gray-300 rounded-md"
               name="password"
