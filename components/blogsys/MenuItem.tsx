@@ -3,21 +3,23 @@
 import { useTransition } from "react";
 import SpinnerIcon from "@/public/icons/blogsys/spinner.svg";
 import { useRouter } from "next/navigation";
+import { Role } from "@/types/common";
 
 type MenuItemProps = {
   href: string;
   label: string;
   icon: React.ReactNode;
   active: string;
+  role?: Role;
 };
 
 export default function MenuItem(props: MenuItemProps) {
-  const { href, label, icon } = props;
+  const { href, label, icon, role } = props;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  // if (role !== "admin" && href === "/users") {
-  //   return null;
-  // }
+  if (role !== "admin" && href === "/users") {
+    return null;
+  }
 
   return (
     <button

@@ -5,7 +5,7 @@ import SettingsIcon from "@/public/icons/blogsys/settings.svg";
 import PostsIcon from "@/public/icons/blogsys/post.svg";
 import LogoutIcon from "@/public/icons/blogsys/logout.svg";
 import CredentialsIcon from "@/public/icons/blogsys/credentials.svg";
-import { signOut } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import UserInfo from "@/components/blogsys/UserInfo";
 
@@ -15,6 +15,8 @@ type DashboardMenuProps = {
 };
 
 export default async function DashboardMenu(props: DashboardMenuProps) {
+  const session = await auth();
+  const role = session?.user?.role;
   const asideClass = props.mobile
     ? "h-full flex flex-col py-2 text-lg"
     : "w-72 hidden lg:flex flex-col gap-2 px-4 py-8 border-r border-gray-200";
@@ -53,6 +55,7 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
         label="Użytkownicy"
         icon={<UsersIcon className="w-6 h-6 fill-gray-400" />}
         active={active}
+        role={role}
       />
 
       <MenuItem
