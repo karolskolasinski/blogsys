@@ -5,7 +5,7 @@ import Breadcrumb from "@/components/blogsys/Breadcrumb";
 import PostForm from "./PostForm";
 import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 
-export default async function Post(props: ServerComponentProps) {
+export default async function Post(props: Readonly<ServerComponentProps>) {
   const params = await props.params;
   const id = params.id as string;
   const [postRes, tagsRes, authorsRes] = await Promise.all([

@@ -6,7 +6,7 @@ import HamburgerMenu from "@/components/blogsys/HamburgerMenu";
 import Toast from "@/components/blogsys/Toast";
 import { SaveUser } from "@/app/(dashboard)/users/[id]/SaveUser";
 
-export default async function User(props: ServerComponentProps) {
+export default async function User(props: Readonly<ServerComponentProps>) {
   const params = await props.params;
   const res = await getUserById(params.id as string);
   const user = res?.data;

@@ -31,7 +31,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+type RootLayoutProps = Readonly<{
+  children: React.ReactNode;
+}>;
+
+export default async function RootLayout(props: Readonly<RootLayoutProps>) {
+  const { children } = props;
+
   return (
     <html lang="pl" className={`${calSans.variable} ${plusJakartaSans.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">

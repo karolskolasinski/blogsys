@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-type Props = {
+type FormFooterProps = {
   showLoginLink?: boolean;
 };
 
-export default function FormFooter(props: Props) {
+export default function FormFooter(props: Readonly<FormFooterProps>) {
   const { showLoginLink = true } = props;
 
   return (

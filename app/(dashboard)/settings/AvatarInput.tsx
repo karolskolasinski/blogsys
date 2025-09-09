@@ -11,7 +11,7 @@ type AvatarInputProps = {
   data?: string;
 };
 
-export default function AvatarInput(props: AvatarInputProps) {
+export default function AvatarInput(props: Readonly<AvatarInputProps>) {
   const [avatarPreview, setAvatarPreview] = useState(props.data);
   const [avatarChanged, setAvatarChanged] = useState(false);
   const dispatch = useDispatch();

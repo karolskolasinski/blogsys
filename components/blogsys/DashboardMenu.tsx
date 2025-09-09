@@ -13,7 +13,7 @@ type DashboardMenuProps = {
   mobile?: boolean;
 };
 
-export default async function DashboardMenu(props: DashboardMenuProps) {
+export default async function DashboardMenu(props: Readonly<DashboardMenuProps>) {
   const session = await auth();
   const role = session?.user?.role;
   const asideClass = props.mobile

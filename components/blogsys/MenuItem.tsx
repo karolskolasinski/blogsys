@@ -13,7 +13,7 @@ type MenuItemProps = {
   role?: Role;
 };
 
-export default function MenuItem(props: MenuItemProps) {
+export default function MenuItem(props: Readonly<MenuItemProps>) {
   const { href, label, icon, role, active } = props;
   const activeClass = active === href ? "bg-gray-100" : "";
   const router = useRouter();

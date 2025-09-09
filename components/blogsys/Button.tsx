@@ -13,7 +13,7 @@ type ButtonProps = {
   colorClass?: string;
 };
 
-export default function Button(props: ButtonProps) {
+export default function Button(props: Readonly<ButtonProps>) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const { pending: formPending } = useFormStatus();

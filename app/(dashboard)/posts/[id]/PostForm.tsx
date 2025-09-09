@@ -20,7 +20,8 @@ type PostFormProps = {
   allAuthors?: { id: string; name: string }[];
 };
 
-export default function PostForm({ post, allTags, allAuthors }: PostFormProps) {
+export default function PostForm(props: Readonly<PostFormProps>) {
+  const { post, allTags, allAuthors } = props;
   const [title, setTitle] = useState(post?.title ?? "");
   const [value, setValue] = useState(post?.content ?? "");
   const [tags, setTags] = useState<string[]>(post?.tags ?? []);

@@ -6,7 +6,9 @@ type BreadcrumbProps = {
   items: { label: string; href: string }[];
 };
 
-export default function Breadcrumb({ items }: BreadcrumbProps) {
+export default function Breadcrumb(props: Readonly<BreadcrumbProps>) {
+  const { items } = props;
+
   return (
     <nav className="flex gap-2 items-center px-4 py-8 font-semibold overflow-x-auto whitespace-nowrap">
       <Link href="/">

@@ -9,7 +9,7 @@ type MarkdownEditorProps = {
   setValue: (value: string) => void;
 };
 
-export default function MarkdownEditor(props: MarkdownEditorProps) {
+export default function MarkdownEditor(props: Readonly<MarkdownEditorProps>) {
   return (
     <div className="relative flex flex-1">
       <Editor

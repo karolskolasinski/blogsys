@@ -5,7 +5,7 @@ type AvatarProps = {
   className?: string;
 };
 
-export default function Avatar(props: AvatarProps) {
+export default function Avatar(props: Readonly<AvatarProps>) {
   const { src, className } = props;
 
   return (

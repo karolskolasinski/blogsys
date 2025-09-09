@@ -4,7 +4,12 @@ import StoreProvider from "@/app/(dashboard)/StoreProvider";
 import { getAvatar, getUserById } from "@/actions/users";
 import _ from "lodash";
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+type DashboardLayoutProps = {
+  children: React.ReactNode;
+};
+
+export default async function DashboardLayout(props: Readonly<DashboardLayoutProps>) {
+  const { children } = props;
   const session = await auth();
   if (!session?.user) {
     redirect("/login");

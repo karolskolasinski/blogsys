@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { ActionResponse } from "@/types/common";
 
-export default function Toast(props: Omit<ActionResponse, "data">) {
+export default function Toast(props: Readonly<Omit<ActionResponse, "data">>) {
   const { success, messages } = props;
 
   useEffect(() => {
