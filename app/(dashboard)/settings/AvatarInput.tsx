@@ -56,7 +56,7 @@ export default function AvatarInput(props: Readonly<AvatarInputProps>) {
 
         <div className="flex flex-col gap-4 justify-center items-center">
           <label htmlFor="avatar" className="button">
-            Wybierz plik
+            <span>Wybierz plik</span>
             <input
               id="avatar"
               name="avatar"
