@@ -6,7 +6,7 @@ export default async function Header() {
     <header className="z-10 sticky top-0 bg-slate-50 md:bg-slate-50/70 md:backdrop-blur-xs">
       <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
-          <a href="#" className="flex gap-2 items-center font-bold text-2xl">
+          <Link href="/" className="flex gap-2 items-center font-bold text-2xl">
             <Image
               src="/icons/logo.svg"
               alt="logo"
@@ -16,11 +16,11 @@ export default async function Header() {
               className="h-12 w-auto"
             />
             site
-          </a>
+          </Link>
         </div>
 
         <nav className="hidden md:flex items-center gap-6">
-          <a href="#" className="hover:text-primary-500 duration-100 ease-in-out">Home</a>
+          <Link href="/" className="hover:text-primary-500 duration-100 ease-in-out">Home</Link>
           <Link href="/login" className="hover:text-primary-500 duration-100 ease-in-out">
             Login
           </Link>
