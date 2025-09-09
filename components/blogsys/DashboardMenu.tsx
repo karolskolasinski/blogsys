@@ -4,7 +4,6 @@ import UsersIcon from "@/public/icons/blogsys/users.svg";
 import SettingsIcon from "@/public/icons/blogsys/settings.svg";
 import PostsIcon from "@/public/icons/blogsys/post.svg";
 import LogoutIcon from "@/public/icons/blogsys/logout.svg";
-import CredentialsIcon from "@/public/icons/blogsys/credentials.svg";
 import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import UserInfo from "@/components/blogsys/UserInfo";
@@ -33,13 +32,6 @@ export default async function DashboardMenu(props: DashboardMenuProps) {
         href="/"
         label="Strona główna"
         icon={<HomeIcon className="w-6 h-6 fill-gray-400" />}
-        active={active}
-      />
-
-      <MenuItem
-        href="/accounts"
-        label="Konta"
-        icon={<CredentialsIcon className="w-6 h-6 fill-gray-400" />}
         active={active}
       />
 
