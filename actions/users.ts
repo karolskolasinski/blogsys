@@ -59,10 +59,7 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
   const session = await auth();
   const role = session?.user?.role;
   if (role !== "admin") {
-    return {
-      success: false,
-      messages: ["Brak dostępu"],
-    };
+    return handleError(null, "Brak dostępu");
   }
 
   try {
@@ -74,10 +71,7 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
       data: docSnap.docs.map((doc) => userDocToUser(doc)),
     };
   } catch (err) {
-    return {
-      success: false,
-      messages: [err instanceof Error ? err.message : "Błąd odczytu"],
-    };
+    return handleError(err, "Błąd odczytu");
   }
 }
 
@@ -169,10 +163,7 @@ export async function saveUser(
     const wantsToChangeRole = Boolean(role);
     const noAccess = (!isEditingSelf && !isAdmin) || (wantsToChangeRole && !isAdmin);
     if (noAccess) {
-      return {
-        success: false,
-        messages: ["Brak uprawnień"],
-      };
+      return handleError(null, "Brak uprawnień");
     }
 
     const user = {
@@ -194,10 +185,7 @@ export async function saveUser(
       messages: ["Zapisano"],
     };
   } catch (err) {
-    return {
-      success: false,
-      messages: [err instanceof Error ? err.message : "Błąd zapisu"],
-    };
+    return handleError(err, "Błąd zapisu");
   }
 }
 
