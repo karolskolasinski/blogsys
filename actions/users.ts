@@ -78,7 +78,7 @@ export async function getUsers(): Promise<ActionResponse<(User | undefined)[]>> 
 export async function getUserByEmail(
   email: string,
   keepPass?: boolean,
-): Promise<ActionResponse<User>> {
+): Promise<ActionResponse<User | undefined>> {
   try {
     const docSnap = await db.collection("users").where("email", "==", email).get();
     return {
@@ -91,7 +91,7 @@ export async function getUserByEmail(
   }
 }
 
-export async function getUserById(id: string): Promise<ActionResponse<User>> {
+export async function getUserById(id: string): Promise<ActionResponse<User | undefined>> {
   try {
     const docSnap = await db.collection("users").doc(id).get();
     return {
