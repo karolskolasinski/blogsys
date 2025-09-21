@@ -24,7 +24,7 @@ export async function init(_prevState: unknown, formData: FormData): Promise<Act
     }
 
     if (key !== secretKey) {
-      return handleError(null, "Brak dostępu");
+      return handleError(null, "Błędny klucz autoryzacyjny");
     }
 
     if (!email || !password) {
